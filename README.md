@@ -2,4 +2,4 @@
 
 This repo is made for this tutorial on youtube: https://youtu.be/GPam8KU3ldw
 
-You can test the live demo at: react-face-tracking.vercel.app
+You can test the live demo at: https://react-face-tracking.vercel.app
