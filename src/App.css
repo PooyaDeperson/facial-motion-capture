@@ -42,3 +42,18 @@
   align-items: center;
   background-color: aliceblue;
 }
+
+.dropzone {
+  margin: 16px;
+  margin-bottom: 0px;
+  border-radius: 16px;
+  padding: 0 16px;
+  width: 436px;
+  height: 32px;
+  border: 2px dashed #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: aliceblue;
+  cursor: pointer;
+}

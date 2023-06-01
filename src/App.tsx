@@ -5,6 +5,7 @@ import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from "@mediapi
 import { Color, Euler, Matrix4 } from 'three';
 import { Canvas, useFrame, useGraph } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
+import { useDropzone } from 'react-dropzone';
 
 let video: HTMLVideoElement;
 let faceLandmarker: FaceLandmarker;
@@ -25,12 +26,11 @@ const options: FaceLandmarkerOptions = {
 };
 
 function Avatar({ url }: { url: string }) {
-  const { scene } = useGLTF(`${url}?morphTargets=ARKit&textureAtlas=1024`);
+  const { scene } = useGLTF(url);
   const { nodes } = useGraph(scene);
 
-
   useEffect(() => {
-    headMesh = (nodes.Wolf3D_Head || nodes.Wolf3D_Avatar || nodes.Wolf3D_Custom_Head);
+    headMesh = (nodes.Wolf3D_Head || nodes.Wolf3D_Avatar || nodes.Wolf3D_Head_Custom);
   }, [nodes, url]);
 
   useFrame((_, delta) => {
@@ -54,6 +54,16 @@ function Avatar({ url }: { url: string }) {
 
 function App() {
   const [url, setUrl] = useState<string>("https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024");
+  const { getRootProps } = useDropzone({
+    onDrop: files => {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        setUrl(reader.result as string);
+      }
+      reader.readAsDataURL(file);
+    }
+  });
 
   const setup = async () => {
     const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
@@ -87,7 +97,7 @@ function App() {
   }
 
   const handleOnChange = (event: any) => {
-    setUrl(event.target.value);
+    setUrl(`${event.target.value}?morphTargets=ARKit&textureAtlas=1024`);
   }
 
   useEffect(() => {
@@ -96,6 +106,9 @@ function App() {
 
   return (
     <div className="App">
+      <div {...getRootProps({ className: 'dropzone' })}>
+        <p>Drag & drop RPM avatar GLB file here</p>
+      </div>
       <input className='url' type="text" placeholder="Paste RPM avatar URL" onChange={handleOnChange} />
       <video className='camera-feed' id="video" autoPlay></video>
       <Canvas style={{ height: 600 }} camera={{ fov: 25 }} shadows>
