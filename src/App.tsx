@@ -30,7 +30,7 @@ function Avatar({ url }: { url: string }) {
 
 
   useEffect(() => {
-    headMesh = (nodes.Wolf3D_Head || nodes.Wolf3D_Avatar);
+    headMesh = (nodes.Wolf3D_Head || nodes.Wolf3D_Avatar || nodes.Wolf3D_Custom_Head);
   }, [nodes, url]);
 
   useFrame((_, delta) => {
