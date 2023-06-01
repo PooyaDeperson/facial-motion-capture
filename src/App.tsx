@@ -49,7 +49,7 @@ function Avatar({ url }: { url: string }) {
     }
   });
 
-  return <primitive object={scene} position={[0, -1.65, 4]} />
+  return <primitive object={scene} position={[0, -1.75, 3]} />
 }
 
 function App() {
