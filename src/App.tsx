@@ -12,7 +12,7 @@ let faceLandmarker: FaceLandmarker;
 let lastVideoTime = -1;
 let blendshapes: any[] = [];
 let rotation: Euler;
-let headMesh: any;
+let headMesh: any[] = [];
 
 const options: FaceLandmarkerOptions = {
   baseOptions: {
@@ -30,17 +30,22 @@ function Avatar({ url }: { url: string }) {
   const { nodes } = useGraph(scene);
 
   useEffect(() => {
-    headMesh = (nodes.Wolf3D_Head || nodes.Wolf3D_Avatar || nodes.Wolf3D_Head_Custom);
+    if (nodes.Wolf3D_Head) headMesh.push(nodes.Wolf3D_Head);
+    if (nodes.Wolf3D_Teeth) headMesh.push(nodes.Wolf3D_Teeth);
+    if (nodes.Wolf3D_Beard) headMesh.push(nodes.Wolf3D_Beard);
+    if (nodes.Wolf3D_Avatar) headMesh.push(nodes.Wolf3D_Avatar);
+    if (nodes.Wolf3D_Head_Custom) headMesh.push(nodes.Wolf3D_Head_Custom);
   }, [nodes, url]);
 
   useFrame((_, delta) => {
-    if (headMesh?.morphTargetInfluences && blendshapes.length > 0) {
-
+    if (blendshapes.length > 0) {
       blendshapes.forEach(element => {
-        let index = headMesh.morphTargetDictionary[element.categoryName];
-        if (index >= 0) {
-          headMesh.morphTargetInfluences[index] = element.score;
-        }
+        headMesh.forEach(mesh => {
+          let index = mesh.morphTargetDictionary[element.categoryName];
+          if (index >= 0) {
+            mesh.morphTargetInfluences[index] = element.score;
+          }
+        });
       });
 
       nodes.Head.rotation.set(rotation.x, rotation.y, rotation.z);
