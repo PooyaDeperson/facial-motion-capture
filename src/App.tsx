@@ -37,7 +37,7 @@ function Avatar({ url }: { url: string }) {
     if (nodes.Wolf3D_Head_Custom) headMesh.push(nodes.Wolf3D_Head_Custom);
   }, [nodes, url]);
 
-  useFrame((_, delta) => {
+  useFrame(() => {
     if (blendshapes.length > 0) {
       blendshapes.forEach(element => {
         headMesh.forEach(mesh => {
