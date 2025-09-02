@@ -6,6 +6,7 @@ import { Canvas, useFrame, useGraph } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { useDropzone } from 'react-dropzone';
 import CameraPermissions from './camera-permission';
+import ColorSwitcher from './components/ColorSwitcher';
 
 // Global variables for face tracking
 let video: HTMLVideoElement;
@@ -122,6 +123,8 @@ function App() {
         <Avatar url={url} />
       </Canvas>
       <img className="logo" src="./logo.png" />
+       {/* Add the color switcher here */}
+    <ColorSwitcher />
     </div>
   );
 }
