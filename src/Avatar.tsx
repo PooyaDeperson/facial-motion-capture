@@ -1,6 +1,7 @@
 // Avatar.tsx
 import { useEffect } from "react";
-import { useGLTF, useGraph } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
+import { useGraph } from "three-stdlib";
 import { useFrame } from "@react-three/fiber";
 import { blendshapes, rotation, headMesh } from "./FaceTracking";
 
