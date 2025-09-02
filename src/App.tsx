@@ -13,8 +13,9 @@ let faceLandmarker: FaceLandmarker;
 let lastVideoTime = -1;
 let blendshapes: any[] = [];
 let rotation: Euler;
+let headMesh: any[] = [];
 
-// Mediapipe FaceLandmarker options
+// Options for Mediapipe FaceLandmarker
 const options: FaceLandmarkerOptions = {
   baseOptions: {
     modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
@@ -26,112 +27,42 @@ const options: FaceLandmarkerOptions = {
   outputFacialTransformationMatrixes: true,
 };
 
-// Avatar component: loads GLB and applies blendshapes
-function Avatar({ url, onLoaded }: { url: string; onLoaded: () => void }) {
+// Avatar component renders the GLTF model and applies blendshapes & head rotation
+function Avatar({ url }: { url: string }) {
   const { scene } = useGLTF(url);
   const { nodes } = useGraph(scene);
 
-  const localMeshes: any[] = [];
-
-  // Notify parent when GLB is loaded
   useEffect(() => {
-    onLoaded();
-  }, [url, onLoaded]);
-
-  // Populate relevant meshes for blendshapes
-  useEffect(() => {
-    if (nodes.Wolf3D_Head) localMeshes.push(nodes.Wolf3D_Head);
-    if (nodes.Wolf3D_Teeth) localMeshes.push(nodes.Wolf3D_Teeth);
-    if (nodes.Wolf3D_Beard) localMeshes.push(nodes.Wolf3D_Beard);
-    if (nodes.Wolf3D_Avatar) localMeshes.push(nodes.Wolf3D_Avatar);
-    if (nodes.Wolf3D_Head_Custom) localMeshes.push(nodes.Wolf3D_Head_Custom);
-
-    // Initialize morphTargetInfluences if undefined
-    localMeshes.forEach(mesh => {
-      if (!mesh.morphTargetInfluences) {
-        mesh.morphTargetInfluences = new Array(Object.keys(mesh.morphTargetDictionary || {}).length).fill(0);
-      }
-    });
+    if (nodes.Wolf3D_Head) headMesh.push(nodes.Wolf3D_Head);
+    if (nodes.Wolf3D_Teeth) headMesh.push(nodes.Wolf3D_Teeth);
+    if (nodes.Wolf3D_Beard) headMesh.push(nodes.Wolf3D_Beard);
+    if (nodes.Wolf3D_Avatar) headMesh.push(nodes.Wolf3D_Avatar);
+    if (nodes.Wolf3D_Head_Custom) headMesh.push(nodes.Wolf3D_Head_Custom);
   }, [nodes, url]);
 
-  // Apply blendshapes and rotations
   useFrame(() => {
     if (blendshapes.length > 0) {
       blendshapes.forEach(element => {
-        localMeshes.forEach(mesh => {
-          const index = mesh.morphTargetDictionary[element.categoryName];
-          if (index !== undefined && index >= 0) {
+        headMesh.forEach(mesh => {
+          let index = mesh.morphTargetDictionary[element.categoryName];
+          if (index >= 0) {
             mesh.morphTargetInfluences[index] = element.score;
           }
         });
       });
-
-      if (nodes.Head) nodes.Head.rotation.set(rotation.x, rotation.y, rotation.z);
-      if (nodes.Neck) nodes.Neck.rotation.set(rotation.x / 5 + 0.3, rotation.y / 5, rotation.z / 5);
-      if (nodes.Spine2) nodes.Spine2.rotation.set(rotation.x / 10, rotation.y / 10, rotation.z / 10);
+      nodes.Head.rotation.set(rotation.x, rotation.y, rotation.z);
+      nodes.Neck.rotation.set(rotation.x / 5 + 0.3, rotation.y / 5, rotation.z / 5);
+      nodes.Spine2.rotation.set(rotation.x / 10, rotation.y / 10, rotation.z / 10);
     }
   });
 
   return <primitive object={scene} position={[0, -1.75, 3]} />;
 }
 
-// Background color picker component
-function BackgroundColorPicker({ color, onChange }: { color: string; onChange: (c: string) => void }) {
-  const colors = ['#ffffff', '#f8f8f8', '#e0e0e0', '#ffcccc', '#ccffcc', '#ccccff', '#ffffcc', '#ffccff', '#ccffff'];
-  return (
-    <div className="color-picker" style={{ marginTop: 12 }}>
-      <p>Pick Background Color:</p>
-      <div style={{ display: 'flex', gap: '8px' }}>
-        {colors.map(c => (
-          <div
-            key={c}
-            onClick={() => onChange(c)}
-            style={{
-              width: 30,
-              height: 30,
-              backgroundColor: c,
-              border: c === color ? '3px solid black' : '1px solid gray',
-              cursor: 'pointer'
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// Model selector component
-function ModelSelector({ models, selected, onSelect }: { models: {url: string, img: string}[], selected: string, onSelect: (url: string) => void }) {
-  return (
-    <div className="model-selector" style={{ display: 'flex', gap: '12px', marginTop: '12px', flexWrap: 'wrap' }}>
-      {models.map(model => (
-        <div
-          key={model.url + model.img}
-          onClick={() => onSelect(model.url)}
-          style={{
-            border: model.url === selected ? '3px solid blue' : '1px solid gray',
-            padding: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          <img src={model.img} alt="model" style={{ width: 60, height: 60 }} />
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function App() {
   const [url, setUrl] = useState<string>(
     "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024"
   );
-  const [loading, setLoading] = useState(true);
-  const [bgColor, setBgColor] = useState('#ffffff');
-
-  const models = Array.from({ length: 10 }, (_, i) => ({
-    url: "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024",
-    img: `https://dummyimage.com/60x60/000/fff.svg&text=${i + 1}`
-  }));
 
   const { getRootProps } = useDropzone({
     onDrop: files => {
@@ -142,10 +73,14 @@ function App() {
     }
   });
 
-  // Video prediction loop
+  const setup = async () => {
+    const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
+    faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
+  };
+
   const predict = async () => {
-    const nowInMs = Date.now();
-    if (video && lastVideoTime !== video.currentTime) {
+    let nowInMs = Date.now();
+    if (lastVideoTime !== video.currentTime) {
       lastVideoTime = video.currentTime;
       const result = faceLandmarker.detectForVideo(video, nowInMs);
       if (result.faceBlendshapes?.length && result.faceBlendshapes[0].categories) {
@@ -157,54 +92,36 @@ function App() {
     window.requestAnimationFrame(predict);
   };
 
-  // Called when CameraPermissions grants a video stream
   const handleStreamReady = (vid: HTMLVideoElement) => {
     video = vid;
     video.addEventListener("loadeddata", predict);
   };
 
-  // Setup Mediapipe faceLandmarker
-  const setup = async () => {
-    const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
-    faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
-  };
-
-  useEffect(() => {
-    setup();
-  }, []);
+  useEffect(() => { setup(); }, []);
 
   return (
-    <div className="App" style={{ backgroundColor: bgColor }}>
+    <div className="App">
       <CameraPermissions onStreamReady={handleStreamReady} />
-
       <div {...getRootProps({ className: 'dropzone' })}>
         <p>Drag & drop RPM avatar GLB file here</p>
       </div>
-
       <input
         className="url"
         type="text"
         placeholder="Paste RPM avatar URL"
-        onChange={(e) => setUrl(`${e.target.value}?morphTargets=ARKit&textureAtlas=1024`)}
+        onChange={(e) =>
+          setUrl(`${e.target.value}?morphTargets=ARKit&textureAtlas=1024`)
+        }
       />
-
       <video className="camera-feed" id="video" autoPlay playsInline></video>
-
-      {loading && <div className="loader">Loading model...</div>}
-
       <Canvas style={{ height: 600 }} camera={{ fov: 25 }} shadows>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} color={new Color(1, 1, 0)} intensity={0.5} castShadow />
         <pointLight position={[-10, 0, 10]} color={new Color(1, 0, 0)} intensity={0.5} castShadow />
         <pointLight position={[0, 0, 10]} intensity={0.5} castShadow />
-        <Avatar url={url} onLoaded={() => setLoading(false)} />
+        <Avatar url={url} />
       </Canvas>
-
-      <ModelSelector models={models} selected={url} onSelect={(newUrl) => { setLoading(true); setUrl(newUrl); }} />
-
-      <BackgroundColorPicker color={bgColor} onChange={setBgColor} />
-
-      <img className="logo" src="./logo.png" alt="logo" />
+      <img className="logo" src="./logo.png" />
     </div>
   );
 }
