@@ -13,7 +13,6 @@ let faceLandmarker: FaceLandmarker;
 let lastVideoTime = -1;
 let blendshapes: any[] = [];
 let rotation: Euler;
-let headMesh: any[] = [];
 
 // Mediapipe FaceLandmarker options
 const options: FaceLandmarkerOptions = {
@@ -32,45 +31,47 @@ function Avatar({ url, onLoaded }: { url: string; onLoaded: () => void }) {
   const { scene } = useGLTF(url);
   const { nodes } = useGraph(scene);
 
+  // Local mesh array for this Avatar instance to prevent crashes
+  const localMeshes: any[] = [];
+
   // Notify parent when GLB is loaded
   useEffect(() => {
     onLoaded();
   }, [url, onLoaded]);
 
+  // Populate local meshes
   useEffect(() => {
-    // Push relevant meshes into global array
-    if (nodes.Wolf3D_Head) headMesh.push(nodes.Wolf3D_Head);
-    if (nodes.Wolf3D_Teeth) headMesh.push(nodes.Wolf3D_Teeth);
-    if (nodes.Wolf3D_Beard) headMesh.push(nodes.Wolf3D_Beard);
-    if (nodes.Wolf3D_Avatar) headMesh.push(nodes.Wolf3D_Avatar);
-    if (nodes.Wolf3D_Head_Custom) headMesh.push(nodes.Wolf3D_Head_Custom);
+    if (nodes.Wolf3D_Head) localMeshes.push(nodes.Wolf3D_Head);
+    if (nodes.Wolf3D_Teeth) localMeshes.push(nodes.Wolf3D_Teeth);
+    if (nodes.Wolf3D_Beard) localMeshes.push(nodes.Wolf3D_Beard);
+    if (nodes.Wolf3D_Avatar) localMeshes.push(nodes.Wolf3D_Avatar);
+    if (nodes.Wolf3D_Head_Custom) localMeshes.push(nodes.Wolf3D_Head_Custom);
   }, [nodes]);
 
   // Apply blendshapes and rotation on each frame
   useFrame(() => {
     if (blendshapes.length > 0) {
       blendshapes.forEach(element => {
-        headMesh.forEach(mesh => {
+        localMeshes.forEach(mesh => {
           const index = mesh.morphTargetDictionary[element.categoryName];
           if (index >= 0) mesh.morphTargetInfluences[index] = element.score;
         });
       });
 
-      // Apply head rotation
-      nodes.Head.rotation.set(rotation.x, rotation.y, rotation.z);
-      nodes.Neck.rotation.set(rotation.x / 5 + 0.3, rotation.y / 5, rotation.z / 5);
-      nodes.Spine2.rotation.set(rotation.x / 10, rotation.y / 10, rotation.z / 10);
+      if (nodes.Head) nodes.Head.rotation.set(rotation.x, rotation.y, rotation.z);
+      if (nodes.Neck) nodes.Neck.rotation.set(rotation.x / 5 + 0.3, rotation.y / 5, rotation.z / 5);
+      if (nodes.Spine2) nodes.Spine2.rotation.set(rotation.x / 10, rotation.y / 10, rotation.z / 10);
     }
   });
 
   return <primitive object={scene} position={[0, -1.75, 3]} />;
 }
 
-// Component to pick background color
+// Background color picker component
 function BackgroundColorPicker({ color, onChange }: { color: string; onChange: (c: string) => void }) {
   const colors = ['#ffffff', '#f8f8f8', '#e0e0e0', '#ffcccc', '#ccffcc', '#ccccff', '#ffffcc', '#ffccff', '#ccffff'];
   return (
-    <div className="color-picker">
+    <div className="color-picker" style={{ marginTop: 12 }}>
       <p>Pick Background Color:</p>
       <div style={{ display: 'flex', gap: '8px' }}>
         {colors.map(c => (
@@ -91,13 +92,13 @@ function BackgroundColorPicker({ color, onChange }: { color: string; onChange: (
   );
 }
 
-// Component to select GLB model
+// Model selector component
 function ModelSelector({ models, selected, onSelect }: { models: {url: string, img: string}[], selected: string, onSelect: (url: string) => void }) {
   return (
-    <div className="model-selector" style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
+    <div className="model-selector" style={{ display: 'flex', gap: '12px', marginTop: '12px', flexWrap: 'wrap' }}>
       {models.map(model => (
         <div
-          key={model.url}
+          key={model.url + model.img}
           onClick={() => onSelect(model.url)}
           style={{
             border: model.url === selected ? '3px solid blue' : '1px solid gray',
@@ -113,25 +114,24 @@ function ModelSelector({ models, selected, onSelect }: { models: {url: string, i
 }
 
 function App() {
-  // State for currently loaded model
+  // Currently loaded model URL
   const [url, setUrl] = useState<string>(
     "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024"
   );
 
-  // Loader visibility state
+  // Loader state
   const [loading, setLoading] = useState(true);
 
   // Background color state
   const [bgColor, setBgColor] = useState('#ffffff');
 
-  // Model selection array
-  const models = [
-    { url: "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024", img: 'https://dummyimage.com/60x60/000/fff.svg&text=1' },
-    { url: "https://models.readyplayer.me/anothermodel.glb", img: 'https://dummyimage.com/60x60/000/fff.svg&text=2' },
-    { url: "https://models.readyplayer.me/yetanother.glb", img: 'https://dummyimage.com/60x60/000/fff.svg&text=3' },
-  ];
+  // Model list: 10 models with dummy SVGs
+  const models = Array.from({ length: 10 }, (_, i) => ({
+    url: "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024",
+    img: `https://dummyimage.com/60x60/000/fff.svg&text=${i + 1}`
+  }));
 
-  // Dropzone for uploading custom GLB files
+  // Dropzone for GLB upload
   const { getRootProps } = useDropzone({
     onDrop: files => {
       const file = files[0];
@@ -141,7 +141,7 @@ function App() {
     }
   });
 
-  // Mediapipe setup
+  // Setup Mediapipe faceLandmarker
   const setup = async () => {
     const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
     faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
@@ -149,7 +149,7 @@ function App() {
 
   // Video prediction loop
   const predict = async () => {
-    let nowInMs = Date.now();
+    const nowInMs = Date.now();
     if (lastVideoTime !== video.currentTime) {
       lastVideoTime = video.currentTime;
       const result = faceLandmarker.detectForVideo(video, nowInMs);
