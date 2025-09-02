@@ -10,11 +10,14 @@ const colors = [
 ];
 
 const ColorSwitcher: React.FC = () => {
-  const [activeColor, setActiveColor] = useState<string>(colors[0].hex);
+  const [activeColor, setActiveColor] = useState<string>(() => {
+    return localStorage.getItem("activeColor") || colors[0].hex;
+  });
 
-  // On component mount, set default body background
+  // Apply color to body and persist it
   useEffect(() => {
     document.body.style.backgroundColor = activeColor;
+    localStorage.setItem("activeColor", activeColor);
   }, [activeColor]);
 
   return (
