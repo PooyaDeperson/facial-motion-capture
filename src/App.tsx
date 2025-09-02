@@ -147,18 +147,30 @@ function App() {
     setUrl(`${event.target.value}?morphTargets=ARKit&textureAtlas=1024`);
   };
 
-  useEffect(() => {
-    setup();
+useEffect(() => {
+  setup();
 
-    // Listen for browser-level permission changes (Chrome, etc.)
-    // This allows us to detect if the user goes into settings and later grants camera access
-    if (navigator.permissions) {
-      navigator.permissions.query({ name: "camera" as PermissionName }).then((result) => {
+  if (navigator.permissions) {
+    navigator.permissions.query({ name: "camera" as PermissionName }).then((result) => {
+      setPermissionState(result.state as any);
+
+      // If camera is already allowed, open it immediately
+      if (result.state === "granted") {
+        requestCamera();
+      }
+
+      // Watch for changes (e.g. user updates permissions via browser settings)
+      result.onchange = () => {
         setPermissionState(result.state as any);
-        result.onchange = () => setPermissionState(result.state as any);
-      });
-    }
-  }, []);
+
+        if (result.state === "granted") {
+          requestCamera();
+        }
+      };
+    });
+  }
+}, []);
+
 
   return (
     <div className="App">
