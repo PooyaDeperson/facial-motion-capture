@@ -75,6 +75,7 @@ function Avatar({ url, onLoaded }: { url: string; onLoaded: () => void }) {
 
   return <primitive object={scene} position={[0, -1.75, 3]} />;
 }
+
 // Background color picker component
 function BackgroundColorPicker({ color, onChange }: { color: string; onChange: (c: string) => void }) {
   const colors = ['#ffffff', '#f8f8f8', '#e0e0e0', '#ffcccc', '#ccffcc', '#ccccff', '#ffffcc', '#ffccff', '#ccffff'];
@@ -122,24 +123,17 @@ function ModelSelector({ models, selected, onSelect }: { models: {url: string, i
 }
 
 function App() {
-  // Currently loaded model URL
   const [url, setUrl] = useState<string>(
     "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024"
   );
-
-  // Loader state
   const [loading, setLoading] = useState(true);
-
-  // Background color state
   const [bgColor, setBgColor] = useState('#ffffff');
 
-  // Model list: 10 models with dummy SVGs
   const models = Array.from({ length: 10 }, (_, i) => ({
     url: "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024",
     img: `https://dummyimage.com/60x60/000/fff.svg&text=${i + 1}`
   }));
 
-  // Dropzone for GLB upload
   const { getRootProps } = useDropzone({
     onDrop: files => {
       const file = files[0];
@@ -149,10 +143,21 @@ function App() {
     }
   });
 
-  // Setup Mediapipe faceLandmarker
+  // Setup Mediapipe faceLandmarker and camera
   const setup = async () => {
     const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
     faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
+
+    video = document.getElementById("video") as HTMLVideoElement;
+    if (!video) return;
+
+    navigator.mediaDevices.getUserMedia({
+      video: { width: 1280, height: 720 },
+      audio: false
+    }).then(stream => {
+      video.srcObject = stream;
+      video.addEventListener("loadeddata", predict);
+    });
   };
 
   // Video prediction loop
@@ -170,24 +175,18 @@ function App() {
     window.requestAnimationFrame(predict);
   };
 
-  // Handle video ready
-  const handleStreamReady = (vid: HTMLVideoElement) => {
-    video = vid;
-    video.addEventListener("loadeddata", predict);
-  };
-
-  useEffect(() => { setup(); }, []);
+  useEffect(() => {
+    setup();
+  }, []);
 
   return (
     <div className="App" style={{ backgroundColor: bgColor }}>
-      <CameraPermissions onStreamReady={handleStreamReady} />
+      <CameraPermissions />
 
-      {/* Dropzone for GLB file upload */}
       <div {...getRootProps({ className: 'dropzone' })}>
         <p>Drag & drop RPM avatar GLB file here</p>
       </div>
 
-      {/* URL input */}
       <input
         className="url"
         type="text"
@@ -195,13 +194,10 @@ function App() {
         onChange={(e) => setUrl(`${e.target.value}?morphTargets=ARKit&textureAtlas=1024`)}
       />
 
-      {/* Video feed */}
       <video className="camera-feed" id="video" autoPlay playsInline></video>
 
-      {/* Loader */}
       {loading && <div className="loader">Loading model...</div>}
 
-      {/* 3D Canvas */}
       <Canvas style={{ height: 600 }} camera={{ fov: 25 }} shadows>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} color={new Color(1, 1, 0)} intensity={0.5} castShadow />
@@ -210,13 +206,10 @@ function App() {
         <Avatar url={url} onLoaded={() => setLoading(false)} />
       </Canvas>
 
-      {/* Model selection */}
       <ModelSelector models={models} selected={url} onSelect={(newUrl) => { setLoading(true); setUrl(newUrl); }} />
 
-      {/* Background color picker */}
       <BackgroundColorPicker color={bgColor} onChange={setBgColor} />
 
-      {/* Logo */}
       <img className="logo" src="./logo.png" alt="logo" />
     </div>
   );
