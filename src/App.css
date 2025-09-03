@@ -96,12 +96,17 @@ p {
   margin-bottom: 1rem;
 }
 
-div.avatar-container {
-    width: 100vw;
-    bottom: 0;
-    position: absolute;
-}
 
 html {
     overflow: hidden;
 }
+
+/* Positioning */
+.pos-rel { position: relative; }
+.pos-abs { position: absolute!important; }
+
+/* Edge alignment */
+.top-0 { top: 0!important; }
+.left-0 { left: 0!important; }
+.right-0 { right: 0!important; }
+.bottom-0 { bottom: 0!important; }
