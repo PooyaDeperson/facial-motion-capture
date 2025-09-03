@@ -12,7 +12,7 @@ function App() {
   const [url, setUrl] = useState<string>(
     "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024"
   );
-const [isStreamReady, setIsStreamReady] = useState(false);
+  const [isStreamReady, setIsStreamReady] = useState(false);
 
   const handleStreamReady = (vid: HTMLVideoElement, ready: boolean) => {
     console.log("Video stream ready:", vid);
@@ -28,22 +28,16 @@ const [isStreamReady, setIsStreamReady] = useState(false);
     }
   });
 
-  const handleStreamReady = (vid: HTMLVideoElement) => {
-    console.log("Video stream ready:", vid);
-  };
-
   return (
     <div className="App">
-       {/* Video element for camera feed (hidden by default) */}
+      {/* Video element for camera feed (hidden by default) */}
       <video id="video" autoPlay playsInline muted style={{ display: 'none' }} />
-            {/* Camera permissions and other components */}
 
+      {/* Camera permissions and other components */}
       <CameraPermissions onStreamReady={handleStreamReady} />
-
       <div {...getRootProps({ className: 'dropzone' })}>
         <p>Drag & drop RPM avatar GLB file here</p>
       </div>
-
       <input
         className="url"
         type="text"
@@ -52,10 +46,8 @@ const [isStreamReady, setIsStreamReady] = useState(false);
           setUrl(`${e.target.value}?morphTargets=ARKit&textureAtlas=1024`)
         }
       />
-
       {/* Mediapipe now lives inside FaceTracking */}
       <FaceTracking onStreamReady={handleStreamReady} />
-
       <Canvas style={{ height: 600 }} camera={{ fov: 25 }} shadows>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} color={new Color(1, 1, 0)} intensity={0.5} castShadow />
@@ -63,7 +55,6 @@ const [isStreamReady, setIsStreamReady] = useState(false);
         <pointLight position={[0, 0, 10]} intensity={0.5} castShadow />
         {isStreamReady && <Avatar url={url} />}
       </Canvas>
-
       <img className="logo" src="./logo.png" />
       <ColorSwitcher />
     </div>
