@@ -24,21 +24,19 @@ const VideoIcon = (
  * Reusable popup component for camera permission prompts
  */
 function PermissionPopup({
-  title,
   subtitle,
   buttonText,
   onClick,
   showButton,
 }: any) {
   return (
-    <div className="pp-container fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-      <div className="pp-card bg-white rounded-2xl p-8 max-w-md text-center shadow-xl">
-        <h2 className="pp-title text-xl font-bold mb-2">{title}</h2>
-        <p className="pp-subtitle text-gray-600 mb-6">{subtitle}</p>
+    <div className="popup-container pos-abs zindex-2">
+      <div className="inner-container">
+        <p className="subtitle">{subtitle}</p>
         {showButton && (
           <button
             onClick={onClick}
-            className="pp-button bg-blue-600 text-white px-6 py-2 rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200"
+            className=""
           >
             {buttonText}
           </button>
@@ -126,9 +124,8 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
       {/* Permission prompt */}
       {permissionState === "prompt" && (
         <PermissionPopup
-          title="Camera Permission Required"
-          subtitle="We need access to your camera to animate your avatar in real time."
-          buttonText="Allow Camera"
+          subtitle="Pssst… let us access your camera so we can animate your character's face in real time!"
+          buttonText="allow camera access"
           onClick={() => requestCamera(selectedCamera || undefined)}
           showButton
         />
@@ -137,8 +134,7 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
       {/* Denied prompt */}
       {permissionState === "denied" && (
         <PermissionPopup
-          title="Camera Access Denied"
-          subtitle="Please enable camera access in your browser settings to continue."
+          subtitle="hmmm… looks like you're missing out on the fun!You haven't given camera access yet."
           showButton={false}
         />
       )}
