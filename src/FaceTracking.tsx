@@ -2,12 +2,12 @@ import { useEffect } from "react";
 import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from "@mediapipe/tasks-vision";
 import { Euler, Matrix4 } from "three";
 
-// Exposed globals to be shared with Avatar
+// Shared globals — Avatar still uses these
 export let blendshapes: any[] = [];
 export let rotation: Euler;
 export let headMesh: any[] = [];
 
-// Internal mediapipe variables
+// Internal Mediapipe variables
 let video: HTMLVideoElement;
 let faceLandmarker: FaceLandmarker;
 let lastVideoTime = -1;
@@ -33,7 +33,7 @@ function FaceTracking({ onStreamReady }: { onStreamReady: (vid: HTMLVideoElement
   };
 
   const predict = async () => {
-    let nowInMs = Date.now();
+    const nowInMs = Date.now();
     if (lastVideoTime !== video.currentTime) {
       lastVideoTime = video.currentTime;
       const result = faceLandmarker.detectForVideo(video, nowInMs);
