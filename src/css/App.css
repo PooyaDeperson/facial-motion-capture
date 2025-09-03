@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
   height: 768px;
   width: 500px;
@@ -56,4 +56,42 @@
   align-items: center;
   background-color: aliceblue;
   cursor: pointer;
+} */
+
+/* globals.css */
+
+/* Import Chicle font from Google */
+@import url('https://fonts.googleapis.com/css2?family=Chicle&display=swap');
+
+html {
+  font-family: 'Chicle', cursive, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 18px; /* Base size you requested */
+  line-height: 1.5;
+  color-scheme: light dark; /* respects system dark/light mode */
+}
+
+body {
+  background-color: #fff;   /* light theme background */
+  color: #111;              /* default text color */
+}
+
+/* Headings scale */
+h1 {
+  font-size: 2.5rem;
+  font-weight: 400;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
 }
