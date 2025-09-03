@@ -12,6 +12,11 @@ function App() {
   const [url, setUrl] = useState<string>(
     "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024"
   );
+  const [isStreamReady, setIsStreamReady] = useState(false);
+  const handleStreamReady = (vid: HTMLVideoElement, ready: boolean) => {
+    console.log("Video stream ready:", vid);
+    setIsStreamReady(ready);
+  };
 
   const { getRootProps } = useDropzone({
     onDrop: files => {
@@ -28,6 +33,8 @@ function App() {
 
   return (
     <div className="App">
+            {/* Video element for camera feed (hidden by default) */}
+      <video id="video" autoPlay playsInline muted style={{ display: 'none' }} />
       <CameraPermissions onStreamReady={handleStreamReady} />
 
       <div {...getRootProps({ className: 'dropzone' })}>
@@ -51,7 +58,7 @@ function App() {
         <pointLight position={[10, 10, 10]} color={new Color(1, 1, 0)} intensity={0.5} castShadow />
         <pointLight position={[-10, 0, 10]} color={new Color(1, 0, 0)} intensity={0.5} castShadow />
         <pointLight position={[0, 0, 10]} intensity={0.5} castShadow />
-        <Avatar url={url} />
+        {isStreamReady && <Avatar url={url} />}
       </Canvas>
 
       <img className="logo" src="./logo.png" />

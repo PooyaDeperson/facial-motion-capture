@@ -21,7 +21,7 @@ function PermissionPopup({ title, subtitle, buttonText, onClick, showButton }: a
 }
 
 interface CameraPermissionsProps {
-  onStreamReady: (video: HTMLVideoElement) => void;
+  onStreamReady: (video: HTMLVideoElement, isStreamReady: boolean) => void;
 }
 
 export default function CameraPermissions({ onStreamReady }: CameraPermissionsProps) {
@@ -40,10 +40,14 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
       setPermissionState("granted");
 
       const video = document.getElementById("video") as HTMLVideoElement;
-      video.srcObject = stream;
-      onStreamReady(video);
+      if (video) video.srcObject = stream;
+      onStreamReady(video, true); // Pass true to indicate stream is ready
+
+
     } catch (err) {
       setPermissionState("denied");
+            onStreamReady(null, false); // Pass false if stream is not ready
+
     }
   };
 
