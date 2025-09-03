@@ -47,7 +47,7 @@ function App() {
       <FaceTracking onStreamReady={handleStreamReady} />
 
       <Canvas
-        className="avatar-container"
+        className="avatar-container bottom-0 pos-abs"
         style={{}}   // ← this resets all Fiber’s inline styles
         camera={{ fov: 25 }}
         shadows
