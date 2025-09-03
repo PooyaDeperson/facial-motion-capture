@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
   height: 768px;
   width: 500px;
@@ -56,4 +56,96 @@
   align-items: center;
   background-color: aliceblue;
   cursor: pointer;
+} */
+
+/* globals.css */
+
+/* Import Chicle font from Google */
+@import url('https://fonts.googleapis.com/css2?family=Chicle&display=swap');
+
+html {
+  font-family: 'Chicle', cursive, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 18px; /* Base size you requested */
+  line-height: 1.5;
+  color-scheme: light dark; /* respects system dark/light mode */
+}
+
+body {
+  background-color: #fff;   /* light theme background */
+  color: #111;              /* default text color */
+}
+
+/* Headings scale */
+h1 {
+  font-size: 2.5rem;
+  font-weight: 400;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+
+html {
+    overflow: hidden;
+}
+
+/* Positioning */
+.pos-rel { position: relative; }
+.pos-abs { position: absolute!important; }
+
+/* Edge alignment */
+.top-0 { top: 0!important; }
+.left-0 { left: 0!important; }
+.right-0 { right: 0!important; }
+.bottom-0 { bottom: 0!important; }
+
+.z-1 { z-index: 1; }
+.z-2 { z-index: 2; }
+.z-3 { z-index: 3; }
+.z-4 { z-index: 4; }
+.z-5 { z-index: 5; }
+.z-6 { z-index: 6; }
+.z-7 { z-index: 7; }
+.z-8 { z-index: 8; }
+.z-9 { z-index: 9; }
+.z-10 { z-index: 10; }
+
+
+/* Padding helpers (same scale) */
+.p-0  { padding: 0; }
+.p-1  { padding: 4px; }
+.p-2  { padding: 8px; }
+.p-3  { padding: 12px; }
+.p-4  { padding: 16px; }
+.p-5  { padding: 20px; }
+.p-6  { padding: 24px; }
+.p-6  { padding: 32px; }
+
+
+/* Margin helpers */
+.m-0  { margin: 0; }
+.m-1  { margin: 4px; }
+.m-2  { margin: 8px; }
+.m-3  { margin: 12px; }
+.m-4  { margin: 16px; }
+.m-5  { margin: 20px; }
+.m-6  { margin: 24px; }
+.m-7  { margin: 32px; }
+
+
+svg {
+width:inherit;
+
 }
