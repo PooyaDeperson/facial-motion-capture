@@ -1,32 +1,12 @@
 import './App.css';
 import { useEffect, useState } from 'react';
-import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from "@mediapipe/tasks-vision";
 import { Color, Euler, Matrix4 } from 'three';
 import { Canvas, useFrame, useGraph } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { useDropzone } from 'react-dropzone';
 import CameraPermissions from './camera-permission';
 import ColorSwitcher from './components/ColorSwitcher';
-
-// Global variables for face tracking
-let video: HTMLVideoElement;
-let faceLandmarker: FaceLandmarker;
-let lastVideoTime = -1;
-let blendshapes: any[] = [];
-let rotation: Euler;
-let headMesh: any[] = [];
-
-// Options for Mediapipe FaceLandmarker
-const options: FaceLandmarkerOptions = {
-  baseOptions: {
-    modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
-    delegate: "GPU"
-  },
-  numFaces: 1,
-  runningMode: "VIDEO",
-  outputFaceBlendshapes: true,
-  outputFacialTransformationMatrixes: true,
-};
+import FaceTracking, { blendshapes, rotation, headMesh } from './FaceTracking';
 
 // Avatar component renders the GLTF model and applies blendshapes & head rotation
 function Avatar({ url }: { url: string }) {
@@ -74,38 +54,18 @@ function App() {
     }
   });
 
-  const setup = async () => {
-    const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
-    faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
-  };
-
-  const predict = async () => {
-    let nowInMs = Date.now();
-    if (lastVideoTime !== video.currentTime) {
-      lastVideoTime = video.currentTime;
-      const result = faceLandmarker.detectForVideo(video, nowInMs);
-      if (result.faceBlendshapes?.length && result.faceBlendshapes[0].categories) {
-        blendshapes = result.faceBlendshapes[0].categories;
-        const matrix = new Matrix4().fromArray(result.facialTransformationMatrixes![0].data);
-        rotation = new Euler().setFromRotationMatrix(matrix);
-      }
-    }
-    window.requestAnimationFrame(predict);
-  };
-
   const handleStreamReady = (vid: HTMLVideoElement) => {
-    video = vid;
-    video.addEventListener("loadeddata", predict);
+    console.log("Video stream ready:", vid);
   };
-
-  useEffect(() => { setup(); }, []);
 
   return (
     <div className="App">
       <CameraPermissions onStreamReady={handleStreamReady} />
+
       <div {...getRootProps({ className: 'dropzone' })}>
         <p>Drag & drop RPM avatar GLB file here</p>
       </div>
+
       <input
         className="url"
         type="text"
@@ -114,7 +74,10 @@ function App() {
           setUrl(`${e.target.value}?morphTargets=ARKit&textureAtlas=1024`)
         }
       />
-      <video className="camera-feed" id="video" autoPlay playsInline></video>
+
+      {/* Mediapipe now lives inside FaceTracking */}
+      <FaceTracking onStreamReady={handleStreamReady} />
+
       <Canvas style={{ height: 600 }} camera={{ fov: 25 }} shadows>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} color={new Color(1, 1, 0)} intensity={0.5} castShadow />
@@ -122,9 +85,9 @@ function App() {
         <pointLight position={[0, 0, 10]} intensity={0.5} castShadow />
         <Avatar url={url} />
       </Canvas>
+
       <img className="logo" src="./logo.png" />
-       {/* Add the color switcher here */}
-    <ColorSwitcher />
+      <ColorSwitcher />
     </div>
   );
 }
