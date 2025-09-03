@@ -48,7 +48,7 @@ function App() {
 
       <Canvas
         className="avatar-container"
-        style={{ height: 600 }}
+        style={{}}   // ← this resets all Fiber’s inline styles
         camera={{ fov: 25 }}
         shadows
       >
