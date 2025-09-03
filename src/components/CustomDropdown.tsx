@@ -81,11 +81,11 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
       {/* Dropdown list */}
       {isOpen && (
-        <ul className="">
+        <ul className="pos-rel camera-dropdown-list-container top-0 left-0 m-1">
           {options.map((option) => (
             <li
               key={option.value}
-              className={`camera-dropdown-list
+              className={`pos-rel camera-dropdown-list-container top-0 left-0 m-1
                 ${value === option.value ? "cd-selected" : ""}`}
               onClick={() => handleSelect(option.value)}
             >

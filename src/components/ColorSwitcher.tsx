@@ -38,7 +38,7 @@ const ColorSwitcher: React.FC = () => {
   // };
 
   return (
-    <div className="pos-abs z-7 bottom-0 left-0 ml-5 mb-5">
+    <div className="pos-abs z-7 bottom-0 left-0 m-5">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
         {colors.map((color) => (
           <div

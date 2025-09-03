@@ -34,14 +34,14 @@ function App() {
         <p>Drag & drop RPM avatar GLB file here</p>
       </div> */}
 
-      <input
+      {/* <input
         className="url"
         type="text"
         placeholder="Paste RPM avatar URL"
         onChange={(e) =>
           setUrl(`${e.target.value}?morphTargets=ARKit&textureAtlas=1024`)
         }
-      />
+      /> */}
 
       {/* Mediapipe now lives inside FaceTracking */}
       <FaceTracking onStreamReady={handleStreamReady} />
