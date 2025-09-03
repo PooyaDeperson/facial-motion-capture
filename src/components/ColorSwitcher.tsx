@@ -33,9 +33,9 @@ const ColorSwitcher: React.FC = () => {
     localStorage.setItem("activeColor", activeColor);
   }, [activeColor]);
 
-  const resetColor = () => {
-    setActiveColor(colors[0].hex);
-  };
+  // const resetColor = () => {
+  //   setActiveColor(colors[0].hex);
+  // };
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -58,12 +58,12 @@ const ColorSwitcher: React.FC = () => {
           </div>
         ))}
       </div>
-      <button
+      {/* <button
         onClick={resetColor}
         className="px-4 py-2 rounded-xl bg-gray-800 text-white hover:bg-gray-700 transition shadow-md w-fit"
       >
         Reset to Default
-      </button>
+      </button> */}
     </div>
   );
 };
