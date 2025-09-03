@@ -13,14 +13,14 @@ function App() {
     "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024"
   );
 
-  const { getRootProps } = useDropzone({
-    onDrop: (files) => {
-      const file = files[0];
-      const reader = new FileReader();
-      reader.onload = () => setUrl(reader.result as string);
-      reader.readAsDataURL(file);
-    },
-  });
+  // const { getRootProps } = useDropzone({
+  //   onDrop: (files) => {
+  //     const file = files[0];
+  //     const reader = new FileReader();
+  //     reader.onload = () => setUrl(reader.result as string);
+  //     reader.readAsDataURL(file);
+  //   },
+  // });
 
   const handleStreamReady = (vid: HTMLVideoElement) => {
     console.log("Video stream ready:", vid);
@@ -30,9 +30,9 @@ function App() {
     <div className="App">
       <CameraPermissions onStreamReady={handleStreamReady} />
 
-      <div {...getRootProps({ className: "dropzone" })}>
+      {/* <div {...getRootProps({ className: "dropzone" })}>
         <p>Drag & drop RPM avatar GLB file here</p>
-      </div>
+      </div> */}
 
       <input
         className="url"
@@ -47,7 +47,7 @@ function App() {
       <FaceTracking onStreamReady={handleStreamReady} />
 
       <Canvas
-        className="avatar-container bottom-0 pos-abs zindex-1"
+        className="avatar-container bottom-0 pos-abs z-1"
         style={{}}   // ← this resets all Fiber’s inline styles
         camera={{ fov: 25 }}
         shadows
