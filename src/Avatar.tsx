@@ -21,7 +21,11 @@ interface AvatarProps {
 function Avatar({ url, onLoaded }: AvatarProps) {
   // Load the GLTF model using React Three Fiber's useGLTF hook
   // This hook handles caching and loading states automatically
-  const { scene, nodes } = useGLTF(url);
+  const { scene } = useGLTF(url);
+  
+  // Extract nodes from the scene using useGraph
+  // This gives us access to individual meshes and bones in the model
+  const { nodes } = useGraph(scene);
   
   // Reference to track if we've already called onLoaded for this URL
   const loadedUrlRef = useRef<string | null>(null);
