@@ -141,7 +141,7 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
 
       {/* Dropdown for camera selection */}
       {permissionState === "granted" && cameras.length > 1 && (
-        <div className="cp-dropdown absolute top-4 right-4 z-50">
+        <div className="cp-dropdown pos-abs top-0 left-0 z-5 m-5">
           <CustomDropdown
             options={dropdownOptions}
             value={selectedCamera}
