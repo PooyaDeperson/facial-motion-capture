@@ -14,9 +14,9 @@ function App() {
   );
   const [isStreamReady, setIsStreamReady] = useState(false);
 
-  const handleStreamReady = (vid: HTMLVideoElement, ready: boolean) => {
+  const handleStreamReady = (vid: HTMLVideoElement) => {
     console.log("Video stream ready:", vid);
-    setIsStreamReady(ready);
+    setIsStreamReady(!!vid);
   };
 
   const { getRootProps } = useDropzone({
