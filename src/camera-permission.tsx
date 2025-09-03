@@ -1,5 +1,25 @@
 import { useEffect, useState } from "react";
 
+// Custom dropdown component
+function CustomDropdown({ value, onChange, options }: { 
+  value: string; 
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void; 
+  options: { value: string; label: string }[] 
+}) {
+  return (
+    <div className="custom-dropdown">
+      <select value={value} onChange={onChange}>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <div className="dropdown-arrow">▼</div>
+    </div>
+  );
+}
+
 // A reusable popup component
 function PermissionPopup({ title, subtitle, buttonText, onClick, showButton }: any) {
   return (
@@ -112,15 +132,56 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
       {/* Camera selection dropdown (only if multiple cameras available) */}
       {permissionState === "granted" && cameras.length > 1 && (
         <div className="absolute top-4 right-4 z-50 bg-white shadow-md rounded-lg p-2">
-          <select value={selectedCamera || ""} onChange={handleCameraChange}>
-            {cameras.map((cam, idx) => (
-              <option key={cam.deviceId} value={cam.deviceId}>
-                {cam.label || `Camera ${idx + 1}`}
-              </option>
-            ))}
-          </select>
+          <CustomDropdown
+            value={selectedCamera || ""}
+            onChange={handleCameraChange}
+            options={cameras.map((cam, idx) => ({
+              value: cam.deviceId,
+              label: cam.label || `Camera ${idx + 1}`
+            }))}
+          />
         </div>
       )}
+
+      <style>{`
+        .custom-dropdown {
+          position: relative;
+          display: inline-block;
+          min-width: 180px;
+        }
+        
+        .custom-dropdown select {
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          width: 100%;
+          padding: 8px 12px;
+          padding-right: 32px;
+          border: 1px solid #d1d5db;
+          border-radius: 6px;
+          background-color: white;
+          font-size: 14px;
+          color: #374151;
+          cursor: pointer;
+          outline: none;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .custom-dropdown select:focus {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .dropdown-arrow {
+          position: absolute;
+          right: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          pointer-events: none;
+          color: #6b7280;
+          font-size: 12px;
+        }
+      `}</style>
     </>
   );
 }
