@@ -30,7 +30,7 @@ function PermissionPopup({
   showButton,
 }: any) {
   return (
-    <div className="popup-container pos-abs z-2 ml-5 mt-5">
+    <div className="popup-container pos-abs z-7 ml-5 mt-5">
       <div className="inner-container">
         <p className="subtitle">{subtitle}</p>
         {showButton && (

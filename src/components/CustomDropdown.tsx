@@ -62,18 +62,18 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   const selectedLabel = options.find((o) => o.value === value)?.label;
 
   return (
-    <div className="cd-container relative w-60" ref={dropdownRef}>
+    <div className="" ref={dropdownRef}>
       {/* Dropdown button */}
       <button
         type="button"
-        className="cd-button w-full px-4 py-2 border rounded bg-white text-left flex justify-between items-center hover:border-blue-500 transition-colors duration-200"
+        className="camera-dropdown top-0 left-0 z-6 ml-5 mt-5 pos-abs"
         onClick={() => setIsOpen(!isOpen)}
       >
         {selectedLabel || placeholder || "Select an option"}
 
         {/* Arrow icon */}
         <span
-          className={`cd-arrow ml-2 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          className={`${isOpen ? "rotate-180" : ""}`}
         >
           ▼
         </span>
@@ -81,15 +81,15 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
       {/* Dropdown list */}
       {isOpen && (
-        <ul className="cd-list absolute w-full border rounded bg-white mt-1 max-h-60 overflow-auto z-10 shadow-lg">
+        <ul className="">
           {options.map((option) => (
             <li
               key={option.value}
-              className={`cd-list-item px-4 py-2 cursor-pointer hover:bg-gray-200 transition-colors duration-200
-                ${value === option.value ? "cd-selected bg-blue-100 font-semibold" : ""}`}
+              className={`camera-dropdown-list
+                ${value === option.value ? "cd-selected" : ""}`}
               onClick={() => handleSelect(option.value)}
             >
-              <div className="flex items-center space-x-2">
+              <div className="">
                 {/* Optional icon on the left */}
                 {option.icon && <span className="cd-icon">{option.icon}</span>}
 
