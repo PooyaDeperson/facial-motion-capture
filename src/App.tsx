@@ -1,12 +1,12 @@
-import './App.css';
-import { useState } from 'react';
-import { Color } from 'three';
-import { Canvas } from '@react-three/fiber';
-import { useDropzone } from 'react-dropzone';
-import CameraPermissions from './camera-permission';
-import ColorSwitcher from './components/ColorSwitcher';
-import FaceTracking from './FaceTracking';
-import Avatar from './Avatar';
+import "./App.css";
+import { useState } from "react";
+import { Color } from "three";
+import { Canvas } from "@react-three/fiber";
+import { useDropzone } from "react-dropzone";
+import CameraPermissions from "./camera-permission";
+import ColorSwitcher from "./components/ColorSwitcher";
+import FaceTracking from "./FaceTracking";
+import Avatar from "./Avatar";
 
 function App() {
   const [url, setUrl] = useState<string>(
@@ -14,12 +14,12 @@ function App() {
   );
 
   const { getRootProps } = useDropzone({
-    onDrop: files => {
+    onDrop: (files) => {
       const file = files[0];
       const reader = new FileReader();
       reader.onload = () => setUrl(reader.result as string);
       reader.readAsDataURL(file);
-    }
+    },
   });
 
   const handleStreamReady = (vid: HTMLVideoElement) => {
@@ -30,7 +30,7 @@ function App() {
     <div className="App">
       <CameraPermissions onStreamReady={handleStreamReady} />
 
-      <div {...getRootProps({ className: 'dropzone' })}>
+      <div {...getRootProps({ className: "dropzone" })}>
         <p>Drag & drop RPM avatar GLB file here</p>
       </div>
 
@@ -46,15 +46,30 @@ function App() {
       {/* Mediapipe now lives inside FaceTracking */}
       <FaceTracking onStreamReady={handleStreamReady} />
 
-      <Canvas style={{ height: 600 }} camera={{ fov: 25 }} shadows>
+      <Canvas
+        className="avatar-container"
+        style={{ height: 600 }}
+        camera={{ fov: 25 }}
+        shadows
+      >
         <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} color={new Color(1, 1, 0)} intensity={0.5} castShadow />
-        <pointLight position={[-10, 0, 10]} color={new Color(1, 0, 0)} intensity={0.5} castShadow />
+        <pointLight
+          position={[10, 10, 10]}
+          color={new Color(1, 1, 0)}
+          intensity={0.5}
+          castShadow
+        />
+        <pointLight
+          position={[-10, 0, 10]}
+          color={new Color(1, 0, 0)}
+          intensity={0.5}
+          castShadow
+        />
         <pointLight position={[0, 0, 10]} intensity={0.5} castShadow />
         <Avatar url={url} />
       </Canvas>
 
-      <img className="logo" src="./logo.png" />
+      {/* <img className="logo" src="./logo.png" /> */}
       <ColorSwitcher />
     </div>
   );
