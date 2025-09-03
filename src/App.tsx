@@ -5,7 +5,7 @@ import { Canvas } from '@react-three/fiber';
 import { useDropzone } from 'react-dropzone';
 import CameraPermissions from './camera-permission';
 import ColorSwitcher from './components/ColorSwitcher';
-import Avatar from './Avatar';
+// import Avatar from './Avatar';
 import FaceTracking from './FaceTracking';
 
 function App() {
