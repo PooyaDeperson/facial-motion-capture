@@ -72,4 +72,88 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
       const video = document.getElementById("video") as HTMLVideoElement;
       if (video) video.srcObject = stream;
       onStreamReady(video);
-    } catch (err)
+    } catch (err) {
+      setPermissionState("denied");
+    }
+  };
+
+  const loadCameras = async () => {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoInputs = devices.filter((d) => d.kind === "videoinput");
+    setCameras(videoInputs);
+
+    const savedCamera = localStorage.getItem("selectedCamera");
+    if (savedCamera && videoInputs.find((d) => d.deviceId === savedCamera)) {
+      setSelectedCamera(savedCamera);
+      requestCamera(savedCamera);
+    } else if (videoInputs.length > 0) {
+      setSelectedCamera(videoInputs[0].deviceId);
+    }
+  };
+
+  const handleCameraChange = (deviceId: string) => {
+    setSelectedCamera(deviceId);
+    localStorage.setItem("selectedCamera", deviceId);
+    requestCamera(deviceId);
+  };
+
+  useEffect(() => {
+    if (navigator.permissions) {
+      navigator.permissions.query({ name: "camera" as PermissionName }).then((result) => {
+        setPermissionState(result.state as any);
+        if (result.state === "granted") loadCameras();
+
+        result.onchange = () => {
+          setPermissionState(result.state as any);
+          if (result.state === "granted") loadCameras();
+        };
+      });
+    }
+  }, []);
+
+  // Map cameras to dropdown options with dummy SVG icons
+  const dropdownOptions: Option[] = cameras.map((cam, idx) => {
+    const icon = idx % 2 === 0 ? CameraIcon : VideoIcon; // Alternate icons as dummy
+    return {
+      label: cam.label || `Camera ${idx + 1}`,
+      value: cam.deviceId,
+      icon,
+    };
+  });
+
+  return (
+    <>
+      {/* Permission prompt */}
+      {permissionState === "prompt" && (
+        <PermissionPopup
+          title="Camera Permission Required"
+          subtitle="We need access to your camera to animate your avatar in real time."
+          buttonText="Allow Camera"
+          onClick={() => requestCamera(selectedCamera || undefined)}
+          showButton
+        />
+      )}
+
+      {/* Denied prompt */}
+      {permissionState === "denied" && (
+        <PermissionPopup
+          title="Camera Access Denied"
+          subtitle="Please enable camera access in your browser settings to continue."
+          showButton={false}
+        />
+      )}
+
+      {/* Dropdown for camera selection */}
+      {permissionState === "granted" && cameras.length > 1 && (
+        <div className="cp-dropdown absolute top-4 right-4 z-50">
+          <CustomDropdown
+            options={dropdownOptions}
+            value={selectedCamera}
+            onChange={handleCameraChange}
+            placeholder="Select camera"
+          />
+        </div>
+      )}
+    </>
+  );
+}
