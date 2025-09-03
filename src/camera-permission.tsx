@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
-// A reusable popup component
+// Reusable Permission Popup
 function PermissionPopup({ title, subtitle, buttonText, onClick, showButton }: any) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
@@ -20,6 +20,63 @@ function PermissionPopup({ title, subtitle, buttonText, onClick, showButton }: a
   );
 }
 
+// Reusable custom dropdown
+type Option = { label: string; value: string };
+
+interface CustomDropdownProps {
+  options: Option[];
+  value: string | null;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}
+
+const CustomDropdown: React.FC<CustomDropdownProps> = ({ options, value, onChange, placeholder }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelect = (val: string) => {
+    onChange(val);
+    setIsOpen(false);
+  };
+
+  const selectedLabel = options.find((o) => o.value === value)?.label;
+
+  return (
+    <div className="relative w-60" ref={dropdownRef}>
+      <button
+        type="button"
+        className="w-full px-4 py-2 border rounded bg-white text-left"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {selectedLabel || placeholder || "Select an option"}
+      </button>
+      {isOpen && (
+        <ul className="absolute w-full border rounded bg-white mt-1 max-h-60 overflow-auto z-10">
+          {options.map((option) => (
+            <li
+              key={option.value}
+              className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+              onClick={() => handleSelect(option.value)}
+            >
+              {option.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
 interface CameraPermissionsProps {
   onStreamReady: (video: HTMLVideoElement) => void;
 }
@@ -29,7 +86,6 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
 
-  // Request access to camera with specific deviceId
   const requestCamera = async (deviceId?: string) => {
     try {
       const constraints: MediaStreamConstraints = {
@@ -47,15 +103,13 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
     }
   };
 
-  // Load available cameras
   const loadCameras = async () => {
     const devices = await navigator.mediaDevices.enumerateDevices();
-    const videoInputs = devices.filter(d => d.kind === "videoinput");
+    const videoInputs = devices.filter((d) => d.kind === "videoinput");
     setCameras(videoInputs);
 
-    // Restore saved camera if exists
     const savedCamera = localStorage.getItem("selectedCamera");
-    if (savedCamera && videoInputs.find(d => d.deviceId === savedCamera)) {
+    if (savedCamera && videoInputs.find((d) => d.deviceId === savedCamera)) {
       setSelectedCamera(savedCamera);
       requestCamera(savedCamera);
     } else if (videoInputs.length > 0) {
@@ -63,35 +117,32 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
     }
   };
 
-  // Handle camera selection change
-  const handleCameraChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const deviceId = event.target.value;
+  const handleCameraChange = (deviceId: string) => {
     setSelectedCamera(deviceId);
     localStorage.setItem("selectedCamera", deviceId);
     requestCamera(deviceId);
   };
 
   useEffect(() => {
-    // Initial check
     if (navigator.permissions) {
       navigator.permissions.query({ name: "camera" as PermissionName }).then((result) => {
         setPermissionState(result.state as any);
-        if (result.state === "granted") {
-          loadCameras();
-        }
+        if (result.state === "granted") loadCameras();
         result.onchange = () => {
           setPermissionState(result.state as any);
-          if (result.state === "granted") {
-            loadCameras();
-          }
+          if (result.state === "granted") loadCameras();
         };
       });
     }
   }, []);
 
+  const dropdownOptions = cameras.map((cam, idx) => ({
+    label: cam.label || `Camera ${idx + 1}`,
+    value: cam.deviceId,
+  }));
+
   return (
     <>
-      {/* Popups */}
       {permissionState === "prompt" && (
         <PermissionPopup
           title="Camera Permission Required"
@@ -109,16 +160,14 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
         />
       )}
 
-      {/* Camera selection dropdown (only if multiple cameras available) */}
       {permissionState === "granted" && cameras.length > 1 && (
-        <div className="absolute top-4 right-4 z-50 bg-white shadow-md rounded-lg p-2">
-          <select value={selectedCamera || ""} onChange={handleCameraChange}>
-            {cameras.map((cam, idx) => (
-              <option key={cam.deviceId} value={cam.deviceId}>
-                {cam.label || `Camera ${idx + 1}`}
-              </option>
-            ))}
-          </select>
+        <div className="absolute top-4 right-4 z-50">
+          <CustomDropdown
+            options={dropdownOptions}
+            value={selectedCamera}
+            onChange={handleCameraChange}
+            placeholder="Select camera"
+          />
         </div>
       )}
     </>
