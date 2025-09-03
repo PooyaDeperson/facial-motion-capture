@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import CustomDropdown, { Option } from "./components/CustomDropdown";
+import { FaCamera, FaVideo } from "react-icons/fa"; // Example icons for camera
 
 /**
- * Reusable popup component
+ * Reusable popup component for camera permission prompts
  */
 function PermissionPopup({
   title,
@@ -33,11 +34,22 @@ interface CameraPermissionsProps {
   onStreamReady: (video: HTMLVideoElement) => void;
 }
 
+/**
+ * CameraPermissions component
+ * Handles:
+ * - Checking camera permissions
+ * - Showing prompts if needed
+ * - Listing available cameras
+ * - Allowing selection via custom dropdown
+ */
 export default function CameraPermissions({ onStreamReady }: CameraPermissionsProps) {
   const [permissionState, setPermissionState] = useState<"prompt" | "denied" | "granted">("prompt");
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
 
+  /**
+   * Request camera access
+   */
   const requestCamera = async (deviceId?: string) => {
     try {
       const constraints: MediaStreamConstraints = {
@@ -46,6 +58,7 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       setPermissionState("granted");
+
       const video = document.getElementById("video") as HTMLVideoElement;
       if (video) video.srcObject = stream;
       onStreamReady(video);
@@ -54,6 +67,10 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
     }
   };
 
+  /**
+   * Load available cameras
+   * Restore previously selected camera if exists
+   */
   const loadCameras = async () => {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const videoInputs = devices.filter((d) => d.kind === "videoinput");
@@ -68,17 +85,22 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
     }
   };
 
+  /**
+   * Handle camera selection from dropdown
+   */
   const handleCameraChange = (deviceId: string) => {
     setSelectedCamera(deviceId);
     localStorage.setItem("selectedCamera", deviceId);
     requestCamera(deviceId);
   };
 
+  // Check camera permission on mount
   useEffect(() => {
     if (navigator.permissions) {
       navigator.permissions.query({ name: "camera" as PermissionName }).then((result) => {
         setPermissionState(result.state as any);
         if (result.state === "granted") loadCameras();
+
         result.onchange = () => {
           setPermissionState(result.state as any);
           if (result.state === "granted") loadCameras();
@@ -87,15 +109,19 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
     }
   }, []);
 
-  // Convert cameras to dropdown options
-  const dropdownOptions: Option[] = cameras.map((cam, idx) => ({
-    label: cam.label || `Camera ${idx + 1}`,
-    value: cam.deviceId,
-  }));
+  // Map cameras to dropdown options with icons
+  const dropdownOptions: Option[] = cameras.map((cam, idx) => {
+    let icon = idx % 2 === 0 ? <FaCamera /> : <FaVideo />; // Example icons
+    return {
+      label: cam.label || `Camera ${idx + 1}`,
+      value: cam.deviceId,
+      icon,
+    };
+  });
 
   return (
     <>
-      {/* Show permission prompt */}
+      {/* Permission prompt */}
       {permissionState === "prompt" && (
         <PermissionPopup
           title="Camera Permission Required"
@@ -106,7 +132,7 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
         />
       )}
 
-      {/* Show denied popup */}
+      {/* Denied prompt */}
       {permissionState === "denied" && (
         <PermissionPopup
           title="Camera Access Denied"
@@ -115,7 +141,7 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
         />
       )}
 
-      {/* Show dropdown if multiple cameras available */}
+      {/* Dropdown for camera selection */}
       {permissionState === "granted" && cameras.length > 1 && (
         <div className="cp-dropdown absolute top-4 right-4 z-50">
           <CustomDropdown
