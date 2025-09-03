@@ -40,7 +40,7 @@ function PermissionPopup({
 }
 
 interface CameraPermissionsProps {
-  onStreamReady: (video: HTMLVideoElement) => void;
+  onStreamReady: (video: HTMLVideoElement | null) => void;
 }
 
 export default function CameraPermissions({ onStreamReady }: CameraPermissionsProps) {

@@ -14,7 +14,7 @@ function App() {
   );
   const [isStreamReady, setIsStreamReady] = useState(false);
 
-  const handleStreamReady = (vid: HTMLVideoElement) => {
+  const handleStreamReady = (vid: HTMLVideoElement | null) => {
     console.log("Video stream ready:", vid);
     setIsStreamReady(!!vid);
   };
