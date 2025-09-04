@@ -24,6 +24,7 @@ const VideoIcon = (
  * Reusable popup component for camera permission prompts
  */
 function PermissionPopup({
+  title,
   subtitle,
   buttonText,
   onClick,
@@ -32,7 +33,7 @@ function PermissionPopup({
   return (
     <div className="popup-container pos-abs z-7 m-5 p-1">
       <div className="inner-container p-5 flex-col">
-        <div className="text-container">
+        <div className="text-container flex-col gap-2">
           <h1 className="title">{subtitle}</h1>
           <p className="subtitle">{subtitle}</p>
         </div>
@@ -138,8 +139,8 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
       {/* Denied prompt */}
       {permissionState === "denied" && (
         <PermissionPopup
-          title="Oh, cant use your camera!"
-          subtitle="hmmm… looks like you're missing out on the fun!You haven't given camera access yet."
+          title="oh... you haven’t given camera access yet."
+          subtitle="you’re missing out on the fun!"
           showButton={false}
         />
       )}
