@@ -414,3 +414,19 @@ button.cd-selected > .has-icon.selected-icon {
 .camera-dropdown-list-container {
     background-color: var(--gray-100);
 }
+
+/* adding onboarding css */
+.spinner {
+  border: 2px solid white;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
