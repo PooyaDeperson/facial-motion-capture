@@ -73,10 +73,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
         {/* Arrow icon */}
         <span
-          className={`${isOpen ? "rotate-180" : ""}`}
-        >
-          ▼
-        </span>
+          className={`${isOpen ? "has-icon right-side dropdown-icon" : "has-icon right-side dropdown-icon rotated-180"}`}></span>
       </button>
 
       {/* Dropdown list */}
