@@ -30,13 +30,16 @@ function PermissionPopup({
   showButton,
 }: any) {
   return (
-    <div className="popup-container pos-abs z-7 ml-5 mt-5">
-      <div className="inner-container">
-        <p className="subtitle">{subtitle}</p>
+    <div className="popup-container pos-abs z-7 m-5 p-1">
+      <div className="inner-container p-5 flex-col">
+        <div className="text-container">
+          <h1 className="title">{subtitle}</p>
+          <p className="subtitle">{subtitle}</p>
+        </div>
         {showButton && (
           <button
             onClick={onClick}
-            className=""
+            className="button primary"
           >
             {buttonText}
           </button>
@@ -124,7 +127,8 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
       {/* Permission prompt */}
       {permissionState === "prompt" && (
         <PermissionPopup
-          subtitle="Pssst… let us access your camera so we can animate your character's face in real time!"
+          title="pssst… give camera access to animate!"
+          subtitle="let us use your camera to bring your character’s face to life in real time"
           buttonText="allow camera access"
           onClick={() => requestCamera(selectedCamera || undefined)}
           showButton
@@ -134,6 +138,7 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
       {/* Denied prompt */}
       {permissionState === "denied" && (
         <PermissionPopup
+          title="Oh, cant use your camera!"
           subtitle="hmmm… looks like you're missing out on the fun!You haven't given camera access yet."
           showButton={false}
         />
