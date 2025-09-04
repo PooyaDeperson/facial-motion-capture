@@ -348,8 +348,9 @@ button:hover {
     filter: brightness(1.2);
 }
 
-button:active {
-    transform: scale(0.90);
+button.primary:active, 
+button.secondary:active {
+    transform: scale(0.95);
 }
 video.camera-feed {
     max-width: 400PX;
@@ -357,7 +358,7 @@ video.camera-feed {
 }
 button.camera-dropdown {
     background-color: var(--gray-100-op50);
-    width: 148px;
+    /* width: 148px; */
     white-space: nowrap;
     text-align: left;
     overflow: hidden;
