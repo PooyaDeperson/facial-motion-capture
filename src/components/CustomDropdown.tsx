@@ -80,7 +80,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
       {/* Dropdown list */}
       {isOpen && (
-        <ul className="pos-rel camera-dropdown-list-container top-0 left-0">
+        <ul className="flex-col gap-1 pos-rel camera-dropdown-list-container top-0 left-0 br-24">
           {options.map((option) => (
             <li key={option.value} className="camera-dropdown-list-item">
               <button
