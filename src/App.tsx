@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Color } from "three";
 import { Canvas } from "@react-three/fiber";
 import CameraPermissions from "./CameraPermissions";

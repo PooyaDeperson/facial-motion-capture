@@ -448,3 +448,58 @@ button.cd-selected > .has-icon.selected-icon {
 .refresh-icon-container {
   cursor: pointer;
 }
+
+.popup-container {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 20px;
+  padding: 20px;
+  max-width: 400px;
+}
+
+.inner-container {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.camera-dropdown {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.camera-dropdown-list-container {
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  padding: 8px 0;
+  margin-top: 4px;
+}
+
+.camera-dropdown-list-item {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.camera-dropdown-list-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+

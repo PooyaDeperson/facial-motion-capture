@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import CustomDropdown, { Option } from "./components/CustomDropdown";
+import { useEffect, useState, ReactNode } from "react";
 
 const CameraIcon = (
   <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -20,7 +19,89 @@ const RefreshIcon = (
   </svg>
 );
 
-function PermissionPopup({ title, subtitle, buttonText, onClick, showButton, isLoading, children }: any) {
+interface Option {
+  label: string;
+  value: string;
+  leftIcon?: ReactNode;
+}
+
+interface CustomDropdownProps {
+  options: Option[];
+  value: string | null;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}
+
+const CustomDropdown: React.FC<CustomDropdownProps> = ({ options, value, onChange, placeholder }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelect = (val: string) => {
+    onChange(val);
+    setIsOpen(false);
+  };
+
+  const selectedOption = options.find((o) => o.value === value);
+
+  return (
+    <div className="flex-col gap-1" ref={dropdownRef}>
+      <button
+        type="button"
+        className="dropdown flex-row camera-dropdown post-rel flex items-center justify-between gap-2"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className="has-icon left-side camera-icon dimmed">{selectedOption?.leftIcon}</span>
+        <span className="dropdown-text">{selectedOption?.label || placeholder || "Select an option"}</span>
+        <span className={`has-icon right-side dropdown-icon ${isOpen ? "rotated-180" : ""}`}></span>
+      </button>
+      {isOpen && (
+        <ul className="flex-col gap-1 pos-rel camera-dropdown-list-container top-0 left-0 br-16">
+          {options.map((option) => (
+            <li key={option.value} className="camera-dropdown-list-item">
+              <button
+                type="button"
+                className={`dropdown flex-row items-center justify-between w-full gap-2 ${value === option.value ? "cd-selected" : ""}`}
+                onClick={() => handleSelect(option.value)}
+              >
+                <span className="has-icon left-side camera-icon dimmed">{option.leftIcon}</span>
+                <span className="dropdown-text">{option.label}</span>
+                <span className="has-icon right-side selected-icon"></span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+function PermissionPopup({
+  title,
+  subtitle,
+  buttonText,
+  onClick,
+  showButton,
+  isLoading,
+  children,
+}: {
+  title: string | ReactNode;
+  subtitle: string;
+  buttonText: string;
+  onClick: () => void;
+  showButton: boolean;
+  isLoading: boolean;
+  children?: ReactNode;
+}) {
   return (
     <div className="popup-container pos-abs z-7 m-5 p-1 br-20">
       <div className="inner-container p-5 flex-col br-16">
@@ -39,7 +120,12 @@ function PermissionPopup({ title, subtitle, buttonText, onClick, showButton, isL
   );
 }
 
-export default function CameraPermissions({ onStreamReady, onRestart }: { onStreamReady: (video: HTMLVideoElement) => void; onRestart: () => void }) {
+interface CameraPermissionsProps {
+  onStreamReady: (video: HTMLVideoElement) => void;
+  onRestart: () => void;
+}
+
+export default function CameraPermissions({ onStreamReady, onRestart }: CameraPermissionsProps) {
   const [permissionState, setPermissionState] = useState<"prompt" | "denied" | "granted" | "confirming">("prompt");
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
