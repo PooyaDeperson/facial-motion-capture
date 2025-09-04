@@ -63,11 +63,17 @@
 /* Import Chicle font from Google */
 @import url('https://fonts.googleapis.com/css2?family=Chicle&display=swap');
 
-/* icons */
+/* vars */
 :root {
+
+/* icons */
 
 --circle-tile : url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"><circle cx="4" cy="4" r="2" fill="%23E5E5E5"/></svg>');
 
+/* colors */
+--gray-100 : rgba(255,255,255,1);
+--gray-100-op50 : rgba(255,255,255,0,5);
+--gray-200 : #EBF0F5;
 
 }
 html {
@@ -144,6 +150,15 @@ html {
 .m-6  { margin: 24px; }
 .m-7  { margin: 32px; }
 
+
+/* border radius */
+.br-4 {border-radius: 4px;}
+.br-8 {border-radius: 8px;}
+.br-12 {border-radius: 12px;}
+.br-16 {border-radius: 16px;}
+.br-18 {border-radius: 18px;}
+
+
 /* flexbox types */
 
 .flex-col {
@@ -170,17 +185,18 @@ width:inherit;
 }
 
 
+
 .popup-container {
     max-width: 356px;
-    border-radius: 18px;
-    background-color: rgba(255,255,255,0.5);
+    /* border-radius: 18px; */
+    background-color: var(--gray-100-op50);
 }
 
 .popup-container > .inner-container {
-    background-color: #EBF0F5;
+    background-color: var(--gray-200);
     background-image: var(--circle-tile);
     background-repeat: repeat;
     background-position: top left;
-    border-radius: 16px;
+    /* border-radius: 16px; */
 }
 
