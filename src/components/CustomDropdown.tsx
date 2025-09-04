@@ -65,24 +65,32 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   const selectedLabel = options.find((o) => o.value === value)?.label;
 
   return (
-    <div className="" ref={dropdownRef}>
-      {/* Dropdown button */}
-      <button
-        type="button"
-        className="camera-dropdown post-rel"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {selectedLabel || placeholder || "Select an option"}
+<div className="" ref={dropdownRef}>
+  {/* Dropdown button */}
+  <button
+    type="button"
+    className="camera-dropdown post-rel flex items-center justify-between"
+    onClick={() => setIsOpen(!isOpen)}
+  >
+    {/* Left icon */}
+    <span className="has-icon left-side dropdown-icon"></span>
 
-        {/* Arrow icon */}
-        <span
-          className={`${
-            isOpen
-              ? "has-icon right-side dropdown-icon rotated-180"
-              : "has-icon right-side dropdown-icon"
-          }`}
-        ></span>
-      </button>
+    {/* Label */}
+    <span className="mx-2">
+      {selectedLabel || placeholder || "Select an option"}
+    </span>
+
+    {/* Right icon */}
+    <span
+      className={`${
+        isOpen
+          ? "has-icon right-side dropdown-icon rotated-180"
+          : "has-icon right-side dropdown-icon"
+      }`}
+    ></span>
+  </button>
+</div>
+
 
       {/* Dropdown list */}
       {isOpen && (
