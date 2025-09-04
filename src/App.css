@@ -187,7 +187,7 @@ width:inherit;
 
 
 .popup-container {
-    max-width: 356px;
+    /* max-width: 356px; */
     /* border-radius: 18px; */
     background-color: var(--gray-100-op50);
 }
