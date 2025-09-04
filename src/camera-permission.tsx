@@ -34,7 +34,7 @@ function PermissionPopup({
     <div className="popup-container pos-abs z-7 m-5 p-1">
       <div className="inner-container p-5 flex-col">
         <div className="text-container flex-col gap-2">
-          <h1 className="title">{subtitle}</h1>
+          <h1 className="title">{title}</h1>
           <p className="subtitle">{subtitle}</p>
         </div>
         {showButton && (

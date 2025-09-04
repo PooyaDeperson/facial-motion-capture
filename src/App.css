@@ -178,7 +178,7 @@ width:inherit;
 
 .popup-container > .inner-container {
     background-color: #EBF0F5;
-    background-image: --circle-tile;
+    background-image: var(--circle-tile);
     background-repeat: repeat;
     background-position: top left;
     border-radius: 16px;
