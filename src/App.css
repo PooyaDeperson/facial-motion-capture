@@ -414,3 +414,37 @@ button.cd-selected > .has-icon.selected-icon {
 .camera-dropdown-list-container {
     background-color: var(--gray-100);
 }
+
+
+/* animations */
+
+.loader {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.video-feed-container {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.video-feed {
+  max-width: 100%;
+  border-radius: 8px;
+  background: #000;
+}
+
+.refresh-icon-container {
+  cursor: pointer;
+}
