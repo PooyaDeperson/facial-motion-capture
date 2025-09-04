@@ -80,9 +80,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
       {/* Dropdown list */}
       {isOpen && (
-        <ul className="pos-rel camera-dropdown-list-container top-0 left-0 m-1">
+        <ul className="pos-rel camera-dropdown-list-container top-0 left-0">
           {options.map((option) => (
-            <li key={option.value} className="camera-dropdown-list-item m-1">
+            <li key={option.value} className="camera-dropdown-list-item">
               <button
                 type="button"
                 className={`flex items-center justify-between w-full gap-2 ${
@@ -91,13 +91,13 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                 onClick={() => handleSelect(option.value)}
               >
                 {/* Left icon */}
-                <span className="cd-left-icon">{option.leftIcon}</span>
+                <span className="has-icon left-side camera-icon dimmed">{option.leftIcon}</span>
 
                 {/* Label */}
-                <span>{option.label}</span>
+                <span className="dropdown-text">{option.label}</span>
 
                 {/* Right icon — only visible for the selected option */}
-                <span className="cd-right-icon">
+                <span className="has-icon right-side">
                   {value === option.value ? option.rightIcon : null}
                 </span>
               </button>
