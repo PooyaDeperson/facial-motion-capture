@@ -288,19 +288,19 @@ html {
 
 /* flexbox gap helpers */
 .gap-0 {
-  margin: 0;
+  gap: 0;
 }
 
 .gap-1 {
-  margin: 4px;
+  gap: 4px;
 }
 
 .gap-2 {
-  margin: 8px;
+  gap: 8px;
 }
 
 .gap-3 {
-  margin: 12;
+  gap: 12px;
 }
 
 
@@ -327,10 +327,21 @@ svg {
 
 button {
   padding: 10px;
-  border-radius: 100%;
+  border-radius: 32px;
   margin-top: 16px;
 }
 button.primary {
   background-color: var(--purple-900);
   color: var(--gray-100);
+}
+button, button:hover, button:active {
+    transition: transform 100ms ease-in-out,filter 100ms ease-in-out;
+}
+
+button:hover {
+    filter: brightness(1.2);
+}
+
+button:active {
+    transform: scale(0.90);
 }
