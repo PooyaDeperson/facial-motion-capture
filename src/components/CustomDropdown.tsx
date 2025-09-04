@@ -66,7 +66,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
       {/* Dropdown button */}
       <button
         type="button"
-        className="camera-dropdown top-0 left-0 z-6 ml-5 mt-5 pos-abs"
+        className="camera-dropdown post-rel"
         onClick={() => setIsOpen(!isOpen)}
       >
         {selectedLabel || placeholder || "Select an option"}
@@ -89,7 +89,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                 ${value === option.value ? "cd-selected" : ""}`}
               onClick={() => handleSelect(option.value)}
             >
-              <div className="">
+              <div className="flex-row gap-2">
                 {/* Optional icon on the left */}
                 {option.icon && <span className="cd-icon">{option.icon}</span>}
 
