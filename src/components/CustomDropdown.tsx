@@ -68,7 +68,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         <span className="has-icon left-side camera-icon dimmed">{selectedOption?.leftIcon}</span>
 
         {/* Label */}
-        <span>{selectedOption?.label || placeholder || "Select an option"}</span>
+        <span className="dropdown-text">{selectedOption?.label || placeholder || "Select an option"}</span>
 
         {/* Right icon (dropdown arrow) */}
         <span
@@ -97,7 +97,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                 <span className="dropdown-text">{option.label}</span>
 
                 {/* Right icon — only visible for the selected option */}
-                <span className="has-icon right-side">
+                <span className="has-icon right-side dropdown-icon">
                   {value === option.value ? option.rightIcon : null}
                 </span>
               </button>
