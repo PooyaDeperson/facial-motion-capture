@@ -4,19 +4,19 @@ import { useEffect, useState, useRef, ReactNode } from "react";
  * Option type for dropdown
  */
 export type Option = {
-  label: string;           // Text shown in the dropdown
-  value: string;           // Internal value
-  icon?: ReactNode;        // Optional icon shown on the left
+  label: string; // Text shown in the dropdown
+  value: string; // Internal value
+  icon?: ReactNode; // Optional icon shown on the left
 };
 
 /**
  * Props for the CustomDropdown component
  */
 interface CustomDropdownProps {
-  options: Option[];               // List of dropdown options
-  value: string | null;            // Currently selected value
+  options: Option[]; // List of dropdown options
+  value: string | null; // Currently selected value
   onChange: (value: string) => void; // Callback when a new value is selected
-  placeholder?: string;            // Placeholder text if no value is selected
+  placeholder?: string; // Placeholder text if no value is selected
 }
 
 /**
@@ -42,7 +42,10 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
    */
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -54,7 +57,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
    * Handle selecting an option
    */
   const handleSelect = (val: string) => {
-    onChange(val);   // Notify parent
+    onChange(val); // Notify parent
     setIsOpen(false); // Close dropdown
   };
 
@@ -73,7 +76,12 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
         {/* Arrow icon */}
         <span
-          className={`${isOpen ? "has-icon right-side dropdown-icon" : "has-icon right-side dropdown-icon rotated-180"}`}></span>
+          className={`${
+            isOpen
+              ? "has-icon right-side dropdown-icon rotated-180"
+              : "has-icon right-side dropdown-icon"
+          }`}
+        ></span>
       </button>
 
       {/* Dropdown list */}
