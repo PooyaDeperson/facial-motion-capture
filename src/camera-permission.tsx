@@ -32,8 +32,13 @@ function PermissionPopup({
   );
 }
 
-export default function CameraPermissions({ onStreamReady, onContinue }: CameraPermissionsProps) {
-  const [permissionState, setPermissionState] = useState<"prompt" | "denied" | "granted">("prompt");
+export default function CameraPermissions({
+  onStreamReady,
+  onContinue,
+}: CameraPermissionsProps) {
+  const [permissionState, setPermissionState] = useState<
+    "prompt" | "denied" | "granted"
+  >("prompt");
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
   const [step, setStep] = useState<1 | 2>(1);
@@ -41,18 +46,21 @@ export default function CameraPermissions({ onStreamReady, onContinue }: CameraP
   const requestCamera = async (deviceId?: string) => {
     try {
       const constraints: MediaStreamConstraints = {
-        video: deviceId ? { deviceId: { exact: deviceId } } : { width: 1280, height: 720 },
+        video: deviceId
+          ? { deviceId: { exact: deviceId } }
+          : { width: 1280, height: 720 },
         audio: false,
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       setPermissionState("granted");
 
-      const video = document.getElementById("video") as HTMLVideoElement;
+      const video = document.getElementById("preview-video") as HTMLVideoElement;
       if (video) {
         video.srcObject = stream;
-        video.play();
+        await video.play();
+        onStreamReady(video);
       }
-      onStreamReady(video);
+
       setStep(2); // move to preview step
     } catch {
       setPermissionState("denied");
@@ -76,16 +84,18 @@ export default function CameraPermissions({ onStreamReady, onContinue }: CameraP
 
   useEffect(() => {
     if (navigator.permissions) {
-      navigator.permissions.query({ name: "camera" as PermissionName }).then((result) => {
-        setPermissionState(result.state as any);
-        if (result.state === "granted") {
-          loadCameras();
-        }
-        result.onchange = () => {
+      navigator.permissions
+        .query({ name: "camera" as PermissionName })
+        .then((result) => {
           setPermissionState(result.state as any);
-          if (result.state === "granted") loadCameras();
-        };
-      });
+          if (result.state === "granted") {
+            loadCameras();
+          }
+          result.onchange = () => {
+            setPermissionState(result.state as any);
+            if (result.state === "granted") loadCameras();
+          };
+        });
     }
   }, []);
 
@@ -124,7 +134,13 @@ export default function CameraPermissions({ onStreamReady, onContinue }: CameraP
           onClick={onContinue}
           showButton
         >
-          <video id="video" autoPlay muted playsInline className="w-64 h-48 br-8 bg-black" />
+          <video
+            id="preview-video"
+            autoPlay
+            muted
+            playsInline
+            className="w-64 h-48 br-8 bg-black"
+          />
           {cameras.length > 1 && (
             <div className="mt-3">
               <CustomDropdown

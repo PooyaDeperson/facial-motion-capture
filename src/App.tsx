@@ -22,20 +22,17 @@ function App() {
 
   return (
     <div className="App">
-      {/* Camera flow controller */}
+      {/* Step 1 + 2 Camera permissions / preview */}
       <CameraPermissions
         onStreamReady={handleStreamReady}
         onContinue={() => setReadyForTracking(true)}
       />
 
       {/* Start FaceTracking only after continue */}
-      {readyForTracking && videoEl && (
-        <FaceTracking onStreamReady={() => {}} />
-      )}
+      {readyForTracking && videoEl && <FaceTracking videoElement={videoEl} />}
 
       <Canvas
         className="avatar-container bottom-0 pos-abs z-1"
-        style={{}}
         camera={{ fov: 25 }}
         shadows
       >

@@ -1,5 +1,9 @@
 import { useEffect } from "react";
-import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from "@mediapipe/tasks-vision";
+import {
+  FaceLandmarker,
+  FaceLandmarkerOptions,
+  FilesetResolver,
+} from "@mediapipe/tasks-vision";
 import { Euler, Matrix4 } from "three";
 
 // Shared globals — Avatar still uses these
@@ -8,7 +12,6 @@ export let rotation: Euler;
 export let headMesh: any[] = [];
 
 // Internal Mediapipe variables
-let video: HTMLVideoElement;
 let faceLandmarker: FaceLandmarker;
 let lastVideoTime = -1;
 
@@ -24,51 +27,53 @@ const options: FaceLandmarkerOptions = {
   outputFacialTransformationMatrixes: true,
 };
 
-function FaceTracking({ onStreamReady }: { onStreamReady: (vid: HTMLVideoElement) => void }) {
+interface FaceTrackingProps {
+  videoElement: HTMLVideoElement;
+}
+
+function FaceTracking({ videoElement }: FaceTrackingProps) {
   const setup = async () => {
     const filesetResolver = await FilesetResolver.forVisionTasks(
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
     );
-    faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
+    faceLandmarker = await FaceLandmarker.createFromOptions(
+      filesetResolver,
+      options
+    );
+    startPrediction();
   };
 
-  const predict = async () => {
-    const nowInMs = Date.now();
-    if (lastVideoTime !== video.currentTime) {
-      lastVideoTime = video.currentTime;
-      const result = faceLandmarker.detectForVideo(video, nowInMs);
+  const startPrediction = () => {
+    const predict = async () => {
+      if (!videoElement || !faceLandmarker) return;
 
-      if (result.faceBlendshapes?.length && result.faceBlendshapes[0].categories) {
-        blendshapes = result.faceBlendshapes[0].categories;
+      const nowInMs = Date.now();
+      if (lastVideoTime !== videoElement.currentTime) {
+        lastVideoTime = videoElement.currentTime;
+        const result = faceLandmarker.detectForVideo(videoElement, nowInMs);
 
-        const matrix = new Matrix4().fromArray(result.facialTransformationMatrixes![0].data);
-        rotation = new Euler().setFromRotationMatrix(matrix);
+        if (result.faceBlendshapes?.length && result.faceBlendshapes[0].categories) {
+          blendshapes = result.faceBlendshapes[0].categories;
+
+          const matrix = new Matrix4().fromArray(
+            result.facialTransformationMatrixes![0].data
+          );
+          rotation = new Euler().setFromRotationMatrix(matrix);
+        }
       }
-    }
+      window.requestAnimationFrame(predict);
+    };
+
     window.requestAnimationFrame(predict);
   };
 
-  const handleVideoReady = (vid: HTMLVideoElement) => {
-    video = vid;
-    video.addEventListener("loadeddata", predict);
-    onStreamReady(vid);
-  };
-
   useEffect(() => {
-    setup();
-  }, []);
+    if (videoElement) {
+      setup();
+    }
+  }, [videoElement]);
 
-  return (
-    <video
-      className="camera-feed br-24 m-4"
-      id="video"
-      autoPlay
-      playsInline
-      ref={(el) => {
-        if (el) handleVideoReady(el);
-      }}
-    ></video>
-  );
+  return null; // no extra <video> rendered
 }
 
 export default FaceTracking;
