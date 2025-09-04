@@ -16,15 +16,33 @@ function App() {
 
   const handleStreamReady = (vid: HTMLVideoElement) => {
     console.log("Video stream ready:", vid);
+  };
+
+  const handleConfirm = () => {
     setOnboardDone(true);
+  };
+
+  const handleRestart = () => {
+    localStorage.removeItem("selectedCamera");
+    setOnboardDone(false);
   };
 
   return (
     <div className="App">
-      {!onboardDone && <CameraPermissions onStreamReady={handleStreamReady} />}
+      {!onboardDone && (
+        <CameraPermissions onStreamReady={handleStreamReady} onConfirm={handleConfirm} />
+      )}
 
       {onboardDone && (
         <>
+          {/* Refresh icon inside app */}
+          <button
+            className="absolute top-2 left-2 p-2 bg-white rounded-full shadow z-10"
+            onClick={handleRestart}
+          >
+            ⟳
+          </button>
+
           <FaceTracking onStreamReady={handleStreamReady} />
           <Canvas
             className="avatar-container bottom-0 pos-abs z-1"
@@ -43,4 +61,3 @@ function App() {
     </div>
   );
 }
-export default App;

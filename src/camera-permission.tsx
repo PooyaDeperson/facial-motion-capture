@@ -3,10 +3,11 @@ import CustomDropdown, { Option } from "./components/CustomDropdown";
 
 interface CameraPermissionsProps {
   onStreamReady: (video: HTMLVideoElement) => void;
+  onConfirm: () => void; // ✅ new prop for "Let's go"
 }
 
-export default function CameraPermissions({ onStreamReady }: CameraPermissionsProps) {
-  const [step, setStep] = useState<"prompt" | "loading" | "select" | "denied" | "done">("prompt");
+export default function CameraPermissions({ onStreamReady, onConfirm }: CameraPermissionsProps) {
+  const [step, setStep] = useState<"prompt" | "loading" | "select" | "denied">("prompt");
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
 
@@ -47,15 +48,6 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
     requestCamera(deviceId);
   };
 
-  const handleConfirm = () => {
-    setStep("done");
-  };
-
-  const handleRestart = () => {
-    localStorage.removeItem("selectedCamera");
-    window.location.reload();
-  };
-
   useEffect(() => {
     if (navigator.permissions) {
       navigator.permissions.query({ name: "camera" as PermissionName }).then((res) => {
@@ -68,15 +60,11 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
     }
   }, []);
 
-  // Dropdown options
   const dropdownOptions: Option[] = cameras.map((cam, idx) => ({
     label: cam.label || `Camera ${idx + 1}`,
     value: cam.deviceId,
-    leftIcon: <span className="icon-placeholder" />, // mimic your dropdown icon
+    leftIcon: <span className="icon-placeholder" />,
   }));
-
-  // UI
-  if (step === "done") return null; // hide popup
 
   return (
     <div className="popup-container pos-abs z-7 m-5 p-1 br-20">
@@ -87,7 +75,7 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
             <h1>pssst… give camera access to animate!</h1>
             <p>let us use your camera to bring your character’s face to life in real time</p>
             <button className="button primary flex items-center gap-2" onClick={() => requestCamera()}>
-              <span className="loader-icon hidden" /> allow camera access
+              allow camera access
             </button>
           </>
         )}
@@ -113,7 +101,7 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
               />
             </div>
             <video id="video" autoPlay playsInline className="w-full br-16" />
-            <button className="button primary" onClick={handleConfirm}>
+            <button className="button primary" onClick={onConfirm}>
               Let’s go
             </button>
           </>
@@ -127,16 +115,6 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
           </>
         )}
       </div>
-
-      {/* Restart/refresh icon (top-left in app, visible when step=done) */}
-      {step === "done" && (
-        <button
-          className="absolute top-2 left-2 p-2 bg-white rounded-full shadow"
-          onClick={handleRestart}
-        >
-          ⟳
-        </button>
-      )}
     </div>
   );
 }
