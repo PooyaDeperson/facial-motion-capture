@@ -2,7 +2,6 @@ import "./App.css";
 import { useState } from "react";
 import { Color } from "three";
 import { Canvas } from "@react-three/fiber";
-import { useDropzone } from "react-dropzone";
 import CameraPermissions from "./camera-permission";
 import ColorSwitcher from "./components/ColorSwitcher";
 import FaceTracking from "./FaceTracking";
@@ -13,42 +12,30 @@ function App() {
     "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024"
   );
 
-  // const { getRootProps } = useDropzone({
-  //   onDrop: (files) => {
-  //     const file = files[0];
-  //     const reader = new FileReader();
-  //     reader.onload = () => setUrl(reader.result as string);
-  //     reader.readAsDataURL(file);
-  //   },
-  // });
+  const [videoEl, setVideoEl] = useState<HTMLVideoElement | null>(null);
+  const [readyForTracking, setReadyForTracking] = useState(false);
 
   const handleStreamReady = (vid: HTMLVideoElement) => {
     console.log("Video stream ready:", vid);
+    setVideoEl(vid);
   };
 
   return (
     <div className="App">
-      <CameraPermissions onStreamReady={handleStreamReady} />
+      {/* Camera flow controller */}
+      <CameraPermissions
+        onStreamReady={handleStreamReady}
+        onContinue={() => setReadyForTracking(true)}
+      />
 
-      {/* <div {...getRootProps({ className: "dropzone" })}>
-        <p>Drag & drop RPM avatar GLB file here</p>
-      </div> */}
-
-      {/* <input
-        className="url"
-        type="text"
-        placeholder="Paste RPM avatar URL"
-        onChange={(e) =>
-          setUrl(`${e.target.value}?morphTargets=ARKit&textureAtlas=1024`)
-        }
-      /> */}
-
-      {/* Mediapipe now lives inside FaceTracking */}
-      <FaceTracking onStreamReady={handleStreamReady} />
+      {/* Start FaceTracking only after continue */}
+      {readyForTracking && videoEl && (
+        <FaceTracking onStreamReady={() => {}} />
+      )}
 
       <Canvas
         className="avatar-container bottom-0 pos-abs z-1"
-        style={{}}   // ← this resets all Fiber’s inline styles
+        style={{}}
         camera={{ fov: 25 }}
         shadows
       >
@@ -69,7 +56,6 @@ function App() {
         <Avatar url={url} />
       </Canvas>
 
-      {/* <img className="logo" src="./logo.png" /> */}
       <ColorSwitcher />
     </div>
   );
