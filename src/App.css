@@ -63,6 +63,13 @@
 /* Import Chicle font from Google */
 @import url('https://fonts.googleapis.com/css2?family=Chicle&display=swap');
 
+/* icons */
+: root {
+
+--circle-tile : background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"><circle cx="4" cy="4" r="2" fill="%23E5E5E5"/></svg>');
+
+
+}
 html {
   font-family: 'Chicle', cursive, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   /* font-size: 18px; Base size you requested */
@@ -77,16 +84,16 @@ body {
 
 /* Headings scale */
 h1 {
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 400;
-  line-height: 22px;
-  letter-spacing: -1px;
+  line-height: 28px;
+  letter-spacing: -0px;
 }
 p {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 400;
-  line-height: 16px;
-  letter-spacing: -1px;
+  line-height: 22px;
+  letter-spacing: -0px;
 }
 
 
@@ -137,8 +144,43 @@ html {
 .m-6  { margin: 24px; }
 .m-7  { margin: 32px; }
 
+/* flexbox types */
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+/* flexbox types */
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+/* flexbox gap helpers */
+.gap-0  { margin: 0; }
+.gap-1  { margin: 4px; }
+.gap-2  { margin: 8px; }
+.gap-3  { margin: 12; }
+
 
 svg {
 width:inherit;
 
 }
+
+
+.popup-container {
+    max-width: 356px;
+    border-radius: 18px;
+    background-color: rgba(255,255,255,0.5);
+}
+
+.popup-container > .inner-container {
+    background-color: #EBF0F5;
+    background-image: --circle-tile;
+    background-repeat: repeat;
+    background-position: top left;
+    border-radius: 16px;
+}
+
