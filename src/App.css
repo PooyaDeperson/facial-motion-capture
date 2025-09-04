@@ -370,16 +370,16 @@ span.cd-icon {
     display: inline-block;
 }
 /* icon placement setup */
-.has-icon {
+.has-icon::before {
     width: 16px;
     height: 16px;
     display: inline-block;
     margin-left: 8px;
 }
-.has-icon.right-side {
+.has-icon.right-side::before {
     margin-left: 8px;
 }
-.has-icon.left-side {
+.has-icon.left-side::before {
     margin-right: 8px;
 }
 .has-icon.dropdown-icon::before {
