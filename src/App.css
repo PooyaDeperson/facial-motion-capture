@@ -396,7 +396,7 @@ span.cd-icon {
 .has-icon.right-side.dropdown-icon.rotated-180 {
     transform: rotate(180deg);
 }
-button.cd-selected > .has-icon.dropdown-icon {
+button.cd-selected > .has-icon.selected-icon {
 
     content: var(--selected-icon);
 }
