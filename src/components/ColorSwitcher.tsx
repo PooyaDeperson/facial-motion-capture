@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { X } from "lucide-react";
 
 // Define the color options
 const colors = [
@@ -44,9 +43,9 @@ const ColorSwitcher: React.FC = () => {
         {expanded && (
           <button
             onClick={() => setExpanded(false)}
-            className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-200"
+            className="absolute top-2 right-2 px-2 py-1 rounded-md bg-gray-200 hover:bg-gray-300 text-sm"
           >
-            <X size={18} />
+            ✕
           </button>
         )}
 
