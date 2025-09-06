@@ -42,8 +42,8 @@ export default function CameraPermissions({
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
   const [step, setStep] = useState<1 | 2>(1);
+  const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
 
-  // Request camera stream safely
   const requestCamera = async (deviceId?: string) => {
     try {
       const constraints: MediaStreamConstraints = {
@@ -56,26 +56,16 @@ export default function CameraPermissions({
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       setPermissionState("granted");
 
-      const video = document.getElementById("preview-video") as HTMLVideoElement;
-      if (video) {
-        // Stop previous stream if any
-        if (video.srcObject) {
-          (video.srcObject as MediaStream).getTracks().forEach((t) => t.stop());
-        }
+      // Stop previous tracks if switching cameras
+      videoStream?.getTracks().forEach((track) => track.stop());
 
-        video.srcObject = stream;
-        video.play().catch(() => {}); // async, do not block React
-        onStreamReady(video);
-      }
-
-      // Only advance to step 2 if currently in step 1
-      setStep((prev) => (prev === 1 ? 2 : prev));
+      setVideoStream(stream); // store new stream in state
+      setStep((prev) => (prev === 1 ? 2 : prev)); // only advance step if in step 1
     } catch {
       setPermissionState("denied");
     }
   };
 
-  // Load available cameras and auto-select first
   const loadCameras = async () => {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const videoInputs = devices.filter((d) => d.kind === "videoinput");
@@ -84,13 +74,13 @@ export default function CameraPermissions({
     if (videoInputs.length > 0) {
       const firstCamId = videoInputs[0].deviceId;
       setSelectedCamera(firstCamId);
-      requestCamera(firstCamId); // Automatically preview first camera
+      requestCamera(firstCamId); // preview first camera automatically
     }
   };
 
   const handleCameraChange = (deviceId: string) => {
     setSelectedCamera(deviceId);
-    requestCamera(deviceId); // Switch camera safely
+    requestCamera(deviceId);
   };
 
   useEffect(() => {
@@ -151,9 +141,15 @@ export default function CameraPermissions({
             muted
             playsInline
             className="w-64 h-48 br-8 bg-black"
+            ref={(video) => {
+              if (video && videoStream) {
+                video.srcObject = videoStream;
+                video.play().catch(() => {});
+              }
+            }}
           />
 
-          {/* Show dropdown whenever at least one camera exists */}
+          {/* Always show dropdown if at least one camera exists */}
           {cameras.length > 0 && (
             <div className="mt-3">
               <CustomDropdown
