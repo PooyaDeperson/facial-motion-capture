@@ -34,41 +34,114 @@ const ColorSwitcher: React.FC = () => {
   }, [activeColor]);
 
   return (
-    <div className="fixed bottom-5 left-5 z-50">
+    <div className="color-switcher">
       <div
-        className={`relative bg-white rounded-2xl shadow-lg transition-all duration-300 overflow-hidden 
-        ${expanded ? "p-5 w-72" : "p-2 w-14 h-14 flex items-center justify-center cursor-pointer"}`}
+        className={`switcher-container ${expanded ? "expanded" : "collapsed"}`}
         onClick={() => !expanded && setExpanded(true)}
       >
         {expanded && (
           <button
             onClick={() => setExpanded(false)}
-            className="absolute top-2 right-2 px-2 py-1 rounded-md bg-gray-200 hover:bg-gray-300 text-sm"
+            className="close-button"
           >
             ✕
           </button>
         )}
 
-        <div
-          className={`grid gap-3 transition-all ${
-            expanded ? "grid-cols-3" : "grid-cols-1"
-          }`}
-        >
+        <div className={`colors-grid ${expanded ? "expanded-grid" : "collapsed-grid"}`}>
           {colors.map((color) => (
             <div
               key={color.hex}
               onClick={() => setActiveColor(color.hex)}
-              className={`w-10 h-10 rounded-xl cursor-pointer shadow-md border-2 transition 
-                ${
-                  activeColor === color.hex
-                    ? "border-black scale-110"
-                    : "border-transparent"
-                }`}
+              className={`color-card ${activeColor === color.hex ? "selected" : ""}`}
               style={{ backgroundColor: color.hex }}
             />
           ))}
         </div>
       </div>
+
+      <style>{`
+        .color-switcher {
+          position: fixed;
+          bottom: 20px;
+          left: 20px;
+          z-index: 50;
+        }
+
+        .switcher-container {
+          position: relative;
+          background: #fff;
+          border-radius: 16px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          transition: all 0.3s ease;
+          overflow: hidden;
+        }
+
+        .switcher-container.collapsed {
+          width: 56px;
+          height: 56px;
+          padding: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+
+        .switcher-container.expanded {
+          width: 280px;
+          padding: 20px;
+        }
+
+        .close-button {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: #e5e5e5;
+          border: none;
+          border-radius: 6px;
+          padding: 4px 8px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: background 0.2s ease;
+        }
+
+        .close-button:hover {
+          background: #d4d4d4;
+        }
+
+        .colors-grid {
+          display: grid;
+          gap: 12px;
+          transition: all 0.3s ease;
+        }
+
+        .colors-grid.collapsed-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .colors-grid.expanded-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .color-card {
+          width: 40px;
+          height: 40px;
+          border-radius: 12px;
+          cursor: pointer;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+          border: 2px solid transparent;
+          transition: transform 0.2s ease, border 0.2s ease;
+        }
+
+        .color-card:hover {
+          transform: scale(1.05);
+        }
+
+        .color-card.selected {
+          border: 2px solid #000;
+          transform: scale(1.1);
+        }
+      `}</style>
     </div>
   );
 };
