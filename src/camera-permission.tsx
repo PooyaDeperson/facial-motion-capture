@@ -43,6 +43,7 @@ export default function CameraPermissions({
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
   const [step, setStep] = useState<1 | 2>(1);
 
+  // Request camera stream safely
   const requestCamera = async (deviceId?: string) => {
     try {
       const constraints: MediaStreamConstraints = {
@@ -51,30 +52,30 @@ export default function CameraPermissions({
           : { width: 1280, height: 720 },
         audio: false,
       };
+
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       setPermissionState("granted");
 
       const video = document.getElementById("preview-video") as HTMLVideoElement;
       if (video) {
-        // Stop old tracks when switching cameras
+        // Stop previous stream if any
         if (video.srcObject) {
-          (video.srcObject as MediaStream)
-            .getTracks()
-            .forEach((track) => track.stop());
+          (video.srcObject as MediaStream).getTracks().forEach((t) => t.stop());
         }
 
         video.srcObject = stream;
-        await video.play();
+        video.play().catch(() => {}); // async, do not block React
         onStreamReady(video);
       }
 
-      // Only advance to step 2 if still in step 1
+      // Only advance to step 2 if currently in step 1
       setStep((prev) => (prev === 1 ? 2 : prev));
     } catch {
       setPermissionState("denied");
     }
   };
 
+  // Load available cameras and auto-select first
   const loadCameras = async () => {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const videoInputs = devices.filter((d) => d.kind === "videoinput");
@@ -89,7 +90,7 @@ export default function CameraPermissions({
 
   const handleCameraChange = (deviceId: string) => {
     setSelectedCamera(deviceId);
-    requestCamera(deviceId); // Switch camera and preview
+    requestCamera(deviceId); // Switch camera safely
   };
 
   useEffect(() => {
@@ -122,7 +123,7 @@ export default function CameraPermissions({
           title="pssst… give camera access to animate!"
           subtitle="let us use your camera to bring your character’s face to life in real time"
           buttonText="allow camera access"
-          onClick={() => requestCamera()} // Fallback default camera
+          onClick={() => requestCamera()} // fallback default camera
           showButton
         />
       )}
@@ -151,7 +152,9 @@ export default function CameraPermissions({
             playsInline
             className="w-64 h-48 br-8 bg-black"
           />
-          {cameras.length > 1 && (
+
+          {/* Show dropdown whenever at least one camera exists */}
+          {cameras.length > 0 && (
             <div className="mt-3">
               <CustomDropdown
                 options={dropdownOptions}
