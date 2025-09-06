@@ -5,6 +5,7 @@ import { Euler, Matrix4 } from "three";
 // --- Exported globals used by Avatar (unchanged) ---
 export let blendshapes: any[] = [];
 export let rotation: Euler;
+export let headMesh: any[] = []; // ← Restored exactly as in original code
 
 // --- FaceLandmarker instance (internal) ---
 let faceLandmarker: FaceLandmarker;
@@ -21,7 +22,7 @@ const options: FaceLandmarkerOptions = {
 };
 
 interface FaceTrackingProps {
-  videoStream: MediaStream | null; // NEW: accept video stream as prop
+  videoStream: MediaStream | null; // Accept video stream as prop
   onStreamReady: (vid: HTMLVideoElement) => void;
 }
 
@@ -29,6 +30,7 @@ export default function FaceTracking({ videoStream, onStreamReady }: FaceTrackin
   const videoRef = useRef<HTMLVideoElement>(null);
   const lastVideoTimeRef = useRef(-1);
 
+  // --- Setup FaceLandmarker ---
   const setupLandmarker = async () => {
     const filesetResolver = await FilesetResolver.forVisionTasks(
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
@@ -36,15 +38,19 @@ export default function FaceTracking({ videoStream, onStreamReady }: FaceTrackin
     faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
   };
 
+  // --- Predict face every frame ---
   const predict = async () => {
     const video = videoRef.current;
     if (!video || !faceLandmarker) return;
 
     const nowInMs = Date.now();
+
+    // Only process a new frame if video.currentTime has changed
     if (lastVideoTimeRef.current !== video.currentTime) {
       lastVideoTimeRef.current = video.currentTime;
       const result = faceLandmarker.detectForVideo(video, nowInMs);
 
+      // Update blendshapes if detection exists
       if (result.faceBlendshapes?.length && result.faceBlendshapes[0].categories) {
         blendshapes = result.faceBlendshapes[0].categories;
 
