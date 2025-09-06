@@ -319,9 +319,14 @@ svg {
 }
 
 /* ------------------------ ------------------------ mobile first styles */
+.w-67 {
+    max-width: 67vw;
+    min-width: 67vw;
+
+}
 .w-100 {
-   min-width: calc(100vw - 32px);
-   max-width: calc(100vw - 32px);
+  min-width: calc(100vw - 40px);
+  max-width: calc(100vw - 40px);
 
 }
 
@@ -335,12 +340,15 @@ svg {
     min-width: 400px;
     max-width: 400px;
 }
+  .tb\:w-392 {
+    max-width: 392px;
+}
 }
 
 /* ------------------------ ------------------------ end of tablet and greater styles */
 
 .popup-container {
-  max-width: 392px;
+  
   background-color: var(--gray-100-op50);
 }
 
@@ -383,7 +391,7 @@ video.camera-feed {
     border: 4px solid var(--gray-100-op50);
 }
 button.camera-dropdown {
-    background-color: var(--gray-100-op50);
+    background-color: var(--gray-100);
     /* width: 148px; */
     white-space: nowrap;
     text-align: left;
