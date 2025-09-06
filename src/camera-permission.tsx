@@ -73,7 +73,9 @@ export default function CameraPermissions({
     setCameras(videoInputs);
 
     if (videoInputs.length > 0) {
-      setSelectedCamera(videoInputs[0].deviceId);
+      const firstCamId = videoInputs[0].deviceId;
+      setSelectedCamera(firstCamId);
+      requestCamera(firstCamId); // 👈 automatically start preview with first camera
     }
   };
 
@@ -112,7 +114,7 @@ export default function CameraPermissions({
           title="pssst… give camera access to animate!"
           subtitle="let us use your camera to bring your character’s face to life in real time"
           buttonText="allow camera access"
-          onClick={() => requestCamera(selectedCamera || undefined)}
+          onClick={() => requestCamera()} // 👈 safe fallback, uses default camera
           showButton
         />
       )}
