@@ -16,7 +16,7 @@ const VideoIcon = (
 
 function PermissionPopup({ title, subtitle, buttonText, onClick, showButton }: any) {
   return (
-    <div className="popup-container pos-abs z-7 m-5 p-1 br-20">
+    <div className="popup-container pos-abs z-7 m-5 p-1 br-20 top-0">
       <div className="inner-container p-5 flex-col br-16">
         <div className="text-container flex-col gap-2">
           <h1 className="title">{title}</h1>
