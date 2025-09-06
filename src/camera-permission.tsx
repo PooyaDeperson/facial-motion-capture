@@ -56,12 +56,20 @@ export default function CameraPermissions({
 
       const video = document.getElementById("preview-video") as HTMLVideoElement;
       if (video) {
+        // Stop old tracks when switching cameras
+        if (video.srcObject) {
+          (video.srcObject as MediaStream)
+            .getTracks()
+            .forEach((track) => track.stop());
+        }
+
         video.srcObject = stream;
         await video.play();
         onStreamReady(video);
       }
 
-      setStep(2); // move to preview step
+      // Only advance to step 2 if still in step 1
+      setStep((prev) => (prev === 1 ? 2 : prev));
     } catch {
       setPermissionState("denied");
     }
@@ -75,13 +83,13 @@ export default function CameraPermissions({
     if (videoInputs.length > 0) {
       const firstCamId = videoInputs[0].deviceId;
       setSelectedCamera(firstCamId);
-      requestCamera(firstCamId); // 👈 automatically start preview with first camera
+      requestCamera(firstCamId); // Automatically preview first camera
     }
   };
 
   const handleCameraChange = (deviceId: string) => {
     setSelectedCamera(deviceId);
-    requestCamera(deviceId);
+    requestCamera(deviceId); // Switch camera and preview
   };
 
   useEffect(() => {
@@ -114,7 +122,7 @@ export default function CameraPermissions({
           title="pssst… give camera access to animate!"
           subtitle="let us use your camera to bring your character’s face to life in real time"
           buttonText="allow camera access"
-          onClick={() => requestCamera()} // 👈 safe fallback, uses default camera
+          onClick={() => requestCamera()} // Fallback default camera
           showButton
         />
       )}
