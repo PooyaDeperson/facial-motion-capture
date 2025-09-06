@@ -320,8 +320,8 @@ svg {
 
 /* ------------------------ ------------------------ mobile first styles */
 .w-67 {
-    max-width: 67vw;
-    min-width: 67vw;
+max-width: 192px;
+    min-width: 192px;
 
 }
 .w-100 {
