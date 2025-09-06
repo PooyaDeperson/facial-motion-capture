@@ -41,38 +41,48 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
 
+  /**
+   * Request stream from one specific camera
+   */
   const requestCamera = async (deviceId?: string) => {
-    try {
-      const constraints: MediaStreamConstraints = {
-        video: deviceId ? { deviceId: { exact: deviceId } } : { width: 1280, height: 720 },
-        audio: false,
-      };
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      setPermissionState("granted");
+    const constraints: MediaStreamConstraints = {
+      video: deviceId ? { deviceId: { exact: deviceId } } : { width: 1280, height: 720 },
+      audio: false,
+    };
 
-      const video = document.getElementById("video") as HTMLVideoElement;
-      if (video) video.srcObject = stream;
-      onStreamReady(video);
-    } catch (err) {
-      console.error("Camera error:", err);
-      setPermissionState("denied");
-    }
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    const video = document.getElementById("video") as HTMLVideoElement;
+    if (video) video.srcObject = stream;
+    onStreamReady(video);
   };
 
-  const loadCameras = async () => {
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    const videoInputs = devices.filter((d) => d.kind === "videoinput");
-    setCameras(videoInputs);
+  /**
+   * Request permission for all available cameras up-front
+   */
+  const requestAllCameras = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoInputs = devices.filter((d) => d.kind === "videoinput");
 
-    const savedCamera = localStorage.getItem("selectedCamera");
-    if (savedCamera && videoInputs.find((d) => d.deviceId === savedCamera)) {
-      setSelectedCamera(savedCamera);
-      requestCamera(savedCamera);
-    } else if (videoInputs.length > 0) {
-      // ✅ Auto-select first camera
-      const firstCam = videoInputs[0].deviceId;
-      setSelectedCamera(firstCam);
-      requestCamera(firstCam);
+      // Ask permission once for each camera
+      for (const cam of videoInputs) {
+        await navigator.mediaDevices.getUserMedia({
+          video: { deviceId: { exact: cam.deviceId } },
+          audio: false,
+        });
+      }
+
+      setPermissionState("granted");
+      setCameras(videoInputs);
+
+      if (videoInputs.length > 0) {
+        const firstCam = videoInputs[0].deviceId;
+        setSelectedCamera(firstCam);
+        requestCamera(firstCam); // show first one by default
+      }
+    } catch (err) {
+      console.error("Camera permission error:", err);
+      setPermissionState("denied");
     }
   };
 
@@ -86,11 +96,11 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
     if (navigator.permissions) {
       navigator.permissions.query({ name: "camera" as PermissionName }).then((result) => {
         setPermissionState(result.state as any);
-        if (result.state === "granted") loadCameras();
+        if (result.state === "granted") requestAllCameras();
 
         result.onchange = () => {
           setPermissionState(result.state as any);
-          if (result.state === "granted") loadCameras();
+          if (result.state === "granted") requestAllCameras();
         };
       });
     }
@@ -112,7 +122,7 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
           title="pssst… give camera access to animate!"
           subtitle="let us use your camera to bring your character’s face to life in real time"
           buttonText="allow camera access"
-          onClick={() => requestCamera(selectedCamera || undefined)}
+          onClick={requestAllCameras}
           showButton
         />
       )}
