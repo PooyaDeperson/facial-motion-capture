@@ -60,7 +60,7 @@ function FaceTracking({ onStreamReady }: { onStreamReady: (vid: HTMLVideoElement
 
   return (
     <video
-      className="camera-feed br-24 m-4"
+      className="camera-feed w-100 .tb\:w-400 br-24 m-4"
       id="video"
       autoPlay
       playsInline

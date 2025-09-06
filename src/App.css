@@ -318,7 +318,26 @@ svg {
 
 }
 
+/* ------------------------ ------------------------ mobile first styles */
+.w-100 {
+   min-width: calc(100vw - 32px);
+   max-width: calc(100vw - 32px);
 
+}
+
+
+/* ------------------------ ------------------------ end of mobile */
+
+/* ------------------------ ------------------------ tablet and greater styles */
+/* Tablet */
+@media (min-width: 769px) {
+  .tb\:w-400 {
+    min-width: 400px;
+    max-width: 400px;
+}
+}
+
+/* ------------------------ ------------------------ end of tablet and greater styles */
 
 .popup-container {
   max-width: 392px;
@@ -359,8 +378,8 @@ button.secondary:active {
     transform: scale(0.95);
 }
 video.camera-feed {
-    max-width: 400px;
-    min-width: 400px;
+    /* max-width: 400px;
+    min-width: 400px; */
     border: 4px solid var(--gray-100-op50);
 }
 button.camera-dropdown {
