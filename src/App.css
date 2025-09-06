@@ -342,13 +342,14 @@ svg {
 }
   .tb\:w-392 {
     max-width: 392px;
+    min-width: 392px;
 }
 }
 
 /* ------------------------ ------------------------ end of tablet and greater styles */
 
 .popup-container {
-  
+
   background-color: var(--gray-100-op50);
 }
 
