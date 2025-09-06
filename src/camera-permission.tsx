@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import CustomDropdown, { Option } from "./components/CustomDropdown";
 
-/**
- * Simple camera SVG icon (dummy)
- */
 const CameraIcon = (
   <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" d="M3 7h2l2-3h10l2 3h2v13H3V7z" />
@@ -11,25 +8,13 @@ const CameraIcon = (
   </svg>
 );
 
-/**
- * Simple video SVG icon (dummy)
- */
 const VideoIcon = (
   <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276a1 1 0 011.447.894v8.764a1 1 0 01-1.447.894L15 14M4 6h11a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z" />
   </svg>
 );
 
-/**
- * Reusable popup component for camera permission prompts
- */
-function PermissionPopup({
-  title,
-  subtitle,
-  buttonText,
-  onClick,
-  showButton,
-}: any) {
+function PermissionPopup({ title, subtitle, buttonText, onClick, showButton }: any) {
   return (
     <div className="popup-container pos-abs z-7 m-5 p-1 br-20">
       <div className="inner-container p-5 flex-col br-16">
@@ -38,10 +23,7 @@ function PermissionPopup({
           <p className="subtitle">{subtitle}</p>
         </div>
         {showButton && (
-          <button
-            onClick={onClick}
-            className="button primary"
-          >
+          <button onClick={onClick} className="button primary">
             {buttonText}
           </button>
         )}
@@ -54,9 +36,6 @@ interface CameraPermissionsProps {
   onStreamReady: (video: HTMLVideoElement) => void;
 }
 
-/**
- * CameraPermissions component
- */
 export default function CameraPermissions({ onStreamReady }: CameraPermissionsProps) {
   const [permissionState, setPermissionState] = useState<"prompt" | "denied" | "granted">("prompt");
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
@@ -75,6 +54,7 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
       if (video) video.srcObject = stream;
       onStreamReady(video);
     } catch (err) {
+      console.error("Camera error:", err);
       setPermissionState("denied");
     }
   };
@@ -89,7 +69,10 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
       setSelectedCamera(savedCamera);
       requestCamera(savedCamera);
     } else if (videoInputs.length > 0) {
-      setSelectedCamera(videoInputs[0].deviceId);
+      // ✅ Auto-select first camera
+      const firstCam = videoInputs[0].deviceId;
+      setSelectedCamera(firstCam);
+      requestCamera(firstCam);
     }
   };
 
@@ -113,9 +96,8 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
     }
   }, []);
 
-  // Map cameras to dropdown options with dummy SVG icons
   const dropdownOptions: Option[] = cameras.map((cam, idx) => {
-    const icon = idx % 2 === 0 ? CameraIcon : VideoIcon; // Alternate icons as dummy
+    const icon = idx % 2 === 0 ? CameraIcon : VideoIcon;
     return {
       label: cam.label || `Camera ${idx + 1}`,
       value: cam.deviceId,
@@ -125,7 +107,6 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
 
   return (
     <>
-      {/* Permission prompt */}
       {permissionState === "prompt" && (
         <PermissionPopup
           title="pssst… give camera access to animate!"
@@ -136,7 +117,6 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
         />
       )}
 
-      {/* Denied prompt */}
       {permissionState === "denied" && (
         <PermissionPopup
           title="oh... you haven’t given camera access yet."
@@ -145,7 +125,6 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
         />
       )}
 
-      {/* Dropdown for camera selection */}
       {permissionState === "granted" && cameras.length > 1 && (
         <div className="cp-dropdown pos-abs top-0 left-0 z-7 m-6">
           <CustomDropdown
