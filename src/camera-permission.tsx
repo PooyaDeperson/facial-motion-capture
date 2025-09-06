@@ -40,6 +40,7 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
   const [permissionState, setPermissionState] = useState<"prompt" | "denied" | "granted">("prompt");
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
+  const [showRefreshPopup, setShowRefreshPopup] = useState(false); // <-- NEW STATE
 
   const requestCamera = async (deviceId?: string) => {
     try {
@@ -69,7 +70,6 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
       setSelectedCamera(savedCamera);
       requestCamera(savedCamera);
     } else if (videoInputs.length > 0) {
-      // ✅ Auto-select first camera
       const firstCam = videoInputs[0].deviceId;
       setSelectedCamera(firstCam);
       requestCamera(firstCam);
@@ -79,7 +79,9 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
   const handleCameraChange = (deviceId: string) => {
     setSelectedCamera(deviceId);
     localStorage.setItem("selectedCamera", deviceId);
-    requestCamera(deviceId);
+
+    // Show refresh popup instead of requesting camera immediately
+    setShowRefreshPopup(true);
   };
 
   useEffect(() => {
@@ -134,6 +136,17 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
             placeholder="Select camera"
           />
         </div>
+      )}
+
+      {/* NEW REFRESH POPUP */}
+      {showRefreshPopup && (
+        <PermissionPopup
+          title="Refresh to animate your character!"
+          subtitle="You changed the camera. Please refresh the page to see the animation in action."
+          buttonText="Refresh page"
+          onClick={() => window.location.reload()}
+          showButton
+        />
       )}
     </>
   );
