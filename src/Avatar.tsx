@@ -4,37 +4,44 @@ import { useGLTF } from "@react-three/drei";
 import { blendshapes, rotation } from "./FaceTracking";
 import * as THREE from "three";
 
-const Avatar = forwardRef(({ url }: { url: string }, ref) => {
-  const group = useRef<THREE.Group>();
+interface AvatarProps {
+  url: string;
+}
+
+export interface AvatarRef {
+  headMesh: THREE.Mesh[];
+  nodes: Record<string, THREE.Object3D>;
+}
+
+const Avatar = forwardRef<AvatarRef, AvatarProps>(({ url }, ref) => {
+  const group = useRef<THREE.Group>(null);
   const { scene } = useGLTF(url);
   const { nodes } = useGraph(scene);
-
-  const headMesh: THREE.Mesh[] = [];
+  const headMesh = useRef<THREE.Mesh[]>([]);
 
   useEffect(() => {
+    headMesh.current = [];
     ["Wolf3D_Head", "Wolf3D_Teeth", "Wolf3D_Beard", "Wolf3D_Avatar", "Wolf3D_Head_Custom"].forEach(name => {
       const node = nodes[name];
-      if (node && (node as THREE.Mesh).isMesh) headMesh.push(node as THREE.Mesh);
+      if (node && (node as THREE.Mesh).isMesh) headMesh.current.push(node as THREE.Mesh);
     });
   }, [nodes, url]);
 
   useImperativeHandle(ref, () => ({
-    headMesh,
+    headMesh: headMesh.current,
     nodes,
   }));
 
   useFrame(() => {
-    if (blendshapes.length === 0) return;
+    if (!blendshapes.length) return;
 
-    headMesh.forEach(mesh => {
-      // ✅ Runtime check
-      if (!mesh.morphTargetDictionary || !mesh.morphTargetInfluences) return;
-
-      const dict = mesh.morphTargetDictionary!;
-      const influences = mesh.morphTargetInfluences!;
+    headMesh.current.forEach(mesh => {
+      const dict = mesh.morphTargetDictionary;
+      const influences = mesh.morphTargetInfluences;
+      if (!dict || !influences) return;
 
       blendshapes.forEach(element => {
-        const index = dict[element.categoryName]; // ✅ Safe access after !
+        const index = dict[element.categoryName];
         if (index !== undefined && index >= 0) {
           influences[index] = element.score;
         }

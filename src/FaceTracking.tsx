@@ -3,7 +3,7 @@ import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from "@mediapi
 import { Euler, Matrix4 } from "three";
 
 export let blendshapes: any[] = [];
-export let rotation: Euler;
+export let rotation: Euler = new Euler(0, 0, 0);
 
 let video: HTMLVideoElement;
 let faceLandmarker: FaceLandmarker;
@@ -20,9 +20,16 @@ const options: FaceLandmarkerOptions = {
   outputFacialTransformationMatrixes: true,
 };
 
-function FaceTracking({ onStreamReady, onFrame }: { onStreamReady: (vid: HTMLVideoElement) => void, onFrame?: (frameData: any) => void }) {
+interface FaceTrackingProps {
+  onStreamReady: (vid: HTMLVideoElement) => void;
+  onFrame?: (frameData: any) => void;
+}
+
+function FaceTracking({ onStreamReady, onFrame }: FaceTrackingProps) {
   const setup = async () => {
-    const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
+    const filesetResolver = await FilesetResolver.forVisionTasks(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
+    );
     faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
   };
 
@@ -37,14 +44,11 @@ function FaceTracking({ onStreamReady, onFrame }: { onStreamReady: (vid: HTMLVid
         const matrix = new Matrix4().fromArray(result.facialTransformationMatrixes![0].data);
         rotation = new Euler().setFromRotationMatrix(matrix);
 
-        if (onFrame) {
-          onFrame({
-            timestamp: nowInMs,
-            blendshapes,
-            headRotation: { x: rotation.x, y: rotation.y, z: rotation.z },
-            // neckRotation can be derived if needed
-          });
-        }
+        onFrame?.({
+          timestamp: nowInMs,
+          blendshapes,
+          headRotation: { x: rotation.x, y: rotation.y, z: rotation.z },
+        });
       }
     }
     window.requestAnimationFrame(predict);
@@ -56,9 +60,19 @@ function FaceTracking({ onStreamReady, onFrame }: { onStreamReady: (vid: HTMLVid
     onStreamReady(vid);
   };
 
-  useEffect(() => { setup(); }, []);
+  useEffect(() => {
+    setup();
+  }, []);
 
-  return <video id="video" autoPlay playsInline ref={el => el && handleVideoReady(el)} className="camera-feed w-67 tb:w-400 br-24 m-4" />;
+  return (
+    <video
+      id="video"
+      autoPlay
+      playsInline
+      ref={el => el && handleVideoReady(el)}
+      className="camera-feed w-67 tb:w-400 br-24 m-4"
+    />
+  );
 }
 
 export default FaceTracking;

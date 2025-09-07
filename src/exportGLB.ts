@@ -1,8 +1,6 @@
-// exportGLB.ts
 import * as THREE from "three";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
 
-// 52 ARKit blendshapes
 const ARKIT_BLENDSHAPES = [
   "_neutral","browDownLeft","browDownRight","browInnerUp","browOuterUpLeft","browOuterUpRight",
   "cheekPuff","cheekSquintLeft","cheekSquintRight","eyeBlinkLeft","eyeBlinkRight","eyeLookDownLeft",
@@ -24,30 +22,23 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
   const times = frames.map(f => (f.timestamp - startTime) / 1000);
   const tracks: THREE.KeyframeTrack[] = [];
 
-  // Build morph target tracks
-  const dummyGeo = new THREE.BoxGeometry(1,1,1);
+  const dummyGeo = new THREE.BoxGeometry(1, 1, 1);
   dummyGeo.morphAttributes.position = [];
 
   ARKIT_BLENDSHAPES.forEach((name, i) => {
     const values = frames.map(f => {
-      const target = f.blendshapes.find((b:any) => b.categoryName === name);
+      const target = f.blendshapes.find((b: any) => b.categoryName === name);
       return target ? target.score : 0;
     });
 
-    tracks.push(new THREE.NumberKeyframeTrack(
-      `.morphTargetInfluences[${i}]`,
-      times,
-      values
-    ));
+    tracks.push(new THREE.NumberKeyframeTrack(`.morphTargetInfluences[${i}]`, times, values));
 
-    // add dummy morph geometry for GLB
     const morphGeo = dummyGeo.clone();
-    morphGeo.translate(0, 0.01*(i+1), 0);
+    morphGeo.translate(0, 0.01 * (i + 1), 0);
     dummyGeo.morphAttributes.position.push(morphGeo.attributes.position);
   });
 
-  // Head, Neck, Spine2 rotation tracks
-  ["Head","Neck","Spine2"].forEach(nodeName => {
+  ["Head", "Neck", "Spine2"].forEach(nodeName => {
     const valuesX = frames.map(f => f.headRotation?.x ?? 0);
     const valuesY = frames.map(f => f.headRotation?.y ?? 0);
     const valuesZ = frames.map(f => f.headRotation?.z ?? 0);
@@ -57,25 +48,18 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
     tracks.push(new THREE.VectorKeyframeTrack(`${nodeName}.rotation[z]`, times, valuesZ));
   });
 
-  // Animation clip
   const clip = new THREE.AnimationClip("FaceRecording", -1, tracks);
-
-  // Dummy mesh for export
   const material = new THREE.MeshStandardMaterial({ color: 0xdddddd });
   const mesh = new THREE.Mesh(dummyGeo, material);
   mesh.animations = [clip];
 
-  // Export GLB
   const exporter = new GLTFExporter();
   exporter.parse(
     mesh,
-    (result) => {
-      let blob: Blob;
-      if (result instanceof ArrayBuffer) {
-        blob = new Blob([result], { type: "model/gltf-binary" });
-      } else {
-        blob = new Blob([JSON.stringify(result, null, 2)], { type: "application/json" });
-      }
+    result => {
+      const blob = result instanceof ArrayBuffer
+        ? new Blob([result], { type: "model/gltf-binary" })
+        : new Blob([JSON.stringify(result, null, 2)], { type: "application/json" });
 
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -84,6 +68,6 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
       a.click();
       URL.revokeObjectURL(url);
     },
-    { binary: true } as any // TS-safe
+    { binary: true } as any
   );
 }
