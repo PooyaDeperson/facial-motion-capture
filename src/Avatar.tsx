@@ -23,21 +23,28 @@ const Avatar = forwardRef(({ url }: { url: string }, ref) => {
     nodes,
   }));
 
-  useFrame(() => {
-    if (blendshapes.length > 0) {
-      blendshapes.forEach(element => {
-        headMesh.forEach(mesh => {
-          const index = mesh.morphTargetDictionary[element.categoryName];
-          if (index !== undefined && index >= 0) {
-            mesh.morphTargetInfluences[index] = element.score;
-          }
-        });
+useFrame(() => {
+  if (blendshapes.length > 0) {
+    blendshapes.forEach(element => {
+      headMesh.forEach(mesh => {
+        // ✅ TypeScript-safe check
+        const dict = mesh.morphTargetDictionary;
+        const influences = mesh.morphTargetInfluences;
+        if (!dict || !influences) return;
+
+        const index = dict[element.categoryName];
+        if (index !== undefined && index >= 0) {
+          influences[index] = element.score;
+        }
       });
-      if (nodes.Head) nodes.Head.rotation.set(rotation.x, rotation.y, rotation.z);
-      if (nodes.Neck) nodes.Neck.rotation.set(rotation.x / 5 + 0.3, rotation.y / 5, rotation.z / 5);
-      if (nodes.Spine2) nodes.Spine2.rotation.set(rotation.x / 10, rotation.y / 10, rotation.z / 10);
-    }
-  });
+    });
+
+    if (nodes.Head) nodes.Head.rotation.set(rotation.x, rotation.y, rotation.z);
+    if (nodes.Neck) nodes.Neck.rotation.set(rotation.x / 5 + 0.3, rotation.y / 5, rotation.z / 5);
+    if (nodes.Spine2) nodes.Spine2.rotation.set(rotation.x / 10, rotation.y / 10, rotation.z / 10);
+  }
+});
+
 
   return <primitive object={scene} position={[0, -1.75, 3]} ref={group} />;
 });
