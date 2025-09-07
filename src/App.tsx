@@ -14,37 +14,39 @@ function App() {
   );
 
   const [isRecording, setIsRecording] = useState(false);
-  const recordedFrames = useRef<any[]>([]);
+const recordedFrames = useRef<any[]>([]);
 
-  const handleStreamReady = (vid: HTMLVideoElement) => {
-    console.log("Video stream ready:", vid);
-  };
+const handleFrame = (frameData: any) => {
+  if (isRecording) {
+    recordedFrames.current.push(frameData);
+  }
+};
 
-  const handleFrame = (frameData: any) => {
-    if (isRecording) {
-      recordedFrames.current.push(frameData);
-    }
-  };
+const startRecording = () => {
+  recordedFrames.current = [];  // clear buffer only at start
+  setIsRecording(true);
+  console.log("🎬 Recording started...");
+};
 
-  const startRecording = () => {
-    recordedFrames.current = [];
-    setIsRecording(true);
-  };
+const stopRecording = () => {
+  setIsRecording(false);
+  console.log("⏹ Recording stopped. Frames:", recordedFrames.current.length);
 
-  const stopRecording = () => {
-    setIsRecording(false);
-    const data = recordedFrames.current;
+  if (!recordedFrames.current.length) {
+    alert("No frames captured — try recording longer!");
+    return;
+  }
 
-    // Save JSON
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `face_motion_${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
+  // Save JSON
+  const data = recordedFrames.current;
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `face_motion_${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
   return (
     <div className="App">
       <CameraPermissions onStreamReady={handleStreamReady} />
