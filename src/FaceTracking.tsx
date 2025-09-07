@@ -3,8 +3,10 @@ import { useEffect } from "react";
 import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from "@mediapipe/tasks-vision";
 import { Euler, Matrix4 } from "three";
 
+
 export let blendshapes: any[] = [];
 export let rotation: Euler;
+export let headMesh: any[] = []; // ← add this back
 
 let video: HTMLVideoElement;
 let faceLandmarker: FaceLandmarker;
