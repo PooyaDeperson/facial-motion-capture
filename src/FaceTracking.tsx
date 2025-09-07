@@ -48,6 +48,7 @@ function FaceTracking({ onStreamReady, onFrame }: {
 
         // Emit frame data to parent
         if (onFrame) {
+          console.log("Frame data:", blendshapes, rotation);
           onFrame({
             timestamp: nowInMs,
             blendshapes,
