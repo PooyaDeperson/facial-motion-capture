@@ -1,5 +1,17 @@
+// exportGLB.ts
 import * as THREE from "three";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
+
+const ARKIT_BLENDSHAPES = [
+  "_neutral","browDownLeft","browDownRight","browInnerUp","browOuterUpLeft","browOuterUpRight",
+  "cheekPuff","cheekSquintLeft","cheekSquintRight","eyeBlinkLeft","eyeBlinkRight","eyeLookDownLeft",
+  "eyeLookDownRight","eyeLookInLeft","eyeLookInRight","eyeLookOutLeft","eyeLookOutRight","eyeLookUpLeft",
+  "eyeLookUpRight","eyeSquintLeft","eyeSquintRight","jawForward","jawLeft","jawRight","jawOpen","mouthClose",
+  "mouthFunnel","mouthPucker","mouthLeft","mouthRight","mouthSmileLeft","mouthSmileRight","mouthFrownLeft",
+  "mouthFrownRight","mouthDimpleLeft","mouthDimpleRight","mouthStretchLeft","mouthStretchRight","mouthRollLower",
+  "mouthRollUpper","mouthShrugLower","mouthShrugUpper","mouthPressLeft","mouthPressRight","mouthLowerDownLeft",
+  "mouthLowerDownRight","mouthUpperUpLeft","mouthUpperUpRight","noseSneerLeft","noseSneerRight","tongueOut"
+];
 
 export function exportBlendshapeRecording(frames: any[], fileName = "faceRecording.glb") {
   if (!frames.length) {
@@ -7,53 +19,58 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
     return;
   }
 
-  // Extract time values in seconds
   const startTime = frames[0].timestamp;
   const times = frames.map(f => (f.timestamp - startTime) / 1000);
 
-  // Get unique blendshape names
-  const blendshapeNames: string[] = frames[0].blendshapes.map((b: any) => b.categoryName);
-
-  // Build tracks for each blendshape
   const tracks: THREE.KeyframeTrack[] = [];
-  for (let i = 0; i < blendshapeNames.length; i++) {
-    const values = frames.map(f => f.blendshapes[i].score);
 
-    const track = new THREE.NumberKeyframeTrack(
+  // Morph targets (blendshapes)
+  const dummyGeo = new THREE.BoxGeometry(1,1,1);
+  dummyGeo.morphAttributes.position = [];
+
+  ARKIT_BLENDSHAPES.forEach((name, i) => {
+    const values = frames.map(f => {
+      const target = f.blendshapes.find((b:any) => b.categoryName === name);
+      return target ? target.score : 0;
+    });
+
+    // Create track
+    tracks.push(new THREE.NumberKeyframeTrack(
       `.morphTargetInfluences[${i}]`,
       times,
       values
-    );
-    tracks.push(track);
-  }
+    ));
+
+    // Add dummy morph geometry
+    const morphGeo = dummyGeo.clone();
+    morphGeo.translate(0, 0.01*(i+1), 0); // slight offset
+    dummyGeo.morphAttributes.position.push(morphGeo.attributes.position);
+  });
+
+  // Head rotation
+  ["Head","Neck","Spine2"].forEach(nodeName => {
+    const valuesX = frames.map(f => f.headRotation?.x ?? 0);
+    const valuesY = frames.map(f => f.headRotation?.y ?? 0);
+    const valuesZ = frames.map(f => f.headRotation?.z ?? 0);
+
+    tracks.push(new THREE.VectorKeyframeTrack(`${nodeName}.rotation[x]`, times, valuesX));
+    tracks.push(new THREE.VectorKeyframeTrack(`${nodeName}.rotation[y]`, times, valuesY));
+    tracks.push(new THREE.VectorKeyframeTrack(`${nodeName}.rotation[z]`, times, valuesZ));
+  });
 
   // Create animation clip
   const clip = new THREE.AnimationClip("FaceRecording", -1, tracks);
 
-  // Create dummy geometry with morph targets
-  const baseGeo = new THREE.BoxGeometry(1, 1, 1);
-  baseGeo.morphAttributes.position = [];
-
-  blendshapeNames.forEach((_: string, i: number) => {
-    const morphGeo = baseGeo.clone();
-    morphGeo.translate(0, 0.01 * (i + 1), 0); // slight offset for uniqueness
-    baseGeo.morphAttributes.position.push(morphGeo.attributes.position);
-  });
-
-  // Create material
+  // Create dummy mesh
   const material = new THREE.MeshStandardMaterial({ color: 0xdddddd });
-
-  // Create mesh
-  const mesh = new THREE.Mesh(baseGeo, material);
+  const mesh = new THREE.Mesh(dummyGeo, material);
   mesh.animations = [clip];
 
-  // Export GLB
+  // Export
   const exporter = new GLTFExporter();
-
-  // ✅ Correct parse call for TypeScript
   exporter.parse(
     mesh,
-    (result) => {
+    result => {
       let blob: Blob;
       if (result instanceof ArrayBuffer) {
         blob = new Blob([result], { type: "model/gltf-binary" });
@@ -68,6 +85,6 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
       a.click();
       URL.revokeObjectURL(url);
     },
-    { binary: true } as any // ✅ cast to any to satisfy TS
+    { binary: true } as any // TS cast
   );
 }
