@@ -41,8 +41,11 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
   baseGeo.morphAttributes.position.push(morphGeo.attributes.position);
 });
 
-  const material = new THREE.MeshStandardMaterial({ color: 0xdddddd, morphTargets: true });
-  const mesh = new THREE.Mesh(baseGeo, material);
+const material = new THREE.MeshStandardMaterial({ color: 0xdddddd });
+// enable morph targets explicitly
+material.morphTargets = true;
+
+const mesh = new THREE.Mesh(baseGeo, material);
 
   // Attach animation
   mesh.animations = [clip];
