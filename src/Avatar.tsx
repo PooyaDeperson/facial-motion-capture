@@ -18,7 +18,6 @@ const Avatar = forwardRef(({ url }: { url: string }, ref) => {
     });
   }, [nodes, url]);
 
-  // Expose for export
   useImperativeHandle(ref, () => ({
     headMesh,
     nodes,
@@ -28,13 +27,16 @@ const Avatar = forwardRef(({ url }: { url: string }, ref) => {
     if (blendshapes.length === 0) return;
 
     headMesh.forEach(mesh => {
+      // ✅ Runtime check
       if (!mesh.morphTargetDictionary || !mesh.morphTargetInfluences) return;
 
+      const dict = mesh.morphTargetDictionary!;
+      const influences = mesh.morphTargetInfluences!;
+
       blendshapes.forEach(element => {
-        // ✅ Optional chaining prevents TS errors
-        const index = mesh.morphTargetDictionary[element.categoryName];
+        const index = dict[element.categoryName]; // ✅ Safe access after !
         if (index !== undefined && index >= 0) {
-          mesh.morphTargetInfluences![index] = element.score;
+          influences[index] = element.score;
         }
       });
     });
