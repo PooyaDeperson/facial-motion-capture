@@ -6,6 +6,7 @@ import CameraPermissions from "./camera-permission";
 import ColorSwitcher from "./components/ColorSwitcher";
 import FaceTracking from "./FaceTracking";
 import Avatar from "./Avatar";
+import { exportBlendshapeRecording } from "./exportGLB";
 
 function App() {
   const [url, setUrl] = useState<string>(
@@ -20,6 +21,7 @@ function App() {
     console.log("Video stream ready:", vid);
   };
 
+  // Called by FaceTracking every frame
   const handleFrame = (frameData: any) => {
     if (isRecordingRef.current) {
       recordedFrames.current.push(frameData);
@@ -43,16 +45,11 @@ function App() {
       return;
     }
 
-    const data = recordedFrames.current;
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `face_motion_${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    // ✅ Export as GLB instead of JSON
+    exportBlendshapeRecording(recordedFrames.current, `faceRecording_${Date.now()}.glb`);
+
+    // Clear buffer
+    recordedFrames.current = [];
   };
 
   return (
