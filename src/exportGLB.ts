@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
 
+// 52 ARKit blendshapes
 const ARKIT_BLENDSHAPES = [
   "_neutral","browDownLeft","browDownRight","browInnerUp","browOuterUpLeft","browOuterUpRight",
   "cheekPuff","cheekSquintLeft","cheekSquintRight","eyeBlinkLeft","eyeBlinkRight","eyeLookDownLeft",
@@ -21,10 +22,9 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
 
   const startTime = frames[0].timestamp;
   const times = frames.map(f => (f.timestamp - startTime) / 1000);
-
   const tracks: THREE.KeyframeTrack[] = [];
 
-  // Morph targets (blendshapes)
+  // Build morph target tracks
   const dummyGeo = new THREE.BoxGeometry(1,1,1);
   dummyGeo.morphAttributes.position = [];
 
@@ -34,20 +34,19 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
       return target ? target.score : 0;
     });
 
-    // Create track
     tracks.push(new THREE.NumberKeyframeTrack(
       `.morphTargetInfluences[${i}]`,
       times,
       values
     ));
 
-    // Add dummy morph geometry
+    // add dummy morph geometry for GLB
     const morphGeo = dummyGeo.clone();
-    morphGeo.translate(0, 0.01*(i+1), 0); // slight offset
+    morphGeo.translate(0, 0.01*(i+1), 0);
     dummyGeo.morphAttributes.position.push(morphGeo.attributes.position);
   });
 
-  // Head rotation
+  // Head, Neck, Spine2 rotation tracks
   ["Head","Neck","Spine2"].forEach(nodeName => {
     const valuesX = frames.map(f => f.headRotation?.x ?? 0);
     const valuesY = frames.map(f => f.headRotation?.y ?? 0);
@@ -58,19 +57,19 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
     tracks.push(new THREE.VectorKeyframeTrack(`${nodeName}.rotation[z]`, times, valuesZ));
   });
 
-  // Create animation clip
+  // Animation clip
   const clip = new THREE.AnimationClip("FaceRecording", -1, tracks);
 
-  // Create dummy mesh
+  // Dummy mesh for export
   const material = new THREE.MeshStandardMaterial({ color: 0xdddddd });
   const mesh = new THREE.Mesh(dummyGeo, material);
   mesh.animations = [clip];
 
-  // Export
+  // Export GLB
   const exporter = new GLTFExporter();
   exporter.parse(
     mesh,
-    result => {
+    (result) => {
       let blob: Blob;
       if (result instanceof ArrayBuffer) {
         blob = new Blob([result], { type: "model/gltf-binary" });
@@ -85,6 +84,6 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
       a.click();
       URL.revokeObjectURL(url);
     },
-    { binary: true } as any // TS cast
+    { binary: true } as any // TS-safe
   );
 }
