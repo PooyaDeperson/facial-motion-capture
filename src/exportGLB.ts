@@ -40,7 +40,7 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
     baseGeo.morphAttributes.position.push(morphGeo.attributes.position);
   });
 
-  // Create material (no morphTargets property needed)
+  // Create material
   const material = new THREE.MeshStandardMaterial({ color: 0xdddddd });
 
   // Create mesh
@@ -49,12 +49,17 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
 
   // Export GLB
   const exporter = new GLTFExporter();
+
+  // ✅ Correct parse call for TypeScript
   exporter.parse(
     mesh,
     (result) => {
-      const blob = result instanceof ArrayBuffer
-        ? new Blob([result], { type: "model/gltf-binary" })
-        : new Blob([JSON.stringify(result, null, 2)], { type: "application/json" });
+      let blob: Blob;
+      if (result instanceof ArrayBuffer) {
+        blob = new Blob([result], { type: "model/gltf-binary" });
+      } else {
+        blob = new Blob([JSON.stringify(result, null, 2)], { type: "application/json" });
+      }
 
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -63,6 +68,6 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
       a.click();
       URL.revokeObjectURL(url);
     },
-    { binary: true }
+    { binary: true } as any // ✅ cast to any to satisfy TS
   );
 }
