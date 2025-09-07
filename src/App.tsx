@@ -1,47 +1,35 @@
-import { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
-import { useFrame, useGraph } from "@react-three/fiber";
-import { useGLTF } from "@react-three/drei";
-import { blendshapes, rotation } from "./FaceTracking";
-import * as THREE from "three";
+import React, { useRef, useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import Avatar, { AvatarRef } from "./Avatar";
+import FaceTracking, { blendshapes } from "./FaceTracking";
+import { exportBlendshapeRecording } from "./exportGLB";
+import { exportAvatarAnimation } from "./exportAvatarAnimation";
 
-const Avatar = forwardRef(({ url }: { url: string }, ref) => {
-  const group = useRef<THREE.Group>();
-  const { scene } = useGLTF(url);
-  const { nodes } = useGraph(scene);
+function App() {
+  const avatarRef = useRef<AvatarRef>(null);
+  const [frames, setFrames] = useState<any[]>([]);
+  const [url, setUrl] = useState<string>(
+    "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024"
+  );
 
-  const headMesh: THREE.Mesh[] = [];
+  const handleFrame = (frameData: any) => {
+    setFrames(prev => [...prev, frameData]);
+  };
 
-  useEffect(() => {
-    ["Wolf3D_Head", "Wolf3D_Teeth", "Wolf3D_Beard", "Wolf3D_Avatar", "Wolf3D_Head_Custom"].forEach(name => {
-      if (nodes[name] && (nodes[name] as THREE.Mesh).isMesh) headMesh.push(nodes[name] as THREE.Mesh);
-    });
-  }, [nodes, url]);
+  return (
+    <div>
+      <FaceTracking onStreamReady={() => {}} onFrame={handleFrame} />
+      <Canvas style={{ width: 600, height: 600 }}>
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[1, 2, 3]} intensity={0.7} />
+        <Avatar ref={avatarRef} url={url} />
+      </Canvas>
+      <button onClick={() => exportBlendshapeRecording(frames)}>Export Blendshapes</button>
+      <button onClick={() => avatarRef.current && exportAvatarAnimation(avatarRef.current.headMesh, avatarRef.current.nodes, frames)}>
+        Export Avatar Animation
+      </button>
+    </div>
+  );
+}
 
-  // Expose for export
-  useImperativeHandle(ref, () => ({
-    headMesh,
-    nodes,
-  }));
-
-  useFrame(() => {
-    if (blendshapes.length > 0) {
-      blendshapes.forEach(element => {
-        headMesh.forEach(mesh => {
-          if (!mesh.morphTargetDictionary || !mesh.morphTargetInfluences) return; // ✅ safety check
-          const index = mesh.morphTargetDictionary[element.categoryName];
-          if (index !== undefined && index >= 0) {
-            mesh.morphTargetInfluences[index] = element.score;
-          }
-        });
-      });
-
-      if (nodes.Head) nodes.Head.rotation.set(rotation.x, rotation.y, rotation.z);
-      if (nodes.Neck) nodes.Neck.rotation.set(rotation.x / 5 + 0.3, rotation.y / 5, rotation.z / 5);
-      if (nodes.Spine2) nodes.Spine2.rotation.set(rotation.x / 10, rotation.y / 10, rotation.z / 10);
-    }
-  });
-
-  return <primitive object={scene} position={[0, -1.75, 3]} ref={group} />;
-});
-
-export default Avatar;
+export default App;

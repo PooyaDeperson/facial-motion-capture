@@ -4,13 +4,13 @@ import { useGLTF } from "@react-three/drei";
 import { blendshapes, rotation } from "./FaceTracking";
 import * as THREE from "three";
 
-interface AvatarProps {
-  url: string;
-}
-
 export interface AvatarRef {
   headMesh: THREE.Mesh[];
   nodes: Record<string, THREE.Object3D>;
+}
+
+interface AvatarProps {
+  url: string;
 }
 
 const Avatar = forwardRef<AvatarRef, AvatarProps>(({ url }, ref) => {

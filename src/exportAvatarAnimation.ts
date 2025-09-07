@@ -22,7 +22,6 @@ export function exportAvatarAnimation(headMesh: THREE.Mesh[], nodes: Record<stri
     });
   });
 
-  // Head rotation
   if (nodes.Head) {
     const headQuatValues = frames.flatMap(f => {
       const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(f.headRotation.x, f.headRotation.y, f.headRotation.z));
@@ -31,7 +30,6 @@ export function exportAvatarAnimation(headMesh: THREE.Mesh[], nodes: Record<stri
     tracks.push(new THREE.QuaternionKeyframeTrack(`${nodes.Head.name}.quaternion`, times, headQuatValues));
   }
 
-  // Neck rotation
   if (nodes.Neck) {
     const neckQuatValues = frames.flatMap(f => {
       const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(f.headRotation.x / 5 + 0.3, f.headRotation.y / 5, f.headRotation.z / 5));
