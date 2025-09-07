@@ -34,12 +34,12 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
 
   // Create a dummy geometry with blendshape targets
   const baseGeo = new THREE.BoxGeometry(1, 1, 1);
-  blendshapeNames.forEach((name, i) => {
-    const morphGeo = baseGeo.clone();
-    morphGeo.translate(0, 0.01 * (i + 1), 0); // small offset for uniqueness
-    baseGeo.morphAttributes.position = baseGeo.morphAttributes.position || [];
-    baseGeo.morphAttributes.position.push(morphGeo.attributes.position);
-  });
+  blendshapeNames.forEach((name: string, i: number) => {
+  const morphGeo = baseGeo.clone();
+  morphGeo.translate(0, 0.01 * (i + 1), 0); // small offset for uniqueness
+  baseGeo.morphAttributes.position = baseGeo.morphAttributes.position || [];
+  baseGeo.morphAttributes.position.push(morphGeo.attributes.position);
+});
 
   const material = new THREE.MeshStandardMaterial({ color: 0xdddddd, morphTargets: true });
   const mesh = new THREE.Mesh(baseGeo, material);
