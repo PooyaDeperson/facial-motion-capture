@@ -1,18 +1,17 @@
+// FaceTracking.tsx
 import { useEffect } from "react";
 import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from "@mediapipe/tasks-vision";
 import { Euler, Matrix4 } from "three";
 
-// Shared globals — Avatar still uses these
+
 export let blendshapes: any[] = [];
 export let rotation: Euler;
-export let headMesh: any[] = [];
+export let headMesh: any[] = []; // ← add this back
 
-// Internal Mediapipe variables
 let video: HTMLVideoElement;
 let faceLandmarker: FaceLandmarker;
 let lastVideoTime = -1;
 
-// Options for Mediapipe FaceLandmarker
 const options: FaceLandmarkerOptions = {
   baseOptions: {
     modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
@@ -24,7 +23,10 @@ const options: FaceLandmarkerOptions = {
   outputFacialTransformationMatrixes: true,
 };
 
-function FaceTracking({ onStreamReady }: { onStreamReady: (vid: HTMLVideoElement) => void }) {
+function FaceTracking({ onStreamReady, onFrame }: { 
+  onStreamReady: (vid: HTMLVideoElement) => void, 
+  onFrame?: (frameData: any) => void 
+}) {
   const setup = async () => {
     const filesetResolver = await FilesetResolver.forVisionTasks(
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
@@ -43,6 +45,16 @@ function FaceTracking({ onStreamReady }: { onStreamReady: (vid: HTMLVideoElement
 
         const matrix = new Matrix4().fromArray(result.facialTransformationMatrixes![0].data);
         rotation = new Euler().setFromRotationMatrix(matrix);
+
+        // Emit frame data to parent
+        if (onFrame) {
+          console.log("Frame data:", blendshapes, rotation);
+          onFrame({
+            timestamp: nowInMs,
+            blendshapes,
+            rotation: { x: rotation.x, y: rotation.y, z: rotation.z },
+          });
+        }
       }
     }
     window.requestAnimationFrame(predict);
