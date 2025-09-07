@@ -1,4 +1,3 @@
-// App.tsx
 import "./App.css";
 import { useState, useRef } from "react";
 import { Color } from "three";
@@ -14,26 +13,28 @@ function App() {
   );
 
   const [isRecording, setIsRecording] = useState(false);
+  const isRecordingRef = useRef(false); // ✅ always up-to-date recording flag
   const recordedFrames = useRef<any[]>([]);
 
   const handleStreamReady = (vid: HTMLVideoElement) => {
     console.log("Video stream ready:", vid);
   };
 
-  // Called every frame from FaceTracking.tsx
   const handleFrame = (frameData: any) => {
-    if (isRecording) {
+    if (isRecordingRef.current) {
       recordedFrames.current.push(frameData);
     }
   };
 
   const startRecording = () => {
-    recordedFrames.current = []; // reset buffer only at start
+    recordedFrames.current = [];
+    isRecordingRef.current = true;
     setIsRecording(true);
     console.log("🎬 Recording started...");
   };
 
   const stopRecording = () => {
+    isRecordingRef.current = false;
     setIsRecording(false);
     console.log("⏹ Recording stopped. Frames:", recordedFrames.current.length);
 
@@ -56,10 +57,8 @@ function App() {
 
   return (
     <div className="App">
-      {/* Camera setup */}
       <CameraPermissions onStreamReady={handleStreamReady} />
 
-      {/* Face tracking loop */}
       <FaceTracking onStreamReady={handleStreamReady} onFrame={handleFrame} />
 
       {/* Recording Controls */}
@@ -75,7 +74,6 @@ function App() {
         )}
       </div>
 
-      {/* Avatar rendering */}
       <Canvas
         className="avatar-container bottom-0 pos-abs z-1"
         camera={{ fov: 25 }}
