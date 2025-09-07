@@ -7,20 +7,18 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
     return;
   }
 
-  // Extract time values
+  // Extract time values in seconds
   const startTime = frames[0].timestamp;
-  const times = frames.map(f => (f.timestamp - startTime) / 1000); // sec
+  const times = frames.map(f => (f.timestamp - startTime) / 1000);
 
   // Get unique blendshape names
-  const blendshapeNames = frames[0].blendshapes.map((b: any) => b.categoryName);
+  const blendshapeNames: string[] = frames[0].blendshapes.map((b: any) => b.categoryName);
 
   // Build tracks for each blendshape
   const tracks: THREE.KeyframeTrack[] = [];
   for (let i = 0; i < blendshapeNames.length; i++) {
-    const name = blendshapeNames[i];
     const values = frames.map(f => f.blendshapes[i].score);
 
-    // Track name format: "meshName.morphTargetInfluences[index]"
     const track = new THREE.NumberKeyframeTrack(
       `.morphTargetInfluences[${i}]`,
       times,
@@ -32,32 +30,33 @@ export function exportBlendshapeRecording(frames: any[], fileName = "faceRecordi
   // Create animation clip
   const clip = new THREE.AnimationClip("FaceRecording", -1, tracks);
 
-  // Create a dummy geometry with blendshape targets
+  // Create dummy geometry with morph targets
   const baseGeo = new THREE.BoxGeometry(1, 1, 1);
-  blendshapeNames.forEach((name: string, i: number) => {
-  const morphGeo = baseGeo.clone();
-  morphGeo.translate(0, 0.01 * (i + 1), 0); // small offset for uniqueness
-  baseGeo.morphAttributes.position = baseGeo.morphAttributes.position || [];
-  baseGeo.morphAttributes.position.push(morphGeo.attributes.position);
-});
+  baseGeo.morphAttributes.position = [];
 
-const material = new THREE.MeshStandardMaterial({ color: 0xdddddd });
-// enable morph targets explicitly
-material.morphTargets = true;
+  blendshapeNames.forEach((_: string, i: number) => {
+    const morphGeo = baseGeo.clone();
+    morphGeo.translate(0, 0.01 * (i + 1), 0); // slight offset for uniqueness
+    baseGeo.morphAttributes.position.push(morphGeo.attributes.position);
+  });
 
-const mesh = new THREE.Mesh(baseGeo, material);
+  // Create material (no morphTargets property needed)
+  const material = new THREE.MeshStandardMaterial({ color: 0xdddddd });
 
-  // Attach animation
+  // Create mesh
+  const mesh = new THREE.Mesh(baseGeo, material);
   mesh.animations = [clip];
 
-  // Export to GLB
+  // Export GLB
   const exporter = new GLTFExporter();
   exporter.parse(
     mesh,
     (result) => {
-      const blob = new Blob([result as ArrayBuffer], { type: "model/gltf-binary" });
-      const url = URL.createObjectURL(blob);
+      const blob = result instanceof ArrayBuffer
+        ? new Blob([result], { type: "model/gltf-binary" })
+        : new Blob([JSON.stringify(result, null, 2)], { type: "application/json" });
 
+      const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
       a.download = fileName;
