@@ -63,7 +63,17 @@ function FaceTracking({ videoStream }: { videoStream: MediaStream }) {
     };
   }, [videoStream]);
 
-  return <video ref={videoRef} autoPlay playsInline muted style={{ display: "none" }} />;
+return (
+  <video
+    ref={videoRef}
+    autoPlay
+    playsInline
+    muted
+    id="video"
+    className="camera-feed w-67 tb:w-400 br-24 m-4"
+    style={{ opacity: 0, position: "absolute", pointerEvents: "none" }}
+  />
+);
 }
 
 export default FaceTracking;
