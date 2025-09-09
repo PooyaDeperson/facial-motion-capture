@@ -1,5 +1,12 @@
 import { Suspense, useState } from "react";
 import Loader from "./Loader";
+import "./App.css";
+import { Color } from "three";
+import { Canvas } from "@react-three/fiber";
+import CameraPermissions from "./camera-permission"; // ✅ make sure the path is correct
+import ColorSwitcher from "./components/ColorSwitcher"; // ✅ path must match
+import FaceTracking from "./FaceTracking"; // ✅ path must match
+import Avatar from "./Avatar"; // ✅ path must match
 
 function App() {
   const [url, setUrl] = useState<string>(

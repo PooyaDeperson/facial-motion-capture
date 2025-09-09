@@ -1,13 +1,4 @@
-import "./App.css";
-import { useState, Suspense } from "react";
-import { Color } from "three";
-import { Canvas } from "@react-three/fiber";
-import CameraPermissions from "./camera-permission"; // ✅ make sure the path is correct
-import ColorSwitcher from "./components/ColorSwitcher"; // ✅ path must match
-import FaceTracking from "./FaceTracking"; // ✅ path must match
-import Avatar from "./Avatar"; // ✅ path must match
-import Loader from "./Loader"; // ✅ if you created Loader.tsx
-// import { useEffect } from "react";
+import { useEffect } from "react";
 import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from "@mediapipe/tasks-vision";
 import { Euler, Matrix4 } from "three";
 
