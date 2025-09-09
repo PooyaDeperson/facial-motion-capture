@@ -1,18 +1,15 @@
-import { useEffect } from "react";
+// FaceTracking.tsx
+import { useEffect, useRef } from "react";
 import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from "@mediapipe/tasks-vision";
 import { Euler, Matrix4 } from "three";
 
-// Shared globals — Avatar still uses these
 export let blendshapes: any[] = [];
 export let rotation: Euler;
 export let headMesh: any[] = [];
 
-// Internal Mediapipe variables
-let video: HTMLVideoElement;
 let faceLandmarker: FaceLandmarker;
 let lastVideoTime = -1;
 
-// Options for Mediapipe FaceLandmarker
 const options: FaceLandmarkerOptions = {
   baseOptions: {
     modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
@@ -24,19 +21,24 @@ const options: FaceLandmarkerOptions = {
   outputFacialTransformationMatrixes: true,
 };
 
-function FaceTracking({ onStreamReady }: { onStreamReady: (vid: HTMLVideoElement) => void }) {
-  const setup = async () => {
+function FaceTracking({ videoStream }: { videoStream: MediaStream }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const setupFaceLandmarker = async () => {
     const filesetResolver = await FilesetResolver.forVisionTasks(
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
     );
     faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
   };
 
-  const predict = async () => {
+  const predict = () => {
+    const vid = videoRef.current;
+    if (!vid || !faceLandmarker) return;
+
     const nowInMs = Date.now();
-    if (lastVideoTime !== video.currentTime) {
-      lastVideoTime = video.currentTime;
-      const result = faceLandmarker.detectForVideo(video, nowInMs);
+    if (lastVideoTime !== vid.currentTime) {
+      lastVideoTime = vid.currentTime;
+      const result = faceLandmarker.detectForVideo(vid, nowInMs);
 
       if (result.faceBlendshapes?.length && result.faceBlendshapes[0].categories) {
         blendshapes = result.faceBlendshapes[0].categories;
@@ -45,30 +47,23 @@ function FaceTracking({ onStreamReady }: { onStreamReady: (vid: HTMLVideoElement
         rotation = new Euler().setFromRotationMatrix(matrix);
       }
     }
-    window.requestAnimationFrame(predict);
-  };
 
-  const handleVideoReady = (vid: HTMLVideoElement) => {
-    video = vid;
-    video.addEventListener("loadeddata", predict);
-    onStreamReady(vid);
+    requestAnimationFrame(predict);
   };
 
   useEffect(() => {
-    setup();
-  }, []);
+    if (!videoStream) return;
 
-  return (
-    <video
-      className="camera-feed w-67 tb:w-400 br-24 m-4"
-      id="video"
-      autoPlay
-      playsInline
-      ref={(el) => {
-        if (el) handleVideoReady(el);
-      }}
-    ></video>
-  );
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    vid.srcObject = videoStream;
+    vid.onloadeddata = () => {
+      setupFaceLandmarker().then(predict);
+    };
+  }, [videoStream]);
+
+  return <video ref={videoRef} autoPlay playsInline muted style={{ display: "none" }} />;
 }
 
 export default FaceTracking;
