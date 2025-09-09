@@ -70,8 +70,8 @@ return (
     playsInline
     muted
     id="video"
-    className="camera-feed w-67 tb:w-400 br-24 m-4"
-    style={{ opacity: 0, position: "absolute", pointerEvents: "none" }}
+    className="camera-feed w-67 tb:w-400 br-24 m-4" // keep your Tailwind/CSS classes
+    style={{}} // no display: none, fully visible
   />
 );
 }
