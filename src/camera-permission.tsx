@@ -33,7 +33,7 @@ function PermissionPopup({ title, subtitle, buttonText, onClick, showButton }: a
 }
 
 interface CameraPermissionsProps {
-  onStreamReady: (video: HTMLVideoElement) => void;
+  onStreamReady: (stream: MediaStream) => void;
 }
 
 export default function CameraPermissions({ onStreamReady }: CameraPermissionsProps) {
@@ -42,23 +42,25 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
   const [showRefreshPopup, setShowRefreshPopup] = useState(false); // <-- NEW STATE
 
-  const requestCamera = async (deviceId?: string) => {
-    try {
-      const constraints: MediaStreamConstraints = {
-        video: deviceId ? { deviceId: { exact: deviceId } } : { width: 1280, height: 720 },
-        audio: false,
-      };
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      setPermissionState("granted");
+const requestCamera = async (deviceId?: string) => {
+  try {
+    const constraints: MediaStreamConstraints = {
+      video: deviceId ? { deviceId: { exact: deviceId } } : { width: 1280, height: 720 },
+      audio: false,
+    };
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    setPermissionState("granted");
 
-      const video = document.getElementById("video") as HTMLVideoElement;
-      if (video) video.srcObject = stream;
-      onStreamReady(video);
-    } catch (err) {
-      console.error("Camera error:", err);
-      setPermissionState("denied");
-    }
-  };
+    const video = document.getElementById("video") as HTMLVideoElement;
+    if (video) video.srcObject = stream;
+
+    onStreamReady(stream); // <-- pass MediaStream instead of HTMLVideoElement
+  } catch (err) {
+    console.error("Camera error:", err);
+    setPermissionState("denied");
+  }
+};
+
 
   const loadCameras = async () => {
     const devices = await navigator.mediaDevices.enumerateDevices();
