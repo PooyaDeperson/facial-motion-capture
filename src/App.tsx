@@ -1,30 +1,35 @@
-import { Suspense, useState } from "react";
-import Loader from "./Loader";
 import "./App.css";
+import { useState, Suspense } from "react";
 import { Color } from "three";
 import { Canvas } from "@react-three/fiber";
-import CameraPermissions from "./camera-permission"; // ✅ make sure the path is correct
-import ColorSwitcher from "./components/ColorSwitcher"; // ✅ path must match
-import FaceTracking from "./FaceTracking"; // ✅ path must match
-import Avatar from "./Avatar"; // ✅ path must match
+import CameraPermissions from "./camera-permission";
+import ColorSwitcher from "./components/ColorSwitcher";
+import FaceTracking from "./FaceTracking";
+import Avatar from "./Avatar";
+import Loader from "./Loader";
 
 function App() {
   const [url, setUrl] = useState<string>(
     "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024"
   );
-  const [avatarReady, setAvatarReady] = useState(false);
 
-  const handleStreamReady = (vid: HTMLVideoElement) => {
-    console.log("Video stream ready:", vid);
+  const [avatarReady, setAvatarReady] = useState(false);
+  const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
+
+  // Called when CameraPermissions provides a stream
+  const handleStreamReady = (stream: MediaStream) => {
+    setVideoStream(stream);
   };
 
   return (
     <div className="App">
+      {/* Camera permissions & stream setup */}
       <CameraPermissions onStreamReady={handleStreamReady} />
 
-      {/* Load FaceTracking only when avatar is ready ✅ */}
-      {avatarReady && <FaceTracking onStreamReady={handleStreamReady} />}
+      {/* Face tracking only starts when avatar and camera are ready */}
+      {avatarReady && videoStream && <FaceTracking videoStream={videoStream} />}
 
+      {/* 3D Avatar canvas */}
       <Canvas
         className="avatar-container bottom-0 pos-abs z-1"
         camera={{ fov: 25 }}
@@ -35,13 +40,16 @@ function App() {
         <pointLight position={[-10, 0, 10]} intensity={0.5} castShadow />
         <pointLight position={[0, 0, 10]} intensity={0.5} castShadow />
 
+        {/* Suspense shows loader until avatar is fully loaded */}
         <Suspense fallback={<Loader />}>
           <Avatar url={url} onLoaded={() => setAvatarReady(true)} />
         </Suspense>
       </Canvas>
 
+      {/* UI components */}
       <ColorSwitcher />
     </div>
   );
 }
+
 export default App;
