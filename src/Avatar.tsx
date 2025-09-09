@@ -1,10 +1,14 @@
-import { useEffect } from 'react';
-import { useFrame, useGraph } from '@react-three/fiber';
-import { useGLTF } from '@react-three/drei';
-import { blendshapes, rotation, headMesh } from './FaceTracking';
+import { useEffect } from "react";
+import { useFrame, useGraph } from "@react-three/fiber";
+import { useGLTF } from "@react-three/drei";
+import { blendshapes, rotation, headMesh } from "./FaceTracking";
 
-// Avatar component renders the GLTF model and applies blendshapes & head rotation
-function Avatar({ url }: { url: string }) {
+interface AvatarProps {
+  url: string;
+  onLoaded?: () => void;
+}
+
+function Avatar({ url, onLoaded }: AvatarProps) {
   const { scene } = useGLTF(url);
   const { nodes } = useGraph(scene);
 
@@ -14,12 +18,14 @@ function Avatar({ url }: { url: string }) {
     if (nodes.Wolf3D_Beard) headMesh.push(nodes.Wolf3D_Beard);
     if (nodes.Wolf3D_Avatar) headMesh.push(nodes.Wolf3D_Avatar);
     if (nodes.Wolf3D_Head_Custom) headMesh.push(nodes.Wolf3D_Head_Custom);
+
+    if (onLoaded) onLoaded(); // ✅ fire callback
   }, [nodes, url]);
 
   useFrame(() => {
     if (blendshapes.length > 0) {
-      blendshapes.forEach(element => {
-        headMesh.forEach(mesh => {
+      blendshapes.forEach((element) => {
+        headMesh.forEach((mesh) => {
           let index = mesh.morphTargetDictionary[element.categoryName];
           if (index >= 0) {
             mesh.morphTargetInfluences[index] = element.score;
