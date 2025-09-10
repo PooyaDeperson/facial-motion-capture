@@ -218,6 +218,9 @@ html {
 .p-6 {
   padding: 32px;
 }
+.pb-86 {
+    padding-bottom: 86px;
+}
 
 
 /* Margin helpers */
@@ -294,7 +297,7 @@ html {
 .tab-button {
     width: 60px;
     height: 60px;
-    border-radius: 12px;
+    /* border-radius: 12px; */
     border: none;
     background: none;
     cursor: pointer;
@@ -322,6 +325,8 @@ html {
     align-items: flex-start;
     gap: 30px;
     height: 100%;
+    width: 100%;
+    justify-content: space-between;
 }
 /* flexbox types */
 
