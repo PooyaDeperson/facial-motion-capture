@@ -56,16 +56,18 @@ const ScreenRecorder: React.FC = () => {
     setMediaRecorder(recorder);
   };
 
-  const stopRecording = () => {
-    setRecording(false);
-    mediaRecorder?.stop();
-    mediaRecorder?.onstop = () => {
+const stopRecording = () => {
+  setRecording(false);
+  if (mediaRecorder) {
+    mediaRecorder.onstop = () => {
       const blob = new Blob(chunks, { type: "video/webm" });
       const url = URL.createObjectURL(blob);
       setDownloadUrl(url);
       setChunks([]);
     };
-  };
+    mediaRecorder.stop();
+  }
+};
 
   return (
     <div style={{ position: "absolute", top: 0, right: 0, zIndex: 9999 }}>
