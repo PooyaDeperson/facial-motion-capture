@@ -7,6 +7,8 @@ import ColorSwitcher from "./components/ColorSwitcher";
 import FaceTracking from "./FaceTracking";
 import Avatar from "./Avatar";
 import Loader from "./Loader";
+import ScreenRecorder from "./ScreenRecorder";
+
 
 function App() {
   const [url, setUrl] = useState<string>(
@@ -48,6 +50,8 @@ function App() {
 
       {/* UI components */}
       <ColorSwitcher />
+      {/* Screen recorder overlay */}
+      <ScreenRecorder />
     </div>
   );
 }
