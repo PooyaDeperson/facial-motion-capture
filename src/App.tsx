@@ -10,7 +10,7 @@ import Loader from "./Loader";
 
 function App() {
   const [url, setUrl] = useState<string>(
-    "https://models.readyplayer.me/68c19bef8ac0d37a66aa2930.glb?morphTargets=ARKit&textureAtlas=1024"
+    "https://models.readyplayer.me/6460d95f9ae10f45bffb2864.glb?morphTargets=ARKit&textureAtlas=1024"
   );
 
   const [avatarReady, setAvatarReady] = useState(false);
