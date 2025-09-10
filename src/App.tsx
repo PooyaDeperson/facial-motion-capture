@@ -32,9 +32,8 @@ function App() {
       {/* 3D Avatar canvas */}
       <Canvas
         className="avatar-container bottom-0 pos-abs z-1"
-        camera={{ fov: 27
-          // , 
-          // position: [0, 0, 2] 
+        camera={{ fov: 27,
+          position: [0, 0, 0] 
         }} // ~50mm equivalent and moved closer
         shadows
       >
