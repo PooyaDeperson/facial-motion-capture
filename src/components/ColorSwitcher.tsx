@@ -91,7 +91,7 @@ const ColorPatternSwitcher: React.FC = () => {
       className="popup-container selector-container cc-pattern-selector-container pos-abs bottom-0 p-1 left-0 z-7 m-6 br-24"
       ref={containerRef}
     >
-      <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-3 gap-2 br- p-1">
+      <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-3 gap-2 br-16 p-1">
         <button
           className={`icon-holder br-12 tab-button ${
             expandedTab === "color" ? "active" : ""
