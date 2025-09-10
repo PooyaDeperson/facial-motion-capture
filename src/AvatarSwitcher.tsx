@@ -13,7 +13,7 @@ const avatars = [
   },
   {
     name: "Avatar 2",
-    url: "https://models.readyplayer.me/68c1b98163cdbdf2d3403aab.glb",
+    url: "https://models.readyplayer.me/68c1b98163cdbdf2d3403aab.glb?morphTargets=ARKit&textureAtlas=1024",
   },
 ];
 
