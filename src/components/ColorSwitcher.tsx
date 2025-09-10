@@ -116,7 +116,7 @@ const ColorPatternSwitcher: React.FC = () => {
             <div
               key={color.hex}
               onClick={() => setActiveColor(color.hex)}
-              className={`icon-holder color-card br-12 color-${color.hex.replace(
+              className={`icon-holder color-card br-16 color-${color.hex.replace(
                 "#",
                 ""
               )} ${activeColor === color.hex ? "selected" : ""}`}
@@ -132,7 +132,7 @@ const ColorPatternSwitcher: React.FC = () => {
             <div
               key={pattern.name}
               onClick={() => setActivePattern(pattern.value)}
-              className={`icon-holder pattern-card br-12 pattern-${pattern.name
+              className={`icon-holder pattern-card br-16 pattern-${pattern.name
                 .toLowerCase()
                 .replace(/\s+/g, "-")} ${
                 activePattern === pattern.value ? "selected" : ""
