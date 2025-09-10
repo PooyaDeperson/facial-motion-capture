@@ -460,10 +460,9 @@ svg {
 .pattern-card:hover {
   transform: rotate(0deg);
 }
-.color-card.selected),
-.pattern-card.selected) {
+.color-card.selected,
+.pattern-card.selected {
   border: 3px solid var(--gray-900);
-
 }
 button.dropdown {
   padding: 4px 10px;
