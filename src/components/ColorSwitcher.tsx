@@ -90,7 +90,7 @@ const ColorPatternSwitcher: React.FC = () => {
       )}
 
       {expandedTab === "pattern" && (
-        <div className="selector-container pattern-container">
+        <div className="p-4 br-24 selector-inner-container inner-container selector-container pattern-container">
           {patterns.map((pattern) => (
             <div
               key={pattern.name}
