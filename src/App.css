@@ -88,7 +88,7 @@
   --gray-900: #272939;
   --purple-900: #4A13C0;
   --purple-800: #7F5DCA;
-
+  --white-color: #ffffff;
 }
 
 html {
@@ -317,15 +317,7 @@ html {
   transition: transform 0.2s ease;
 }
 
-.color-card,
-.pattern-card {
-  width: 81px;
-  height: 95px;
-  /* border-radius: 12px; */
-  cursor: pointer;
-  border: 2px solid var(--gray-900);
-  transition: transform 0.2s ease, border 0.2s ease;
-}
+
 
 .selector-container {
   min-height: 90px;
@@ -458,7 +450,21 @@ svg {
   background-position: top left;
   /* border-radius: 16px; */
 }
+.color-card:not(.selected),
+.pattern-card:not(.selected) {
+  box-shadow: 0px 0px 0px 3px var(--white-color)`;
+  border: 0px solid var(--gray-900);
 
+}
+.color-card:hover,
+.pattern-card:hover {
+  transform: rotate(0deg);
+}
+.color-card.selected),
+.pattern-card.selected) {
+  border: 3px solid var(--gray-900);
+
+}
 button.dropdown {
   padding: 4px 10px;
 }
@@ -573,6 +579,16 @@ button.cd-selected>.has-icon.selected-icon {
     height: 40px;
     position: absolute;
 }
+.color-card,
+.pattern-card {
+  width: 81px;
+  height: 95px;
+  /* border-radius: 12px; */
+  cursor: pointer;
+  transition: transform 0.2s ease, border 0.2s ease;
+
+}
+
 
 .icon-holder.pattern-card.pattern-none::before{
   content: var(--pattern-none-icon);
