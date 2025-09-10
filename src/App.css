@@ -314,9 +314,11 @@ html {
     transition: transform 0.2s ease, border 0.2s ease;
 }
 .selector-container {
-    width: 360px;
-    height: 270px;
+    min-height: 90px;
     overflow: hidden;
+    min-width: 160px;
+    max-width: 360px;
+    max-height: 330px;
 }
 .selector-inner-container {
     display: flex;
