@@ -6,6 +6,7 @@ const colors = [
   { hex: "#e6e6fa" },
   { hex: "#98ff98" },
   { hex: "#ffdab9" },
+  { hex:  "#ffdab9" },
   { hex: "#ffffff" },
 ];
 
@@ -13,9 +14,9 @@ const colors = [
 const patterns = [
   { name: "None", value: "" },
   { name: "Stripes", value: "repeating-linear-gradient(45deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 10px, transparent 10px, transparent 20px)" },
-  { name: "Dots", value: "radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px)" },
-  { name: "Diagonal", value: "repeating-linear-gradient(135deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 10px, transparent 10px, transparent 20px)" },
-  { name: "Grid", value: "linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)" },
+  // { name: "Dots", value: "radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px)" },
+  // { name: "Diagonal", value: "repeating-linear-gradient(135deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 10px, transparent 10px, transparent 20px)" },
+  // { name: "Grid", value: "linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)" },
   { name: "Waves", value: "radial-gradient(circle at 50% 50%, rgba(0,0,0,0.05) 25%, transparent 26%)" },
   { name: "Checker", value: "linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%)" },
   { name: "Crosshatch", value: "repeating-linear-gradient(0deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 5px, transparent 5px, transparent 10px), repeating-linear-gradient(90deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 5px, transparent 5px, transparent 10px)" },
