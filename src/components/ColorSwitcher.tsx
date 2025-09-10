@@ -1,15 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
-// Define the color options
+// Colors
 const colors = [
-  { hex: "#add8e6" }, // Light Blue default
-  { hex: "#e6e6fa" }, // Lavender
-  { hex: "#98ff98" }, // Mint
-  { hex: "#ffdab9" }, // Peach
-  { hex: "#ffffff" }, // White (optional, not default)
+  { hex: "#ffde98ff" },
+  { hex: "rgba(241, 162, 241, 1)" },
+  { hex: "#98ff98" },
+  { hex: "#ffc693ff" },
+  { hex: "#8bd9fbff" },
+  { hex: "#ffffff" },
 ];
 
-// Helper to check brightness for text contrast
+// Patterns (using CSS variables for background patterns)
+const patterns = [
+  { name: "None", value: "var(--pattern-none)" },
+  { name: "Stripes", value: "var(--pattern-stripes)" },
+  { name: "Waves", value: "var(--pattern-waves)" },
+  { name: "Checker", value: "var(--pattern-checker)" },
+  { name: "Crosshatch", value: "var(--pattern-crosshatch)" },
+  { name: "Waves2", value: "var(--pattern-waves2)" },
+];
+
+// Helper for text contrast
 const isDark = (hex: string) => {
   const c = hex.substring(1);
   const rgb = parseInt(c, 16);
@@ -20,130 +31,98 @@ const isDark = (hex: string) => {
   return luma < 128;
 };
 
-const ColorSwitcher: React.FC = () => {
-  const [expanded, setExpanded] = useState(false);
-  const [activeColor, setActiveColor] = useState<string>(() => {
-    return localStorage.getItem("activeColor") || colors[0].hex;
-  });
+const ColorPatternSwitcher: React.FC = () => {
+  const [activeColor, setActiveColor] = useState<string>(
+    () => localStorage.getItem("activeColor") || colors[0].hex
+  );
+  const [activePattern, setActivePattern] = useState<string>(
+    () => localStorage.getItem("activePattern") || ""
+  );
+  const [expandedTab, setExpandedTab] = useState<"color" | "pattern" | null>(
+    null
+  );
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    document.body.style.transition = "background-color 0.5s ease";
+    document.body.style.transition = "background 0.5s ease";
     document.body.style.backgroundColor = activeColor;
+    document.body.style.backgroundImage = activePattern;
     document.body.style.color = isDark(activeColor) ? "white" : "black";
     localStorage.setItem("activeColor", activeColor);
-  }, [activeColor]);
+    localStorage.setItem("activePattern", activePattern);
+  }, [activeColor, activePattern]);
+
+  // Close expanded tab if click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setExpandedTab(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <div className="color-switcher">
-      <div
-        className={`switcher-container ${expanded ? "expanded" : "collapsed"}`}
-        onClick={() => !expanded && setExpanded(true)}
-      >
-        {expanded && (
-          <button
-            onClick={() => setExpanded(false)}
-            className="close-button"
-          >
-            ✕
-          </button>
-        )}
+    <div
+      className="popup-container selector-container cc-pattern-selector-container pos-abs bottom-0 p-1 left-0 z-7 m-6 br-24"
+      ref={containerRef}
+    >
+      <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-3 gap-2 br-16 p-1">
+        <button
+          className={`icon-holder br-12 tab-button ${
+            expandedTab === "color" ? "active" : ""
+          }`}
+          onClick={() =>
+            setExpandedTab(expandedTab === "color" ? null : "color")
+          }
+        ></button>
+        <button
+          className={`icon-holder br-12 tab-button ${
+            expandedTab === "pattern" ? "active" : ""
+          }`}
+          onClick={() =>
+            setExpandedTab(expandedTab === "pattern" ? null : "pattern")
+          }
+        ></button>
+      </div>
 
-        <div className={`colors-grid ${expanded ? "expanded-grid" : "collapsed-grid"}`}>
+      {expandedTab === "color" && (
+        <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container color-container">
           {colors.map((color) => (
             <div
               key={color.hex}
               onClick={() => setActiveColor(color.hex)}
-              className={`color-card ${activeColor === color.hex ? "selected" : ""}`}
+              className={`icon-holder color-card br-16 color-${color.hex.replace(
+                "#",
+                ""
+              )} ${activeColor === color.hex ? "selected" : ""}`}
               style={{ backgroundColor: color.hex }}
             />
           ))}
         </div>
-      </div>
+      )}
 
-      <style>{`
-        .color-switcher {
-          position: fixed;
-          bottom: 20px;
-          left: 20px;
-          z-index: 50;
-        }
-
-        .switcher-container {
-          position: relative;
-          background: #fff;
-          border-radius: 16px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-          transition: all 0.3s ease;
-          overflow: hidden;
-        }
-
-        .switcher-container.collapsed {
-          width: 56px;
-          height: 56px;
-          padding: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-        }
-
-        .switcher-container.expanded {
-          width: 280px;
-          padding: 20px;
-        }
-
-        .close-button {
-          position: absolute;
-          top: 8px;
-          right: 8px;
-          background: #e5e5e5;
-          border: none;
-          border-radius: 6px;
-          padding: 4px 8px;
-          font-size: 14px;
-          cursor: pointer;
-          transition: background 0.2s ease;
-        }
-
-        .close-button:hover {
-          background: #d4d4d4;
-        }
-
-        .colors-grid {
-          display: grid;
-          gap: 12px;
-          transition: all 0.3s ease;
-        }
-
-        .colors-grid.collapsed-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .colors-grid.expanded-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-
-        .color-card {
-          width: 40px;
-          height: 40px;
-          border-radius: 12px;
-          cursor: pointer;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-          border: 2px solid transparent;
-          transition: transform 0.2s ease, border 0.2s ease;
-        }
-
-        .color-card:hover {
-          transform: scale(1.05);
-        }
-
-        .color-card.selected {
-          border: 2px solid #000;
-          transform: scale(1.1);
-        }
-      `}</style>
+      {expandedTab === "pattern" && (
+        <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container pattern-container">
+          {patterns.map((pattern) => (
+            <div
+              key={pattern.name}
+              onClick={() => setActivePattern(pattern.value)}
+              className={`icon-holder pattern-card br-16 pattern-${pattern.name
+                .toLowerCase()
+                .replace(/\s+/g, "-")} ${
+                activePattern === pattern.value ? "selected" : ""
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
-export default ColorSwitcher;
+export default ColorPatternSwitcher;
