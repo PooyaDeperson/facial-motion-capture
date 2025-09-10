@@ -10,34 +10,14 @@ const colors = [
   { hex: "#ffffff" },
 ];
 
-// Patterns (dummy background patterns as CSS gradients or shapes)
+// Patterns (using CSS variables for background patterns)
 const patterns = [
-  { name: "None", value: "" },
-  {
-    name: "Stripes",
-    value:
-      "repeating-linear-gradient(45deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 10px, transparent 10px, transparent 20px)",
-  },
-  {
-    name: "Waves",
-    value:
-      "radial-gradient(circle at 50% 50%, rgba(0,0,0,0.05) 25%, transparent 26%)",
-  },
-  {
-    name: "Checker",
-    value:
-      "linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%)",
-  },
-  {
-    name: "Crosshatch",
-    value:
-      "repeating-linear-gradient(0deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 5px, transparent 5px, transparent 10px), repeating-linear-gradient(90deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 5px, transparent 5px, transparent 10px)",
-  },
-  {
-    name: "Waves2",
-    value:
-      "repeating-linear-gradient(90deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 5px, transparent 5px, transparent 10px)",
-  },
+  { name: "None", value: "var(--pattern-none)" },
+  { name: "Stripes", value: "var(--pattern-stripes)" },
+  { name: "Waves", value: "var(--pattern-waves)" },
+  { name: "Checker", value: "var(--pattern-checker)" },
+  { name: "Crosshatch", value: "var(--pattern-crosshatch)" },
+  { name: "Waves2", value: "var(--pattern-waves2)" },
 ];
 
 // Helper for text contrast
