@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 // Colors
 const colors = [
   { hex: "#ffde98ff" },
-  { hex: "rgba(241, 162, 241, 1)
+  { hex: "rgba(241, 162, 241, 1)"},
   { hex: "#98ff98" },
   { hex: "#ffc693ff" },
   { hex: "#8bd9fbff" },
@@ -67,13 +67,13 @@ const ColorPatternSwitcher: React.FC = () => {
       className={`icon-holder br-12 tab-button ${expandedTab === "color" ? "active" : ""}`}
       onClick={() => setExpandedTab(expandedTab === "color" ? null : "color")}
     >
-      🎨
+      
     </button>
     <button
       className={`icon-holder br-12 tab-button ${expandedTab === "pattern" ? "active" : ""}`}
       onClick={() => setExpandedTab(expandedTab === "pattern" ? null : "pattern")}
     >
-      ▓
+      
     </button>
   </div>
 
