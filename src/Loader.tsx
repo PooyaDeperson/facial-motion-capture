@@ -6,7 +6,9 @@ function Loader() {
     <Html center>
       <div className="loader">
         <div className="spinner" />
-        <p>{Math.round(progress)}% loaded</p>
+        <p className="avatar-loader-text">
+          {/* {Math.round(progress)} */}
+          avatar coming...</p>
       </div>
     </Html>
   );
