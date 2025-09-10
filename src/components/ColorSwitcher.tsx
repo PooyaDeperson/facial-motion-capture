@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 // Colors
 const colors = [
   { hex: "#ffde98ff" },
-  { hex: "rgba(241, 162, 241, 1)" },
+  { hex: "#f1a2f1ff" },
   { hex: "#98ff98" },
   { hex: "#ffc693ff" },
   { hex: "#8bd9fbff" },
