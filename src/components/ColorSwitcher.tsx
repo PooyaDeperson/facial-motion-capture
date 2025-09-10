@@ -2,11 +2,11 @@ import React, { useEffect, useState, useRef } from "react";
 
 // Colors
 const colors = [
-  { hex: "#add8e6" },
-  { hex: "#e6e6fa" },
+  { hex: "#ffde98ff" },
+  { hex: "rgba(241, 162, 241, 1)
   { hex: "#98ff98" },
-  { hex: "#ffdab9" },
-  { hex:  "#ffdab9" },
+  { hex: "#ffc693ff" },
+  { hex: "#8bd9fbff" },
   { hex: "#ffffff" },
 ];
 
@@ -62,46 +62,47 @@ const ColorPatternSwitcher: React.FC = () => {
 
   return (
     <div className="popup-container selector-container cc-pattern-selector-container pos-abs bottom-0 p-1 left-0 z-7 m-6 br-24" ref={containerRef}>
-      <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-3 gap-2 br-100 p-1">
-        <button
-          className={`br-100 tab-button ${expandedTab === "color" ? "active" : ""}`}
-          onClick={() => setExpandedTab(expandedTab === "color" ? null : "color")}
-        >
-          🎨
-        </button>
-        <button
-          className={`br-100 tab-button ${expandedTab === "pattern" ? "active" : ""}`}
-          onClick={() => setExpandedTab(expandedTab === "pattern" ? null : "pattern")}
-        >
-          ▓
-        </button>
-      </div>
+  <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-3 gap-2 br- p-1">
+    <button
+      className={`icon-holder br-12 tab-button ${expandedTab === "color" ? "active" : ""}`}
+      onClick={() => setExpandedTab(expandedTab === "color" ? null : "color")}
+    >
+      🎨
+    </button>
+    <button
+      className={`icon-holder br-12 tab-button ${expandedTab === "pattern" ? "active" : ""}`}
+      onClick={() => setExpandedTab(expandedTab === "pattern" ? null : "pattern")}
+    >
+      ▓
+    </button>
+  </div>
 
-      {expandedTab === "color" && (
-        <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container color-container">
-          {colors.map((color) => (
-            <div
-              key={color.hex}
-              onClick={() => setActiveColor(color.hex)}
-              className={`color-card br-12 ${activeColor === color.hex ? "selected" : ""}`}
-              style={{ backgroundColor: color.hex }}
-            />
-          ))}
-        </div>
-      )}
+  {expandedTab === "color" && (
+    <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container color-container">
+      {colors.map((color) => (
+        <div
+          key={color.hex}
+          onClick={() => setActiveColor(color.hex)}
+          className={`icon-holder color-card br-12 color-${color.hex.replace("#", "")} ${activeColor === color.hex ? "selected" : ""}`}
+          style={{ backgroundColor: color.hex }}
+        />
+      ))}
+    </div>
+  )}
 
-      {expandedTab === "pattern" && (
-        <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container pattern-container">
-          {patterns.map((pattern) => (
-            <div
-              key={pattern.name}
-              onClick={() => setActivePattern(pattern.value)}
-              className={`pattern-card br-12 ${activePattern === pattern.value ? "selected" : ""}`}
-            >
-              {pattern.name}
-            </div>
-          ))}
-        </div>
+  {expandedTab === "pattern" && (
+    <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container pattern-container">
+      {patterns.map((pattern) => (
+        <div
+          key={pattern.name}
+          onClick={() => setActivePattern(pattern.value)}
+          className={`icon-holder pattern-card br-12 pattern-${pattern.name.toLowerCase().replace(/\s+/g, "-")} ${activePattern === pattern.value ? "selected" : ""}`}
+        />
+      ))}
+    </div>
+  )}
+</div>
+
       )}
 
       {/* <style>{`
