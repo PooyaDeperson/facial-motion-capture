@@ -344,7 +344,7 @@ svg {
 
 /* ------------------------ ------------------------ mobile first styles */
 .w-67 {
-max-width: 192px;
+    max-width: 192px;
     min-width: 192px;
 
 }
