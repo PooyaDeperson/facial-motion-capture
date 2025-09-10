@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 // Colors
 const colors = [
   { hex: "#ffde98ff" },
-  { hex: "rgba(241, 162, 241, 1)"},
+  { hex: "rgba(241, 162, 241, 1)" },
   { hex: "#98ff98" },
   { hex: "#ffc693ff" },
   { hex: "#8bd9fbff" },
@@ -13,14 +13,31 @@ const colors = [
 // Patterns (dummy background patterns as CSS gradients or shapes)
 const patterns = [
   { name: "None", value: "" },
-  { name: "Stripes", value: "repeating-linear-gradient(45deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 10px, transparent 10px, transparent 20px)" },
-  // { name: "Dots", value: "radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px)" },
-  // { name: "Diagonal", value: "repeating-linear-gradient(135deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 10px, transparent 10px, transparent 20px)" },
-  // { name: "Grid", value: "linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)" },
-  { name: "Waves", value: "radial-gradient(circle at 50% 50%, rgba(0,0,0,0.05) 25%, transparent 26%)" },
-  { name: "Checker", value: "linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%)" },
-  { name: "Crosshatch", value: "repeating-linear-gradient(0deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 5px, transparent 5px, transparent 10px), repeating-linear-gradient(90deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 5px, transparent 5px, transparent 10px)" },
-  { name: "Waves2", value: "repeating-linear-gradient(90deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 5px, transparent 5px, transparent 10px)" },
+  {
+    name: "Stripes",
+    value:
+      "repeating-linear-gradient(45deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 10px, transparent 10px, transparent 20px)",
+  },
+  {
+    name: "Waves",
+    value:
+      "radial-gradient(circle at 50% 50%, rgba(0,0,0,0.05) 25%, transparent 26%)",
+  },
+  {
+    name: "Checker",
+    value:
+      "linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%)",
+  },
+  {
+    name: "Crosshatch",
+    value:
+      "repeating-linear-gradient(0deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 5px, transparent 5px, transparent 10px), repeating-linear-gradient(90deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 5px, transparent 5px, transparent 10px)",
+  },
+  {
+    name: "Waves2",
+    value:
+      "repeating-linear-gradient(90deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 5px, transparent 5px, transparent 10px)",
+  },
 ];
 
 // Helper for text contrast
@@ -35,9 +52,15 @@ const isDark = (hex: string) => {
 };
 
 const ColorPatternSwitcher: React.FC = () => {
-  const [activeColor, setActiveColor] = useState<string>(() => localStorage.getItem("activeColor") || colors[0].hex);
-  const [activePattern, setActivePattern] = useState<string>(() => localStorage.getItem("activePattern") || "");
-  const [expandedTab, setExpandedTab] = useState<"color" | "pattern" | null>(null);
+  const [activeColor, setActiveColor] = useState<string>(
+    () => localStorage.getItem("activeColor") || colors[0].hex
+  );
+  const [activePattern, setActivePattern] = useState<string>(
+    () => localStorage.getItem("activePattern") || ""
+  );
+  const [expandedTab, setExpandedTab] = useState<"color" | "pattern" | null>(
+    null
+  );
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -52,7 +75,10 @@ const ColorPatternSwitcher: React.FC = () => {
   // Close expanded tab if click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
         setExpandedTab(null);
       }
     };
@@ -61,138 +87,60 @@ const ColorPatternSwitcher: React.FC = () => {
   }, []);
 
   return (
-    <div className="popup-container selector-container cc-pattern-selector-container pos-abs bottom-0 p-1 left-0 z-7 m-6 br-24" ref={containerRef}>
-  <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-3 gap-2 br- p-1">
-    <button
-      className={`icon-holder br-12 tab-button ${expandedTab === "color" ? "active" : ""}`}
-      onClick={() => setExpandedTab(expandedTab === "color" ? null : "color")}
+    <div
+      className="popup-container selector-container cc-pattern-selector-container pos-abs bottom-0 p-1 left-0 z-7 m-6 br-24"
+      ref={containerRef}
     >
-      
-    </button>
-    <button
-      className={`icon-holder br-12 tab-button ${expandedTab === "pattern" ? "active" : ""}`}
-      onClick={() => setExpandedTab(expandedTab === "pattern" ? null : "pattern")}
-    >
-      
-    </button>
-  </div>
+      <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-3 gap-2 br- p-1">
+        <button
+          className={`icon-holder br-12 tab-button ${
+            expandedTab === "color" ? "active" : ""
+          }`}
+          onClick={() =>
+            setExpandedTab(expandedTab === "color" ? null : "color")
+          }
+        ></button>
+        <button
+          className={`icon-holder br-12 tab-button ${
+            expandedTab === "pattern" ? "active" : ""
+          }`}
+          onClick={() =>
+            setExpandedTab(expandedTab === "pattern" ? null : "pattern")
+          }
+        ></button>
+      </div>
 
-  {expandedTab === "color" && (
-    <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container color-container">
-      {colors.map((color) => (
-        <div
-          key={color.hex}
-          onClick={() => setActiveColor(color.hex)}
-          className={`icon-holder color-card br-12 color-${color.hex.replace("#", "")} ${activeColor === color.hex ? "selected" : ""}`}
-          style={{ backgroundColor: color.hex }}
-        />
-      ))}
-    </div>
-  )}
-
-  {expandedTab === "pattern" && (
-    <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container pattern-container">
-      {patterns.map((pattern) => (
-        <div
-          key={pattern.name}
-          onClick={() => setActivePattern(pattern.value)}
-          className={`icon-holder pattern-card br-12 pattern-${pattern.name.toLowerCase().replace(/\s+/g, "-")} ${activePattern === pattern.value ? "selected" : ""}`}
-        />
-      ))}
-    </div>
-  )}
-</div>
-
+      {expandedTab === "color" && (
+        <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container color-container">
+          {colors.map((color) => (
+            <div
+              key={color.hex}
+              onClick={() => setActiveColor(color.hex)}
+              className={`icon-holder color-card br-12 color-${color.hex.replace(
+                "#",
+                ""
+              )} ${activeColor === color.hex ? "selected" : ""}`}
+              style={{ backgroundColor: color.hex }}
+            />
+          ))}
+        </div>
       )}
 
-      {/* <style>{`
-        .main-container {
-          position: fixed;
-          bottom: 20px;
-          left: 20px;
-          width: 140px;
-          z-index: 50;
-        }
-
-        .segmented-control {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 10px;
-        }
-
-        .tab-button {
-          width: 60px;
-          height: 60px;
-          border-radius: 12px;
-          border: none;
-          background: #fff;
-          cursor: pointer;
-          font-size: 24px;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-          transition: transform 0.2s ease;
-        }
-
-        .tab-button:hover {
-          transform: scale(1.05);
-        }
-
-        .tab-button.active {
-          background: #e5e5e5;
-        }
-
-        .selector-container {
-          background: #fff;
-          border-radius: 16px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-          padding: 12px;
-          display: grid;
-          gap: 10px;
-        }
-
-        .color-container {
-          grid-template-columns: repeat(3, 1fr);
-        }
-
-        .color-card {
-          width: 40px;
-          height: 40px;
-          border-radius: 12px;
-          cursor: pointer;
-          border: 2px solid transparent;
-          transition: transform 0.2s ease, border 0.2s ease;
-        }
-
-        .color-card:hover {
-          transform: scale(1.05);
-        }
-
-        .color-card.selected {
-          border: 2px solid #000;
-          transform: scale(1.1);
-        }
-
-        .pattern-container {
-          grid-template-columns: 1fr;
-        }
-
-        .pattern-card {
-          padding: 8px 12px;
-          border-radius: 8px;
-          cursor: pointer;
-          border: 2px solid transparent;
-          text-align: center;
-          transition: background 0.2s ease, border 0.2s ease;
-        }
-
-        .pattern-card:hover {
-          background: #f0f0f0;
-        }
-
-        .pattern-card.selected {
-          border: 2px solid #000;
-          background: #e5e5e5;
-        }
-      `}</style> */}
+      {expandedTab === "pattern" && (
+        <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container pattern-container">
+          {patterns.map((pattern) => (
+            <div
+              key={pattern.name}
+              onClick={() => setActivePattern(pattern.value)}
+              className={`icon-holder pattern-card br-12 pattern-${pattern.name
+                .toLowerCase()
+                .replace(/\s+/g, "-")} ${
+                activePattern === pattern.value ? "selected" : ""
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
