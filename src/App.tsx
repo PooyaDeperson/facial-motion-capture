@@ -34,7 +34,7 @@ function App() {
             className="avatar-container bottom-0 pos-abs z-1"
             camera={{
               fov: 27,
-              position: [0, 0, 4.3], // ~50mm equivalent and moved closer
+              position: [0, 0, 4.2], // ~50mm equivalent and moved closer
             }}
             dpr={[1, window.devicePixelRatio]} // adaptive, safe
             shadows
@@ -49,8 +49,6 @@ function App() {
               <Avatar url={url} onLoaded={() => setAvatarReady(true)} />
             </Suspense>
           </Canvas>
-
-
       {/* UI components */}
       <ColorSwitcher />
     </div>
