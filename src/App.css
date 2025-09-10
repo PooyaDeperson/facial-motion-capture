@@ -491,13 +491,24 @@ svg {
   max-width: calc(100vw - 40px);
 
 }
-
+  .selector-inner-container {
+    overflow-y:scroll;
+}
 
 /* ------------------------ ------------------------ end of mobile */
+/* ------------------------ ------------------------ special breakpoint for very smaller devices but not computer on minized windows */
+@media (min-width: 400px) { 
+  .selector-inner-container {
+    overflow-y:hidden
+}
+}
+/* ------------------------ ------------------------ end of special breakpoint for very smaller devices but not computer on minized windows */
+
 
 /* ------------------------ ------------------------ tablet and greater styles */
 /* Tablet */
 @media (min-width: 769px) {
+
   .tb\:w-400 {
     min-width: 400px;
     max-width: 400px;
