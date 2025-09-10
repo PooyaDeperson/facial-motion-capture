@@ -307,7 +307,7 @@ html {
     height: 95px;
     /* border-radius: 12px; */
     cursor: pointer;
-    border: 2px solid transparent;
+    border: 2px solid var(--gray-900);
     transition: transform 0.2s ease, border 0.2s ease;
 }
 .selector-container {
