@@ -535,6 +535,9 @@ svg {
 .pattern-card:hover {
   transform: rotate(0deg);
 }
+button.icon-holder:hover {
+    background: var(--gray-100);
+}
 
 .pattern-card.pattern-none::before {
   content: var(--notallowed-icon);
