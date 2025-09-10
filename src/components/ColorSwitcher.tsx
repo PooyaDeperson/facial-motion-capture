@@ -60,7 +60,7 @@ const ColorPatternSwitcher: React.FC = () => {
   }, []);
 
   return (
-    <div className="popup-container select-container cc-pattern-selector-container pos-abs bottom-0 p-1 left-0 z-7 m-6 br-24" ref={containerRef}>
+    <div className="popup-container selector-container cc-pattern-selector-container pos-abs bottom-0 p-1 left-0 z-7 m-6 br-24" ref={containerRef}>
       <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-3 gap-2 br-100 p-1">
         <button
           className={`br-100 tab-button ${expandedTab === "color" ? "active" : ""}`}
@@ -77,7 +77,7 @@ const ColorPatternSwitcher: React.FC = () => {
       </div>
 
       {expandedTab === "color" && (
-        <div className="p-4 br-24 selector-inner-container inner-container selector-container color-container">
+        <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container color-container">
           {colors.map((color) => (
             <div
               key={color.hex}
@@ -90,7 +90,7 @@ const ColorPatternSwitcher: React.FC = () => {
       )}
 
       {expandedTab === "pattern" && (
-        <div className="p-4 br-24 selector-inner-container inner-container selector-container pattern-container">
+        <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container pattern-container">
           {patterns.map((pattern) => (
             <div
               key={pattern.name}
