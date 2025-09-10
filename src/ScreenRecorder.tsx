@@ -7,62 +7,61 @@ const ScreenRecorder: React.FC = () => {
   const [chunks, setChunks] = useState<Blob[]>([]);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
-  const cropRef = useRef<HTMLDivElement>(null);
+  // Ref for Rnd (react-rnd) component
+  const cropRef = useRef<Rnd>(null);
   const canvasRef = useRef<HTMLCanvasElement>(document.createElement("canvas"));
 
-const startRecording = async () => {
-  const stream = await navigator.mediaDevices.getDisplayMedia({
-    video: true,
-    audio: false,
-  });
+  const startRecording = async () => {
+    const stream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+      audio: false,
+    });
 
-  const cropDiv = cropRef.current;
-  if (!cropDiv) return;
+    const cropEl = cropRef.current?.resizableElement.current;
+    if (!cropEl) return;
 
-    const { width, height, x, y } = cropDiv.getBoundingClientRect();
+    const { width, height, x, y } = cropEl.getBoundingClientRect();
 
-  // Hidden video element
-  const video = document.createElement("video");
-  video.srcObject = stream;
-  video.play();
+    // Hidden video element to draw frames
+    const video = document.createElement("video");
+    video.srcObject = stream;
+    video.play();
 
-  // Set canvas size to crop area
-  const canvas = canvasRef.current;
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
+    const canvas = canvasRef.current;
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-  // Draw loop
-  const drawFrame = () => {
-    if (!recording) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(video, x, y, width, height, 0, 0, width, height);
-    requestAnimationFrame(drawFrame);
-  };
-  setRecording(true);
-  drawFrame();
+    setRecording(true);
 
-  // Record canvas
-  const canvasStream = canvas.captureStream(30);
-  const recorder = new MediaRecorder(canvasStream);
-  recorder.ondataavailable = (e) => setChunks((prev) => [...prev, e.data]);
-  recorder.start();
-  setMediaRecorder(recorder);
-};
-
-const stopRecording = () => {
-  setRecording(false);
-  if (mediaRecorder) {
-    mediaRecorder.onstop = () => {
-      const blob = new Blob(chunks, { type: "video/webm" });
-      const url = URL.createObjectURL(blob);
-      setDownloadUrl(url);
-      setChunks([]);
+    const drawFrame = () => {
+      if (!recording) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(video, x, y, width, height, 0, 0, width, height);
+      requestAnimationFrame(drawFrame);
     };
-    mediaRecorder.stop();
-  }
-};
+    drawFrame();
+
+    const canvasStream = canvas.captureStream(30);
+    const recorder = new MediaRecorder(canvasStream);
+    recorder.ondataavailable = (e) => setChunks((prev) => [...prev, e.data]);
+    recorder.start();
+    setMediaRecorder(recorder);
+  };
+
+  const stopRecording = () => {
+    setRecording(false);
+    if (mediaRecorder) {
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: "video/webm" });
+        const url = URL.createObjectURL(blob);
+        setDownloadUrl(url);
+        setChunks([]);
+      };
+      mediaRecorder.stop();
+    }
+  };
 
   return (
     <div style={{ position: "absolute", top: 0, right: 0, zIndex: 9999 }}>
@@ -87,6 +86,7 @@ const stopRecording = () => {
           border: "2px dashed red",
           position: "absolute",
           zIndex: 10000,
+          background: "rgba(255,0,0,0.1)",
         }}
       />
     </div>
