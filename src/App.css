@@ -277,9 +277,39 @@ html {
 .br-24 {
   border-radius: 24px;
 }
+.br-100 {
+  border-radius: 999px;
+}
 
+.bg-blur {
 
+    backdrop-filter: blur(5.9px);
+    background-color: rgba(255, 255, 255, 0.5);
+}
 
+.tab-button.active {
+    background: white;
+}
+
+.tab-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 24px;
+    /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); */
+    transition: transform 0.2s ease;
+}
+.color-card, .pattern-card {
+    width: 81px;
+    height: 95px;
+    /* border-radius: 12px; */
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s ease, border 0.2s ease;
+}
 /* flexbox types */
 
 .flex-col {

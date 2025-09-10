@@ -60,16 +60,16 @@ const ColorPatternSwitcher: React.FC = () => {
   }, []);
 
   return (
-    <div className="main-container" ref={containerRef}>
-      <div className="segmented-control">
+    <div className="popup-container cc-pattern-selector-container pos-abs bottom-0 p-1 left-0 z-7 m-6 br-24" ref={containerRef}>
+      <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-3 gap-2 br-100 p-1">
         <button
-          className={`tab-button ${expandedTab === "color" ? "active" : ""}`}
+          className={`br-100 tab-button ${expandedTab === "color" ? "active" : ""}`}
           onClick={() => setExpandedTab(expandedTab === "color" ? null : "color")}
         >
           🎨
         </button>
         <button
-          className={`tab-button ${expandedTab === "pattern" ? "active" : ""}`}
+          className={`br-100 tab-button ${expandedTab === "pattern" ? "active" : ""}`}
           onClick={() => setExpandedTab(expandedTab === "pattern" ? null : "pattern")}
         >
           ▓
@@ -77,12 +77,12 @@ const ColorPatternSwitcher: React.FC = () => {
       </div>
 
       {expandedTab === "color" && (
-        <div className="selector-container color-container">
+        <div className="p-4 br-24 inner-container selector-container color-container">
           {colors.map((color) => (
             <div
               key={color.hex}
               onClick={() => setActiveColor(color.hex)}
-              className={`color-card ${activeColor === color.hex ? "selected" : ""}`}
+              className={`color-card br-12 ${activeColor === color.hex ? "selected" : ""}`}
               style={{ backgroundColor: color.hex }}
             />
           ))}
@@ -95,7 +95,7 @@ const ColorPatternSwitcher: React.FC = () => {
             <div
               key={pattern.name}
               onClick={() => setActivePattern(pattern.value)}
-              className={`pattern-card ${activePattern === pattern.value ? "selected" : ""}`}
+              className={`pattern-card br-12 ${activePattern === pattern.value ? "selected" : ""}`}
             >
               {pattern.name}
             </div>
@@ -103,7 +103,7 @@ const ColorPatternSwitcher: React.FC = () => {
         </div>
       )}
 
-      <style>{`
+      {/* <style>{`
         .main-container {
           position: fixed;
           bottom: 20px;
@@ -190,7 +190,7 @@ const ColorPatternSwitcher: React.FC = () => {
           border: 2px solid #000;
           background: #e5e5e5;
         }
-      `}</style>
+      `}</style> */}
     </div>
   );
 };
