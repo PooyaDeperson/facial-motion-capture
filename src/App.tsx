@@ -30,23 +30,26 @@ function App() {
       {avatarReady && videoStream && <FaceTracking videoStream={videoStream} />}
 
       {/* 3D Avatar canvas */}
-      <Canvas
-        className="avatar-container bottom-0 pos-abs z-1"
-       camera={{ fov: 27, position: [0, 0, 4.3] }}
-        }} // ~50mm equivalent and moved closer
-        dpr={[1, window.devicePixelRatio]} // adaptive, safe
-        shadows
-      >
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={0.5} castShadow />
-        <pointLight position={[-10, 0, 10]} intensity={0.5} castShadow />
-        <pointLight position={[0, 0, 10]} intensity={0.5} castShadow />
+                <Canvas
+            className="avatar-container bottom-0 pos-abs z-1"
+            camera={{
+              fov: 27,
+              position: [0, 0, 4.3], // ~50mm equivalent and moved closer
+            }}
+            dpr={[1, window.devicePixelRatio]} // adaptive, safe
+            shadows
+          >
+            <ambientLight intensity={0.5} />
+            <pointLight position={[10, 10, 10]} intensity={0.5} castShadow />
+            <pointLight position={[-10, 0, 10]} intensity={0.5} castShadow />
+            <pointLight position={[0, 0, 10]} intensity={0.5} castShadow />
 
-        {/* Suspense shows loader until avatar is fully loaded */}
-        <Suspense fallback={<Loader />}>
-          <Avatar url={url} onLoaded={() => setAvatarReady(true)} />
-        </Suspense>
-      </Canvas>
+            {/* Suspense shows loader until avatar is fully loaded */}
+            <Suspense fallback={<Loader />}>
+              <Avatar url={url} onLoaded={() => setAvatarReady(true)} />
+            </Suspense>
+          </Canvas>
+
 
       {/* UI components */}
       <ColorSwitcher />
