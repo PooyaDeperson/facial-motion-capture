@@ -382,7 +382,7 @@ html {
   gap: 30px;
   height: 100%;
   width: 100%;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 /* flexbox types */
@@ -433,7 +433,7 @@ html {
 /* adding styles to pattern card */
 
 .pattern-card.pattern-none {
-  background-image: var(--pattern-none);
+  background: var(--gray-100);
 }
 
 .pattern-card.pattern-stripes {
