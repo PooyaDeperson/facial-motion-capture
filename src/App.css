@@ -501,9 +501,10 @@ svg {
   .selector-inner-container {
     overflow-y:hidden
 }
+}
 /* ------------------------ ------------------------ end of special breakpoint for very smaller devices but not computer on minized windows */
 
-}
+
 /* ------------------------ ------------------------ tablet and greater styles */
 /* Tablet */
 @media (min-width: 769px) {
