@@ -692,9 +692,9 @@ button.cd-selected>.has-icon.selected-icon {
   transition: transform 0.2s ease, border 0.2s ease;
 
 }
-.avatar-container {
+/* .avatar-container {
   top: 70px;
-}
+} */
 
 
 /* .icon-holder.pattern-card.pattern-none::before{
