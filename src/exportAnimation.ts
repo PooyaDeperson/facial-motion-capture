@@ -2,7 +2,13 @@
 import { NodeIO, AnimationSampler, AnimationChannel, Animation } from '@gltf-transform/core';
 import { Euler, Quaternion } from 'three';
 
-export async function exportAnimation(recording: any[]) {
+interface FrameData {
+  time: number;
+  blendshapes: Record<string, number>;
+  rotation: { x: number; y: number; z: number };
+}
+
+export async function exportAnimation(recording: FrameData[]) {
   if (recording.length === 0) {
     alert('No frames recorded!');
     return;
@@ -38,7 +44,7 @@ export async function exportAnimation(recording: any[]) {
     const blendshapeInputs: Record<string, number[]> = {};
     const blendshapeOutputs: Record<string, number[]> = {};
 
-    recording.forEach((frame, i) => {
+    recording.forEach((frame) => {
       const time = frame.time / 1000; // Convert to seconds
       input.push(time);
 
@@ -55,7 +61,7 @@ export async function exportAnimation(recording: any[]) {
       // Add blendshape keyframes
       Object.entries(frame.blendshapes).forEach(([key, value]) => {
         blendshapeInputs[key].push(time);
-        blendshapeOutputs[key].push(value);
+        blendshapeOutputs[key].push(value as number);
       });
     });
 
