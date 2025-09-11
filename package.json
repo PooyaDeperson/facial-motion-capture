@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@gltf-transform/core": "^4.2.1",
+    "@gltf-transform/extensions": "^4.2.1",
+    "@gltf-transform/functions": "^4.2.1",
     "@mediapipe/tasks-vision": "^0.10.0",
     "@react-three/drei": "^9.68.3",
     "@react-three/fiber": "^8.13.0",
@@ -13,6 +16,7 @@
     "@types/node": "^16.18.30",
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
+    "gl-matrix": "^3.4.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",

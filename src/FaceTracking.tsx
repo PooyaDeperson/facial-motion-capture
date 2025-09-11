@@ -1,10 +1,11 @@
-// FaceTracking.tsx
+// src/FaceTracking.tsx
 import { useEffect, useRef } from "react";
 import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from "@mediapipe/tasks-vision";
 import { Euler, Matrix4 } from "three";
+import { captureFrame } from "./animationRecorder";
 
 export let blendshapes: any[] = [];
-export let rotation: Euler;
+export let rotation = { x: 0, y: 0, z: 0 };
 export let headMesh: any[] = [];
 
 let faceLandmarker: FaceLandmarker;
@@ -42,38 +43,36 @@ function FaceTracking({ videoStream }: { videoStream: MediaStream }) {
 
       if (result.faceBlendshapes?.length && result.faceBlendshapes[0].categories) {
         blendshapes = result.faceBlendshapes[0].categories;
-
         const matrix = new Matrix4().fromArray(result.facialTransformationMatrixes![0].data);
-        rotation = new Euler().setFromRotationMatrix(matrix);
+        const euler = new Euler().setFromRotationMatrix(matrix);
+        rotation = { x: euler.x, y: euler.y, z: euler.z };
+        captureFrame(blendshapes, rotation);
       }
     }
-
     requestAnimationFrame(predict);
   };
 
   useEffect(() => {
     if (!videoStream) return;
-
     const vid = videoRef.current;
     if (!vid) return;
-
     vid.srcObject = videoStream;
     vid.onloadeddata = () => {
       setupFaceLandmarker().then(predict);
     };
   }, [videoStream]);
 
-return (
-  <video
-    ref={videoRef}
-    autoPlay
-    playsInline
-    muted
-    id="video"
-    className="camera-feed w-1 tb:w-400 br-12 tb:br-24 m-4" // keep your Tailwind/CSS classes
-    style={{}} // no display: none, fully visible
-  />
-);
+  return (
+    <video
+      ref={videoRef}
+      autoPlay
+      playsInline
+      muted
+      id="video"
+      className="camera-feed w-1 tb:w-400 br-12 tb:br-24 m-4"
+      style={{}}
+    />
+  );
 }
 
 export default FaceTracking;

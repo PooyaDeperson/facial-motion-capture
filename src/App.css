@@ -793,3 +793,47 @@ button.icon-holder.tab-button:not(.active) {
 }
 
 /* ------------------------ ------------------------ end of tablet and greater styles */
+
+/* src/App.css or a separate CSS file */
+
+/* Container for the recording/export buttons */
+.controls {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 10; /* make sure it sits above the canvas */
+  background: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+  padding: 10px 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* General button style */
+.controls button {
+  background-color: #4caf50; /* green color */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Button hover effect */
+.controls button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Optional: differentiate the save button */
+.controls button:last-child {
+  background-color: #2196f3; /* blue color for "Save Animation" */
+}
+
+.controls button:last-child:hover {
+  background-color: #1976d2;
+}
