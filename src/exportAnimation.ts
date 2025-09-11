@@ -1,5 +1,5 @@
 // src/exportAnimation.ts
-import { NodeIO, AnimationSampler, AnimationChannel, Animation, Document } from '@gltf-transform/core';
+import { NodeIO, AnimationSampler, AnimationChannel, Animation } from '@gltf-transform/core';
 import { Euler, Quaternion } from 'three';
 
 export async function exportAnimation(recording: any[]) {
@@ -28,8 +28,8 @@ export async function exportAnimation(recording: any[]) {
 
     // Create channels for rotation and blendshapes
     const rotationChannel = doc.createAnimationChannel('rotationChannel');
-    rotationChannel.targetNode(rootNode);
-    rotationChannel.targetPath('rotation');
+    rotationChannel.setTargetNode(rootNode);
+    rotationChannel.setTargetPath('rotation');
     rotationChannel.setSampler(rotationSampler);
 
     // Add rotation keyframes
@@ -70,8 +70,8 @@ export async function exportAnimation(recording: any[]) {
       sampler.setInput(times);
       sampler.setOutput(blendshapeOutputs[key]);
 
-      channel.targetNode(rootNode);
-      channel.targetPath(`weights.${key}`);
+      channel.setTargetNode(rootNode);
+      channel.setTargetPath(`weights.${key}`);
       channel.setSampler(sampler);
 
       animation.addChannel(channel);
