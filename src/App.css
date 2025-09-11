@@ -437,7 +437,7 @@ html {
 /* adding styles to pattern card */
 
 .pattern-card.pattern-none {
-  background: var(--gray-100) var(--dropdown-icon) no-repeat center / 30px 30px;
+  background: var(--gray-100) var(--notallowed-icon) no-repeat center / 30px 30px;
   filter: grayscale(1) opacity(0.6);
 }
 
