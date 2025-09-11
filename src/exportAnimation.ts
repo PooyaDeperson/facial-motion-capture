@@ -10,26 +10,30 @@ export async function exportAnimation(baseUrl: string) {
   const io = new NodeIO();
   const doc = await io.read(baseUrl);
 
-  // Find all mesh nodes (blendshapes live here)
-  const meshes = doc.getRoot()
+  // Find all nodes with meshes
+  const meshNodes = doc.getRoot()
     .listNodes()
-    .filter(node => node.getMesh() !== null);
+    .filter((n) => n.getMesh() !== null);
 
-  recording.forEach(frame => {
-    meshes.forEach(meshNode => {
-      const mesh = meshNode.getMesh();
+  // Loop through recorded frames
+  recording.forEach((frame) => {
+    meshNodes.forEach((node) => {
+      const mesh = node.getMesh();
       if (!mesh) return;
 
-      // Apply blendshape weights
-      const morphTargets = mesh.listMorphTargets();
-      morphTargets.forEach(morph => {
-        const name = morph.getName();
-        const value = frame.blendshapes[name] ?? 0;
-        morph.setWeights([value]);
-      });
+      // Each mesh has:
+      // - mesh.getMorphTargetNames() -> array of morph target names
+      // - mesh.setWeights([...]) -> set array of weights
 
-      // Apply rotation to the node itself
-      meshNode.setRotation([frame.rotation.x, frame.rotation.y, frame.rotation.z]);
+      const morphNames = mesh.getMorphTargetNames(); 
+      if (morphNames.length > 0) {
+        // Build weights array for this frame
+        const weights = morphNames.map((name) => frame.blendshapes[name] ?? 0);
+        mesh.setWeights(weights);
+      }
+
+      // Apply node rotation
+      node.setRotation([frame.rotation.x, frame.rotation.y, frame.rotation.z]);
     });
   });
 
