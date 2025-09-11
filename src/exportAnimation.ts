@@ -1,5 +1,5 @@
 // src/exportAnimation.ts
-import { NodeIO, AnimationSampler, AnimationChannel, Animation, Accessor } from '@gltf-transform/core';
+import { NodeIO, AnimationSampler, AnimationChannel, Animation } from '@gltf-transform/core';
 import { Euler, Quaternion } from 'three';
 
 interface FrameData {
@@ -39,60 +39,55 @@ export async function exportAnimation(recording: FrameData[]) {
     rotationChannel.setSampler(rotationSampler);
 
     // Add rotation keyframes
-    const input: number[] = [];
-    const output: number[] = [];
-    const blendshapeInputs: Record<string, number[]> = {};
-    const blendshapeOutputs: Record<string, number[]> = {};
-
-    recording.forEach((frame) => {
-      const time = frame.time / 1000; // Convert to seconds
-      input.push(time);
-
-      const euler = new Euler(frame.rotation.x, frame.rotation.y, frame.rotation.z);
-      const quat = new Quaternion().setFromEuler(euler);
-      output.push(quat.x, quat.y, quat.z, quat.w);
-
-      // Initialize blendshape arrays
-      Object.keys(frame.blendshapes).forEach((key) => {
-        if (!blendshapeInputs[key]) blendshapeInputs[key] = [];
-        if (!blendshapeOutputs[key]) blendshapeOutputs[key] = [];
-      });
-
-      // Add blendshape keyframes
-      Object.entries(frame.blendshapes).forEach(([key, value]) => {
-        blendshapeInputs[key].push(time);
-        blendshapeOutputs[key].push(value as number);
-      });
-    });
+    const input = new Float32Array(recording.map(frame => frame.time / 1000));
+    const output = new Float32Array(
+      recording.flatMap(frame => {
+        const euler = new Euler(frame.rotation.x, frame.rotation.y, frame.rotation.z);
+        const quat = new Quaternion().setFromEuler(euler);
+        return [quat.x, quat.y, quat.z, quat.w];
+      })
+    );
 
     // Create accessors for input and output
-    const inputAccessor = doc.createAccessor('inputAccessor')
+    const inputAccessor = doc.createAccessor()
+      .setBuffer(doc.createBuffer(new Uint8Array(input.buffer)).setURI('input-buffer'))
       .setType('SCALAR')
-      .setArray(new Float32Array(input))
+      .setComponentType('FLOAT')
+      .setArray(input)
       .setCount(input.length);
 
-    const outputAccessor = doc.createAccessor('outputAccessor')
+    const outputAccessor = doc.createAccessor()
+      .setBuffer(doc.createBuffer(new Uint8Array(output.buffer)).setURI('output-buffer'))
       .setType('VEC4')
-      .setArray(new Float32Array(output))
+      .setComponentType('FLOAT')
+      .setArray(output)
       .setCount(output.length / 4);
 
     rotationSampler.setInput(inputAccessor);
     rotationSampler.setOutput(outputAccessor);
 
     // Add blendshape samplers and channels
-    Object.entries(blendshapeInputs).forEach(([key, times]) => {
-      const sampler = doc.createAnimationSampler(`${key}Sampler`);
-      const channel = doc.createAnimationChannel(`${key}Channel`);
+    const blendshapeKeys = Object.keys(recording[0].blendshapes);
+    blendshapeKeys.forEach((key) => {
+      const times = new Float32Array(recording.map(frame => frame.time / 1000));
+      const values = new Float32Array(recording.map(frame => frame.blendshapes[key]));
 
-      const inputAccessor = doc.createAccessor(`${key}InputAccessor`)
+      const inputAccessor = doc.createAccessor()
+        .setBuffer(doc.createBuffer(new Uint8Array(times.buffer)).setURI(`${key}-input-buffer`))
         .setType('SCALAR')
-        .setArray(new Float32Array(times))
+        .setComponentType('FLOAT')
+        .setArray(times)
         .setCount(times.length);
 
-      const outputAccessor = doc.createAccessor(`${key}OutputAccessor`)
+      const outputAccessor = doc.createAccessor()
+        .setBuffer(doc.createBuffer(new Uint8Array(values.buffer)).setURI(`${key}-output-buffer`))
         .setType('SCALAR')
-        .setArray(new Float32Array(blendshapeOutputs[key]))
-        .setCount(blendshapeOutputs[key].length);
+        .setComponentType('FLOAT')
+        .setArray(values)
+        .setCount(values.length);
+
+      const sampler = doc.createAnimationSampler(`${key}Sampler`);
+      const channel = doc.createAnimationChannel(`${key}Channel`);
 
       sampler.setInput(inputAccessor);
       sampler.setOutput(outputAccessor);
