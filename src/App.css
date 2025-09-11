@@ -437,7 +437,7 @@ html {
 /* adding styles to pattern card */
 
 .pattern-card.pattern-none {
-  background: var(--gray-100);
+  background: var(--gray-100) var(--dropdown-icon) no-repeat center / 30px 30px;
 }
 
 .pattern-card.pattern-stripes {
