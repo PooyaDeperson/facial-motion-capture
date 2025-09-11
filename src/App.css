@@ -500,7 +500,9 @@ svg {
     margin-left: 6px;
     width: 18px;
     height: 18px;
-
+}
+.mb\:camera-dropdown > span.dropdown-text, .mb\:camera-dropdown > span.dropdown-icon {
+  display: none;
 }
 }
 /* ------------------------ ------------------------ mobile first styles */
