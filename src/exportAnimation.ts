@@ -8,25 +8,43 @@ export async function exportAnimation(baseUrl: string, recording: any[]) {
     return;
   }
 
-  const io = new NodeIO();
-  const doc = await io.read(baseUrl);
-  const rootNode = doc.getRoot().listNodes()[0];
+  const io = new NodeIO()
+    .registerExtensions()
+    .registerDependencies({
+      // Explicitly allow HTTP requests
+      'uri:https': require('@gltf-transform/extensions').HTTPS,
+    });
 
-  // Use the last frame for saving
-  const frame = recording[recording.length - 1];
+  try {
+    const doc = await io.read(baseUrl);
+    const rootNode = doc.getRoot().listNodes()[0];
 
-  const euler = new Euler(frame.rotation.x, frame.rotation.y, frame.rotation.z);
-  const quat = new Quaternion().setFromEuler(euler);
-  rootNode.setRotation([quat.x, quat.y, quat.z, quat.w]);
+    // Use the last frame for saving
+    const frame = recording[recording.length - 1];
 
-  const meshes = doc.getRoot().listMeshes();
-  if (meshes.length > 0) {
-    const mesh = meshes[0];
-    // Cast the weights to number[]
-    const weights = Object.values(frame.blendshapes) as number[];
-    mesh.setWeights(weights);
+    const euler = new Euler(frame.rotation.x, frame.rotation.y, frame.rotation.z);
+    const quat = new Quaternion().setFromEuler(euler);
+    rootNode.setRotation([quat.x, quat.y, quat.z, quat.w]);
+
+    const meshes = doc.getRoot().listMeshes();
+    if (meshes.length > 0) {
+      const mesh = meshes[0];
+      const weights = Object.values(frame.blendshapes) as number[];
+      mesh.setWeights(weights);
+    }
+
+    // Save the GLB locally
+    const glb = await io.writeBinary(doc);
+    const blob = new Blob([glb], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'animated-avatar.glb';
+    a.click();
+    URL.revokeObjectURL(url);
+    alert('Saved animated GLB with final frame!');
+  } catch (error) {
+    console.error('Error exporting animation:', error);
+    alert('Failed to export animation. See console for details.');
   }
-
-  await io.write('animated-avatar.glb', doc);
-  alert('Saved animated GLB with final frame!');
 }
