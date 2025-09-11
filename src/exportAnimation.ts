@@ -1,7 +1,6 @@
 // src/exportAnimation.ts
 import { NodeIO } from '@gltf-transform/core';
 import { Euler, Quaternion } from 'three';
-import avatarUrl from './src/avatar/avatar.glb'; // Import the GLB file directly
 
 export async function exportAnimation(recording: any[]) {
   if (recording.length === 0) {
@@ -12,7 +11,8 @@ export async function exportAnimation(recording: any[]) {
   const io = new NodeIO();
 
   try {
-    // Use the imported GLB file
+    // Use the public URL for the GLB file
+    const avatarUrl = '/avatar.glb';
     const doc = await io.read(avatarUrl);
     const rootNode = doc.getRoot().listNodes()[0];
 

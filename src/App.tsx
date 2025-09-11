@@ -11,9 +11,10 @@ import { startRecording, stopRecording, captureFrame, getRecording } from './ani
 import { exportAnimation } from './exportAnimation';
 
 function App() {
-  const [url, setUrl] = useState<string>(
-    "https://models.readyplayer.me/68c19bef8ac0d37a66aa2930.glb?morphTargets=ARKit&textureAtlas=1024"
-  );
+  // const [url, setUrl] = useState<string>(
+  //   "https://models.readyplayer.me/68c19bef8ac0d37a66aa2930.glb?morphTargets=ARKit&textureAtlas=1024"
+  // );
+  const [url, setUrl] = useState<string>('/avatar.glb');
   const [avatarReady, setAvatarReady] = useState(false);
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
   const [isRecording, setIsRecording] = useState(false);
