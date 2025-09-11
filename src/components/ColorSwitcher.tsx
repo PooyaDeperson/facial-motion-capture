@@ -67,28 +67,45 @@ const ColorPatternSwitcher: React.FC = () => {
   }, []);
 
   return (
-    <div
-      className="popup-container selector-container cc-pattern-selector-container pos-abs bottom-0 p-1 left-0 z-7 m-6 br-24"
-      ref={containerRef}
-    >
-      <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-3 gap-2 br-16 p-1">
-        <button
-          className={`icon-holder br-12 tab-button ${
-            expandedTab === "color" ? "active" : ""
-          }`}
-          onClick={() =>
-            setExpandedTab(expandedTab === "color" ? null : "color")
-          }
-        ></button>
-        <button
-          className={`icon-holder br-12 tab-button ${
-            expandedTab === "pattern" ? "active" : ""
-          }`}
-          onClick={() =>
-            setExpandedTab(expandedTab === "pattern" ? null : "pattern")
-          }
-        ></button>
-      </div>
+            <div
+          className="popup-container selector-container cc-pattern-selector-container pos-abs bottom-0 p-1 left-0 z-7 m-6 br-24"
+          ref={containerRef}
+        >
+          <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-3 gap-2 br-16 p-1">
+            <button
+              className={`icon-holder br-12 tab-button ${
+                expandedTab === "color" ? "active" : ""
+              }`}
+              onClick={() =>
+                setExpandedTab(expandedTab === "color" ? null : "color")
+              }
+            >
+              {expandedTab === "color" && (
+                <>
+                  {/* Right icon — only visible for the selected option */}
+                  <span className="has-icon icon-size-32"></span>
+                </>
+              )}
+            </button>
+
+            <button
+              className={`icon-holder br-12 tab-button ${
+                expandedTab === "pattern" ? "active" : ""
+              }`}
+              onClick={() =>
+                setExpandedTab(expandedTab === "pattern" ? null : "pattern")
+              }
+            >
+              {expandedTab === "pattern" && (
+                <>
+                  {/* Right icon — only visible for the selected option */}
+                  <span className="has-icon icon-size-32"></span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
 
       {expandedTab === "color" && (
         <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container color-container">
