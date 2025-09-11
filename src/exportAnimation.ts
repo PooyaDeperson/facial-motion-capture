@@ -1,6 +1,10 @@
 import { NodeIO } from '@gltf-transform/core';
 import { recording } from './animationRecorder';
 
+/**
+ * Export animation by applying final frame only.
+ * This avoids dealing with morph target accessors directly.
+ */
 export async function exportAnimation(baseUrl: string) {
   if (recording.length === 0) {
     alert('No frames recorded!');
@@ -10,32 +14,22 @@ export async function exportAnimation(baseUrl: string) {
   const io = new NodeIO();
   const doc = await io.read(baseUrl);
 
-  // Find all nodes with meshes
-  const meshNodes = doc.getRoot()
-    .listNodes()
-    .filter((n) => n.getMesh() !== null);
+  // Grab the root node
+  const rootNode = doc.getRoot().listNodes()[0];
 
-  // Loop through recorded frames
-  recording.forEach((frame) => {
-    meshNodes.forEach((node) => {
-      const mesh = node.getMesh();
-      if (!mesh) return;
+  // Get the last recorded frame
+  const frame = recording[recording.length - 1];
 
-      // Each mesh has:
-      // - mesh.getMorphTargetNames() -> array of morph target names
-      // - mesh.setWeights([...]) -> set array of weights
+  // Apply rotation
+  rootNode.setRotation([frame.rotation.x, frame.rotation.y, frame.rotation.z]);
 
-      const morphNames = mesh.getMorphTargetNames(); 
-      if (morphNames.length > 0) {
-        // Build weights array for this frame
-        const weights = morphNames.map((name) => frame.blendshapes[name] ?? 0);
-        mesh.setWeights(weights);
-      }
-
-      // Apply node rotation
-      node.setRotation([frame.rotation.x, frame.rotation.y, frame.rotation.z]);
-    });
-  });
+  // Apply blendshape weights to the first mesh primitive
+  const meshes = doc.getRoot().listMeshes();
+  if (meshes.length > 0) {
+    const mesh = meshes[0];
+    const weights = Object.values(frame.blendshapes);
+    mesh.setWeights(weights); // works if order matches GLB morph targets
+  }
 
   await io.write('animated-avatar.glb', doc);
   alert('Saved animated GLB!');
