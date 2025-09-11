@@ -2,6 +2,8 @@
 import { useEffect, useRef } from "react";
 import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from "@mediapipe/tasks-vision";
 import { Euler, Matrix4 } from "three";
+import { captureFrame, isRecording } from "./animationRecorder";
+
 
 export let blendshapes: any[] = [];
 export let rotation: Euler;
@@ -31,25 +33,27 @@ function FaceTracking({ videoStream }: { videoStream: MediaStream }) {
     faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
   };
 
-  const predict = () => {
-    const vid = videoRef.current;
-    if (!vid || !faceLandmarker) return;
+const predict = () => {
+  const vid = videoRef.current;
+  if (!vid || !faceLandmarker) return;
 
-    const nowInMs = Date.now();
-    if (lastVideoTime !== vid.currentTime) {
-      lastVideoTime = vid.currentTime;
-      const result = faceLandmarker.detectForVideo(vid, nowInMs);
+  const nowInMs = Date.now();
+  if (lastVideoTime !== vid.currentTime) {
+    lastVideoTime = vid.currentTime;
+    const result = faceLandmarker.detectForVideo(vid, nowInMs);
 
-      if (result.faceBlendshapes?.length && result.faceBlendshapes[0].categories) {
-        blendshapes = result.faceBlendshapes[0].categories;
+    if (result.faceBlendshapes?.length && result.faceBlendshapes[0].categories) {
+      blendshapes = result.faceBlendshapes[0].categories;
 
-        const matrix = new Matrix4().fromArray(result.facialTransformationMatrixes![0].data);
-        rotation = new Euler().setFromRotationMatrix(matrix);
-      }
+      const matrix = new Matrix4().fromArray(result.facialTransformationMatrixes![0].data);
+      rotation = new Euler().setFromRotationMatrix(matrix);
+
+      if (isRecording) captureFrame(blendshapes, rotation); // ✅ capture
     }
+  }
 
-    requestAnimationFrame(predict);
-  };
+  requestAnimationFrame(predict);
+};
 
   useEffect(() => {
     if (!videoStream) return;

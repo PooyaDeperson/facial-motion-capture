@@ -8,6 +8,11 @@ import FaceTracking from "./FaceTracking";
 import Avatar from "./Avatar";
 import Loader from "./Loader";
 
+import { startRecording, stopRecording } from './animationRecorder';
+import { exportAnimation } from './exportAnimation';
+
+
+
 function App() {
   const [url, setUrl] = useState<string>(
     "https://models.readyplayer.me/68c19bef8ac0d37a66aa2930.glb?morphTargets=ARKit&textureAtlas=1024"
@@ -23,6 +28,12 @@ function App() {
 
   return (
     <div className="App">
+      
+              <div className="controls">
+                  <button onClick={startRecording}>Start Recording</button>
+                  <button onClick={stopRecording}>Stop Recording</button>
+                  <button onClick={() => exportAnimation(url)}>Save Animation</button>
+              </div>
       {/* Camera permissions & stream setup */}
       <CameraPermissions onStreamReady={handleStreamReady} />
 
