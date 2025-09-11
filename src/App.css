@@ -362,6 +362,10 @@ html {
   font-size: 24px;
   /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); */
   transition: transform 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
 }
 
 
@@ -619,13 +623,16 @@ button.camera-dropdown {
 }
 
 /* icon setup */
-.has-icon, .cd-icon {
+.has-icon,
+.cd-icon {
   display: inline-block;
 }
+
 .icon-size-16 {
   width: 16px;
   height: 16px;
 }
+
 .icon-size-32 {
   width: 32px;
   height: 32px;
@@ -729,13 +736,16 @@ button.cd-selected>.has-icon.selected-icon {
 
 /* segmented control buttons icons 
 
-button.icon-holder.tab-button:not(.active):before {
+
+first color */
+button.icon-holder.tab-button:not(.active) {
   filter: grayscale(1) opacity(0.9);
 }
-first color */
+
 .has-icon.pattern-icon {
   background: no-repeat center / contain var(--pattern-icon);
 }
+
 /* pattern icon */
 .has-icon.color-icon {
   background: no-repeat center / contain var(--color-icon);
