@@ -29,11 +29,11 @@ function App() {
   return (
     <div className="App">
       
-              <div className="controls">
-                  <button onClick={startRecording}>Start Recording</button>
-                  <button onClick={stopRecording}>Stop Recording</button>
-                  <button onClick={() => exportAnimation(url)}>Save Animation</button>
-              </div>
+      <div className="controls">
+        <button onClick={startRecording}>Start Recording</button>
+        <button onClick={stopRecording}>Stop Recording</button>
+        <button onClick={() => exportAnimation(url)}>Save Animation</button>
+      </div>
       {/* Camera permissions & stream setup */}
       <CameraPermissions onStreamReady={handleStreamReady} />
 
