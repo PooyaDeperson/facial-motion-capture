@@ -618,24 +618,25 @@ button.camera-dropdown {
   text-overflow: ellipsis;
 }
 
-span.cd-icon {
-  width: 16px;
+/* icon setup */
+.has-icon, .cd-icon {
   display: inline-block;
 }
-
-/* icon setup */
-.has-icon {
+.icon-size-16 {
   width: 16px;
   height: 16px;
-  display: inline-block;
+}
+.icon-size-32 {
+  width: 32px;
+  height: 32px;
 }
 
 .has-icon.dropdown-icon {
-  content: var(--dropdown-icon);
+  background: no-repeat center / contain var(--dropdown-icon);
 }
 
 .has-icon.camera-icon {
-  content: var(--camera-icon);
+  background: no-repeat center / contain var(--camera-icon);
 }
 
 .has-icon.right-side {
