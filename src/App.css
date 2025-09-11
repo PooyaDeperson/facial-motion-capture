@@ -766,6 +766,10 @@ button.icon-holder.tab-button:not(.active) {
     max-width: 392px;
     min-width: 392px;
   }
+  .tb\:br-12 { 
+    border-radius: 12px;
+
+  }
 }
 
 /* ------------------------ ------------------------ end of tablet and greater styles */

@@ -70,7 +70,7 @@ return (
     playsInline
     muted
     id="video"
-    className="camera-feed w-1 tb:w-400 br-24 m-4" // keep your Tailwind/CSS classes
+    className="camera-feed w-1 tb:w-400 br-24 tb:br-12 m-4" // keep your Tailwind/CSS classes
     style={{}} // no display: none, fully visible
   />
 );
