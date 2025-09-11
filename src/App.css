@@ -438,6 +438,7 @@ html {
 
 .pattern-card.pattern-none {
   background: var(--gray-100) var(--dropdown-icon) no-repeat center / 30px 30px;
+  filter: grayscale(1) opacity(0.6);
 }
 
 .pattern-card.pattern-stripes {
@@ -538,7 +539,7 @@ svg {
   background-image: var(--circle-tile);
   background-repeat: repeat;
   background-position: top left;
-  /* border-radius: 16px; */
+  background-size: 16px 16px;
 }
 
 .color-card:not(.selected),
@@ -557,14 +558,14 @@ button.icon-holder:hover {
   background: var(--gray-100);
 }
 
-.pattern-card.pattern-none::before {
+/* .pattern-card.pattern-none::before {
   content: var(--notallowed-icon);
   width: 40px;
   height: 40px;
   position: absolute;
   display: block;
   filter: grayscale(1) opacity(0.6);
-}
+} */
 
 .color-card.selected,
 .pattern-card.selected {
