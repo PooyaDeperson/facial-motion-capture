@@ -7,8 +7,7 @@ import ColorSwitcher from "./components/ColorSwitcher";
 import FaceTracking from "./FaceTracking";
 import Avatar from "./Avatar";
 import Loader from "./Loader";
-
-import { startRecording, stopRecording } from './animationRecorder';
+import { startRecording, stopRecording, isRecording } from './animationRecorder';
 import { exportAnimation } from './exportAnimation';
 
 function App() {
@@ -18,7 +17,6 @@ function App() {
   const [avatarReady, setAvatarReady] = useState(false);
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
 
-  // Called when CameraPermissions provides a stream
   const handleStreamReady = (stream: MediaStream) => {
     setVideoStream(stream);
   };
@@ -52,11 +50,8 @@ function App() {
           Save Animation
         </button>
       </div>
-
       <CameraPermissions onStreamReady={handleStreamReady} />
-
       {avatarReady && videoStream && <FaceTracking videoStream={videoStream} />}
-
       <Canvas
         className="avatar-container bottom-0 pos-abs z-1"
         camera={{ fov: 27, position: [0, 0, 4.2] }}
@@ -67,15 +62,12 @@ function App() {
         <pointLight position={[10, 10, 10]} intensity={0.5} castShadow />
         <pointLight position={[-10, 0, 10]} intensity={0.5} castShadow />
         <pointLight position={[0, 0, 10]} intensity={0.5} castShadow />
-
         <Suspense fallback={<Loader />}>
           <Avatar url={url} onLoaded={() => setAvatarReady(true)} />
         </Suspense>
       </Canvas>
-
       <ColorSwitcher />
-
-      <p>{startRecording ? "Recording..." : "Idle"}</p>
+      <p>{isRecording ? "Recording..." : "Idle"}</p>
     </div>
   );
 }
