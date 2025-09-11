@@ -22,7 +22,8 @@ export async function exportAnimation(baseUrl: string, recording: any[]) {
   const meshes = doc.getRoot().listMeshes();
   if (meshes.length > 0) {
     const mesh = meshes[0];
-    const weights = Object.values(frame.blendshapes);
+    // Cast the weights to number[]
+    const weights = Object.values(frame.blendshapes) as number[];
     mesh.setWeights(weights);
   }
 
