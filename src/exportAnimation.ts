@@ -1,7 +1,7 @@
 // src/exportAnimation.ts
 import { NodeIO } from '@gltf-transform/core';
 import { recording } from './animationRecorder';
-import { quat } from 'gl-matrix';
+import { Euler, Quaternion } from 'three';
 
 /**
  * Export the recorded avatar animation to a GLB file
@@ -22,16 +22,12 @@ export async function exportAnimation(baseUrl: string) {
   // Use the last frame for saving
   const frame = recording[recording.length - 1];
 
-  // --- 1️⃣ Convert Euler rotation to quaternion ---
-  const q = quat.create();
-  // gl-matrix expects degrees for fromEuler
-  quat.fromEuler(
-    q,
-    (frame.rotation.x * 180) / Math.PI,
-    (frame.rotation.y * 180) / Math.PI,
-    (frame.rotation.z * 180) / Math.PI
-  );
-  rootNode.setRotation(q); // vec4 quaternion
+  // --- 1️⃣ Convert Euler rotation to quaternion using Three.js ---
+  const euler = new Euler(frame.rotation.x, frame.rotation.y, frame.rotation.z);
+  const quat = new Quaternion().setFromEuler(euler);
+
+  // rootNode.setRotation expects a vec4 tuple
+  rootNode.setRotation([quat.x, quat.y, quat.z, quat.w]);
 
   // --- 2️⃣ Apply blendshape weights ---
   const meshes = doc.getRoot().listMeshes();
