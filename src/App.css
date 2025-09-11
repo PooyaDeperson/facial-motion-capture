@@ -639,6 +639,11 @@ button.camera-dropdown {
   background: no-repeat center / contain var(--camera-icon);
 }
 
+button.cd-selected>.has-icon.selected-icon {
+
+  background: no-repeat center / contain var(--camera-icon);
+}
+
 .has-icon.right-side {
   margin-left: 0px;
 }
@@ -651,10 +656,6 @@ button.camera-dropdown {
   transform: rotate(180deg);
 }
 
-button.cd-selected>.has-icon.selected-icon {
-
-  content: var(--selected-icon);
-}
 
 .dropdown-text {
   width: 108px;
@@ -728,14 +729,16 @@ button.cd-selected>.has-icon.selected-icon {
 
 /* segmented control buttons icons 
 
-first color */
-button.icon-holder.tab-button:nth-child(1)::before {
-  content: var(--color-icon);
+button.icon-holder.tab-button:not(.active):before {
+  filter: grayscale(1) opacity(0.9);
 }
-
-/* pattern */
-button.icon-holder.tab-button:nth-child(2)::before {
-  content: var(--pattern-icon);
+first color */
+.has-icon.pattern-icon {
+  background: no-repeat center / contain var(--pattern-icon);
+}
+/* pattern icon */
+.has-icon.color-icon {
+  background: no-repeat center / contain var(--color-icon);
 }
 
 .icon-holder.pattern-card {
@@ -745,8 +748,4 @@ button.icon-holder.tab-button:nth-child(2)::before {
   align-content: center;
   flex-direction: row;
   flex-wrap: nowrap;
-}
-
-button.icon-holder.tab-button:not(.active):before {
-  filter: grayscale(1) opacity(0.9);
 }
