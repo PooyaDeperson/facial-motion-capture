@@ -1,5 +1,5 @@
 // src/exportAnimation.ts
-import { NodeIO } from '@gltf-transform/functions';
+import { NodeIO } from '@gltf-transform/core';
 import { Euler, Quaternion } from 'three';
 
 export async function exportAnimation(recording: any[]) {
@@ -16,7 +16,7 @@ export async function exportAnimation(recording: any[]) {
     const glbData = await response.arrayBuffer();
 
     // Read the GLB data
-    const doc = await io.readBinary(glbData);
+    const doc = await io.readBinary(new Uint8Array(glbData));
     const rootNode = doc.getRoot().listNodes()[0];
 
     // Use the last frame for saving
