@@ -17,28 +17,18 @@ export async function exportAnimation(recording: FrameData[]) {
   const io = new NodeIO();
 
   try {
-    // Fetch the GLB file as a binary
     const response = await fetch('/avatar.glb');
     const glbData = await response.arrayBuffer();
-
-    // Read the GLB data
     const doc = await io.readBinary(new Uint8Array(glbData));
     const rootNode = doc.getRoot().listNodes()[0];
-
-    // Create an animation
     const animation = doc.createAnimation('animation');
-
-    // Create samplers for rotation and blendshapes
     const rotationSampler = doc.createAnimationSampler('rotationSampler');
-    const blendshapeSamplers: Record<string, AnimationSampler> = {};
-
-    // Create channels for rotation and blendshapes
     const rotationChannel = doc.createAnimationChannel('rotationChannel');
     rotationChannel.setTargetNode(rootNode);
     rotationChannel.setTargetPath('rotation');
     rotationChannel.setSampler(rotationSampler);
 
-    // Add rotation keyframes
+    // Create input and output for rotation
     const input = new Float32Array(recording.map(frame => frame.time / 1000));
     const output = new Float32Array(
       recording.flatMap(frame => {
@@ -48,16 +38,20 @@ export async function exportAnimation(recording: FrameData[]) {
       })
     );
 
+    // Create buffer for input and output
+    const inputBuffer = doc.createBuffer().setURI('input-buffer');
+    const outputBuffer = doc.createBuffer().setURI('output-buffer');
+
     // Create accessors for input and output
     const inputAccessor = doc.createAccessor()
-      .setBuffer(doc.createBuffer(new Uint8Array(input.buffer)).setURI('input-buffer'))
+      .setBuffer(inputBuffer)
       .setType('SCALAR')
       .setComponentType('FLOAT')
       .setArray(input)
       .setCount(input.length);
 
     const outputAccessor = doc.createAccessor()
-      .setBuffer(doc.createBuffer(new Uint8Array(output.buffer)).setURI('output-buffer'))
+      .setBuffer(outputBuffer)
       .setType('VEC4')
       .setComponentType('FLOAT')
       .setArray(output)
@@ -72,15 +66,18 @@ export async function exportAnimation(recording: FrameData[]) {
       const times = new Float32Array(recording.map(frame => frame.time / 1000));
       const values = new Float32Array(recording.map(frame => frame.blendshapes[key]));
 
+      const inputBuffer = doc.createBuffer().setURI(`${key}-input-buffer`);
+      const outputBuffer = doc.createBuffer().setURI(`${key}-output-buffer`);
+
       const inputAccessor = doc.createAccessor()
-        .setBuffer(doc.createBuffer(new Uint8Array(times.buffer)).setURI(`${key}-input-buffer`))
+        .setBuffer(inputBuffer)
         .setType('SCALAR')
         .setComponentType('FLOAT')
         .setArray(times)
         .setCount(times.length);
 
       const outputAccessor = doc.createAccessor()
-        .setBuffer(doc.createBuffer(new Uint8Array(values.buffer)).setURI(`${key}-output-buffer`))
+        .setBuffer(outputBuffer)
         .setType('SCALAR')
         .setComponentType('FLOAT')
         .setArray(values)
@@ -88,21 +85,17 @@ export async function exportAnimation(recording: FrameData[]) {
 
       const sampler = doc.createAnimationSampler(`${key}Sampler`);
       const channel = doc.createAnimationChannel(`${key}Channel`);
-
       sampler.setInput(inputAccessor);
       sampler.setOutput(outputAccessor);
-
       channel.setTargetNode(rootNode);
       channel.setTargetPath(`weights.${key}`);
       channel.setSampler(sampler);
-
       animation.addChannel(channel);
     });
 
     animation.addChannel(rotationChannel);
     animation.addSampler(rotationSampler);
 
-    // Save the GLB locally
     const glb = await io.writeBinary(doc);
     const blob = new Blob([glb], { type: 'application/octet-stream' });
     const url = URL.createObjectURL(blob);
