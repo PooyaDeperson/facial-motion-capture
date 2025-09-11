@@ -1,5 +1,5 @@
 // src/exportAnimation.ts
-import { NodeIO, AnimationSampler, AnimationChannel, Animation, Accessor, ComponentType } from '@gltf-transform/core';
+import { NodeIO, AnimationSampler, AnimationChannel, Animation } from '@gltf-transform/core';
 import { Euler, Quaternion } from 'three';
 
 interface FrameData {
@@ -46,14 +46,14 @@ export async function exportAnimation(recording: FrameData[]) {
     const inputAccessor = doc.createAccessor()
       .setBuffer(inputBuffer)
       .setType('SCALAR')
-      .setComponentType(ComponentType.FLOAT)
+      .setComponentType(5126) // FLOAT
       .setArray(input)
       .setCount(input.length);
 
     const outputAccessor = doc.createAccessor()
       .setBuffer(outputBuffer)
       .setType('VEC4')
-      .setComponentType(ComponentType.FLOAT)
+      .setComponentType(5126) // FLOAT
       .setArray(output)
       .setCount(output.length / 4);
 
@@ -72,14 +72,14 @@ export async function exportAnimation(recording: FrameData[]) {
       const inputAccessor = doc.createAccessor()
         .setBuffer(inputBuffer)
         .setType('SCALAR')
-        .setComponentType(ComponentType.FLOAT)
+        .setComponentType(5126) // FLOAT
         .setArray(times)
         .setCount(times.length);
 
       const outputAccessor = doc.createAccessor()
         .setBuffer(outputBuffer)
         .setType('SCALAR')
-        .setComponentType(ComponentType.FLOAT)
+        .setComponentType(5126) // FLOAT
         .setArray(values)
         .setCount(values.length);
 
