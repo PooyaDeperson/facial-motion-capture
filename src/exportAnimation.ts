@@ -1,7 +1,7 @@
 // src/exportAnimation.ts
 import { NodeIO } from '@gltf-transform/core';
 import { Euler, Quaternion } from 'three';
-import avatarUrl from './avatar/avatar.glb'; // Import the GLB file directly
+import avatarUrl from './src/avatar/avatar.glb'; // Import the GLB file directly
 
 export async function exportAnimation(recording: any[]) {
   if (recording.length === 0) {
