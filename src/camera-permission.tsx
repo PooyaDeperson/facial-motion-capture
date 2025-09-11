@@ -130,7 +130,7 @@ const requestCamera = async (deviceId?: string) => {
       )}
 
       {permissionState === "granted" && cameras.length > 1 && (
-        <div className="cp-dropdown pos-abs top-0 right-0 tb:left-0 tb:display-tablez-7 m-6">
+        <div className="cp-dropdown pos-abs top-0 right-0 tb:left-0 tb:display-table z-7 m-6">
           <CustomDropdown
             options={dropdownOptions}
             value={selectedCamera}

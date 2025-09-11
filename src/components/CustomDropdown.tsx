@@ -61,7 +61,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
       {/* Dropdown button */}
       <button
         type="button"
-        className="dropdown flex-row camera-dropdown post-rel flex items-center justify-between gap-2"
+        className="mb:camera-dropdown dropdown flex-row camera-dropdown post-rel flex items-center justify-between gap-2"
         onClick={() => setIsOpen(!isOpen)}
       >
         {/* Left icon */}
