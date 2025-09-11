@@ -486,9 +486,9 @@ svg {
 }
 
 /* ------------------------ ------------------------ mobile first styles */
-.w-67 {
-  max-width: 192px;
-  min-width: 192px;
+.w-1 {
+  max-width: 100px;
+  min-width: 100px;
 }
 
 .w-100 {
@@ -512,22 +512,7 @@ svg {
 /* ------------------------ ------------------------ end of special breakpoint for very smaller devices but not computer on minized windows */
 
 
-/* ------------------------ ------------------------ tablet and greater styles */
-/* Tablet */
-@media (min-width: 769px) {
 
-  .tb\:w-400 {
-    min-width: 400px;
-    max-width: 400px;
-  }
-
-  .tb\:w-392 {
-    max-width: 392px;
-    min-width: 392px;
-  }
-}
-
-/* ------------------------ ------------------------ end of tablet and greater styles */
 
 .popup-container {
 
@@ -760,3 +745,27 @@ button.icon-holder.tab-button:not(.active) {
   flex-direction: row;
   flex-wrap: nowrap;
 }
+
+/* ------------------------ ------------------------ tablet and greater styles */
+/* Tablet */
+@media (min-width: 769px) {
+  .tb\:left-0 {
+    left: 0 !important;
+  }
+
+  .tb\:display-table {
+    display: table;
+  }
+
+  .tb\:w-400 {
+    min-width: 400px;
+    max-width: 400px;
+  }
+
+  .tb\:w-392 {
+    max-width: 392px;
+    min-width: 392px;
+  }
+}
+
+/* ------------------------ ------------------------ end of tablet and greater styles */
