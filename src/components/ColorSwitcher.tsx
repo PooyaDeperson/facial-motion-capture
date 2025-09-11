@@ -72,6 +72,7 @@ const ColorPatternSwitcher: React.FC = () => {
       ref={containerRef}
     >
       <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-3 gap-2 br-16 p-1">
+        {/* Color Button */}
         <button
           className={`icon-holder br-12 tab-button ${
             expandedTab === "color" ? "active" : ""
@@ -79,7 +80,11 @@ const ColorPatternSwitcher: React.FC = () => {
           onClick={() =>
             setExpandedTab(expandedTab === "color" ? null : "color")
           }
-        ></button>
+        >
+          <span className="has-icon icon-size-32 color-icon"></span>
+        </button>
+
+        {/* Pattern Button */}
         <button
           className={`icon-holder br-12 tab-button ${
             expandedTab === "pattern" ? "active" : ""
@@ -87,9 +92,12 @@ const ColorPatternSwitcher: React.FC = () => {
           onClick={() =>
             setExpandedTab(expandedTab === "pattern" ? null : "pattern")
           }
-        ></button>
+        >
+          <span className="has-icon icon-size-32 pattern-icon"></span>
+        </button>
       </div>
 
+      {/* Color Selector */}
       {expandedTab === "color" && (
         <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container color-container">
           {colors.map((color) => (
@@ -106,6 +114,7 @@ const ColorPatternSwitcher: React.FC = () => {
         </div>
       )}
 
+      {/* Pattern Selector */}
       {expandedTab === "pattern" && (
         <div className="p-4 br-24 pb-86 selector-inner-container inner-container selector-container pattern-container">
           {patterns.map((pattern) => (

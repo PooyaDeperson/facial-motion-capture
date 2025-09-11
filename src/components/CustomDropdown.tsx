@@ -65,14 +65,14 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         onClick={() => setIsOpen(!isOpen)}
       >
         {/* Left icon */}
-        <span className="has-icon left-side camera-icon dimmed">{selectedOption?.leftIcon}</span>
+        <span className="has-icon icon-size-16 left-side camera-icon dimmed">{selectedOption?.leftIcon}</span>
 
         {/* Label */}
         <span className="dropdown-text">{selectedOption?.label || placeholder || "Select an option"}</span>
 
         {/* Right icon (dropdown arrow) */}
         <span
-          className={`has-icon right-side dropdown-icon ${
+          className={`has-icon icon-size-16 right-side dropdown-icon ${
             isOpen ? "rotated-180" : ""
           }`}
         ></span>
@@ -91,13 +91,13 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                 onClick={() => handleSelect(option.value)}
               >
                 {/* Left icon */}
-                <span className="has-icon left-side camera-icon dimmed">{option.leftIcon}</span>
+                <span className="has-icon icon-size-16 left-side camera-icon dimmed">{option.leftIcon}</span>
 
                 {/* Label */}
                 <span className="dropdown-text">{option.label}</span>
 
                 {/* Right icon — only visible for the selected option */}
-                <span className="has-icon right-side selected-icon">
+                <span className="has-icon icon-size-16 right-side selected-icon">
                   {value === option.value ? option.rightIcon : null}
                 </span>
               </button>
