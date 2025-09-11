@@ -1,12 +1,11 @@
-// FaceTracking.tsx
+// src/FaceTracking.tsx
 import { useEffect, useRef } from "react";
 import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from "@mediapipe/tasks-vision";
 import { Euler, Matrix4 } from "three";
 import { captureFrame, isRecording } from "./animationRecorder";
 
-
 export let blendshapes: any[] = [];
-export let rotation: Euler;
+export let rotation = { x: 0, y: 0, z: 0 }; // default
 export let headMesh: any[] = [];
 
 let faceLandmarker: FaceLandmarker;
@@ -33,27 +32,28 @@ function FaceTracking({ videoStream }: { videoStream: MediaStream }) {
     faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
   };
 
-const predict = () => {
-  const vid = videoRef.current;
-  if (!vid || !faceLandmarker) return;
+  const predict = () => {
+    const vid = videoRef.current;
+    if (!vid || !faceLandmarker) return;
 
-  const nowInMs = Date.now();
-  if (lastVideoTime !== vid.currentTime) {
-    lastVideoTime = vid.currentTime;
-    const result = faceLandmarker.detectForVideo(vid, nowInMs);
+    const nowInMs = Date.now();
+    if (lastVideoTime !== vid.currentTime) {
+      lastVideoTime = vid.currentTime;
+      const result = faceLandmarker.detectForVideo(vid, nowInMs);
 
-    if (result.faceBlendshapes?.length && result.faceBlendshapes[0].categories) {
-      blendshapes = result.faceBlendshapes[0].categories;
+      if (result.faceBlendshapes?.length && result.faceBlendshapes[0].categories) {
+        blendshapes = result.faceBlendshapes[0].categories;
 
-      const matrix = new Matrix4().fromArray(result.facialTransformationMatrixes![0].data);
-      rotation = new Euler().setFromRotationMatrix(matrix);
+        const matrix = new Matrix4().fromArray(result.facialTransformationMatrixes![0].data);
+        const euler = new Euler().setFromRotationMatrix(matrix);
+        rotation = { x: euler.x, y: euler.y, z: euler.z };
 
-      if (isRecording) captureFrame(blendshapes, rotation); // ✅ capture
+        if (isRecording) captureFrame(blendshapes, rotation); // ✅ capture
+      }
     }
-  }
 
-  requestAnimationFrame(predict);
-};
+    requestAnimationFrame(predict);
+  };
 
   useEffect(() => {
     if (!videoStream) return;
@@ -67,17 +67,17 @@ const predict = () => {
     };
   }, [videoStream]);
 
-return (
-  <video
-    ref={videoRef}
-    autoPlay
-    playsInline
-    muted
-    id="video"
-    className="camera-feed w-1 tb:w-400 br-12 tb:br-24 m-4" // keep your Tailwind/CSS classes
-    style={{}} // no display: none, fully visible
-  />
-);
+  return (
+    <video
+      ref={videoRef}
+      autoPlay
+      playsInline
+      muted
+      id="video"
+      className="camera-feed w-1 tb:w-400 br-12 tb:br-24 m-4"
+      style={{}}
+    />
+  );
 }
 
 export default FaceTracking;

@@ -33,7 +33,6 @@ export async function exportAnimation(baseUrl: string) {
   const meshes = doc.getRoot().listMeshes();
   if (meshes.length > 0) {
     const mesh = meshes[0];
-    // Blendshape weights must match the GLB morph target order
     const weights = Object.values(frame.blendshapes);
     mesh.setWeights(weights);
   }
