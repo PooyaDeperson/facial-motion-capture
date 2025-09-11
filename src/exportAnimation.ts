@@ -1,5 +1,6 @@
 // src/exportAnimation.ts
 import { NodeIO } from '@gltf-transform/core';
+import { HTTPS } from '@gltf-transform/functions';
 import { Euler, Quaternion } from 'three';
 
 export async function exportAnimation(baseUrl: string, recording: any[]) {
@@ -8,7 +9,11 @@ export async function exportAnimation(baseUrl: string, recording: any[]) {
     return;
   }
 
-  const io = new NodeIO();
+  const io = new NodeIO()
+    .registerExtensions()
+    .registerDependencies({
+      'uri:https': HTTPS,
+    });
 
   try {
     const doc = await io.read(baseUrl);

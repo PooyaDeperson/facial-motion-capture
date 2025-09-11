@@ -5,6 +5,7 @@
   "dependencies": {
     "@gltf-transform/core": "^4.2.1",
     "@gltf-transform/extensions": "^4.2.1",
+    "@gltf-transform/functions": "^4.2.1",
     "@mediapipe/tasks-vision": "^0.10.0",
     "@react-three/drei": "^9.68.3",
     "@react-three/fiber": "^8.13.0",
