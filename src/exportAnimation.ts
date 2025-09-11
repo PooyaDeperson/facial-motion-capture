@@ -1,5 +1,5 @@
 // src/exportAnimation.ts
-import { NodeIO, AnimationSampler, AnimationChannel, Animation } from '@gltf-transform/core';
+import { NodeIO, AnimationSampler, AnimationChannel, Animation, Accessor } from '@gltf-transform/core';
 import { Euler, Quaternion } from 'three';
 
 interface FrameData {
@@ -65,16 +65,37 @@ export async function exportAnimation(recording: FrameData[]) {
       });
     });
 
-    rotationSampler.setInput(input);
-    rotationSampler.setOutput(output);
+    // Create accessors for input and output
+    const inputAccessor = doc.createAccessor('inputAccessor')
+      .setType('SCALAR')
+      .setArray(new Float32Array(input))
+      .setCount(input.length);
+
+    const outputAccessor = doc.createAccessor('outputAccessor')
+      .setType('VEC4')
+      .setArray(new Float32Array(output))
+      .setCount(output.length / 4);
+
+    rotationSampler.setInput(inputAccessor);
+    rotationSampler.setOutput(outputAccessor);
 
     // Add blendshape samplers and channels
     Object.entries(blendshapeInputs).forEach(([key, times]) => {
       const sampler = doc.createAnimationSampler(`${key}Sampler`);
       const channel = doc.createAnimationChannel(`${key}Channel`);
 
-      sampler.setInput(times);
-      sampler.setOutput(blendshapeOutputs[key]);
+      const inputAccessor = doc.createAccessor(`${key}InputAccessor`)
+        .setType('SCALAR')
+        .setArray(new Float32Array(times))
+        .setCount(times.length);
+
+      const outputAccessor = doc.createAccessor(`${key}OutputAccessor`)
+        .setType('SCALAR')
+        .setArray(new Float32Array(blendshapeOutputs[key]))
+        .setCount(blendshapeOutputs[key].length);
+
+      sampler.setInput(inputAccessor);
+      sampler.setOutput(outputAccessor);
 
       channel.setTargetNode(rootNode);
       channel.setTargetPath(`weights.${key}`);
