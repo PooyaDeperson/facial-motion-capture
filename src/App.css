@@ -87,13 +87,13 @@
   --pattern-waves2:
     repeating-radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.05) 0px, rgba(0, 0, 0, 0.05) 25px, transparent 26px, transparent 90px);
   /* icons */
-  --selected-icon: url('src/icons/icon_selected.svg');
-  --camera-icon: url('src/icons/icon_camera.svg');
-  --dropdown-icon: url('src/icons/icon_dropdown.svg');
-  --circle-tile: url('src/icons/icon_bkg_tile.svg');
-  --color-icon: url('src/icons/icon_color.svg');
-  --pattern-icon: url('src/icons/icon_camera.svg');
-  --notallowed-icon: url('src/icons/icon_notallowed.svg');
+  --selected-icon: url('./icons/icon_selected.svg');
+  --camera-icon: url('./icons/icon_camera.svg');
+  --dropdown-icon: url('./icons/icon_dropdown.svg');
+  --circle-tile: url('./icons/icon_bkg_tile.svg');
+  --color-icon: url('./icons/icon_color.svg');
+  --pattern-icon: url('./icons/icon_camera.svg');
+  --notallowed-icon: url('./icons/icon_notallowed.svg');
 
   /* colors */
   --gray-100: #EBF0F5;
