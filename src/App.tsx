@@ -37,7 +37,7 @@ function App() {
 
   const handleSaveAnimation = async () => {
     if (!avatarReady) return alert("Avatar not ready yet!");
-    await exportAnimation(url, getRecording());
+    await exportAnimation(getRecording());
   };
 
   return (
@@ -46,7 +46,7 @@ function App() {
         <button onClick={handleStartRecording}>Start Recording</button>
         <button onClick={handleStopRecording}>Stop Recording</button>
         <button onClick={handleSaveAnimation}>Save Animation</button>
-      </div>
+        </div>
       <CameraPermissions onStreamReady={handleStreamReady} />
       {avatarReady && videoStream && <FaceTracking videoStream={videoStream} />}
       <Canvas
