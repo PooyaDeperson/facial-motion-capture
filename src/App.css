@@ -129,6 +129,96 @@
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
+/* =========================
+   Keyframes
+========================= */
+
+/* Slide Up */
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide Down */
+@keyframes slide-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade / Scale */
+@keyframes fade {
+  0% {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* =========================
+   Base Animation Class
+========================= */
+
+.reveal {
+  animation-duration: 220ms;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  
+}
+.anim-delay-1 {
+animation-delay: 100ms;
+}
+.anim-delay-2 {
+animation-delay: 200ms;
+}
+.anim-delay-3 {
+animation-delay: 300ms;
+}
+.anim-delay-4 {
+animation-delay: 400ms;
+}
+.anim-delay-5 {
+animation-delay: 500ms;
+}
+
+/* Specific animations */
+.slide-up {
+  animation-name: slide-up;
+}
+
+.slide-down {
+  animation-name: slide-down;
+}
+
+.fade {
+  animation-name: fade;
+}
+
+/* =========================
+   Reduced Motion Support
+========================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    animation: none; /* skip animation, show element instantly */
+    opacity: 1;
+    transform: none;
+  }
+}
 
 @keyframes spin {
   to {
@@ -813,24 +903,5 @@ button.icon-holder.tab-button:not(.active) {
 /* Text styling (Tailwind already adds some but for safety) */
 .mediapipe-loader p {
   font-size: 1.5rem;
-  color: #fff;
-}
-
-/* Optional spinner circle */
-.mediapipe-spinner {
-  border: 4px solid rgba(255, 255, 255, 0.2);
-  border-top: 4px solid #ffffff;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  color: var(--gray-100);
 }
