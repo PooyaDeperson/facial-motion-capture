@@ -61,7 +61,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
       {/* Dropdown button */}
       <button
         type="button"
-        className="mb:camera-dropdown dropdown flex-row camera-dropdown post-rel flex items-center justify-between gap-2"
+        className="mb:camera-dropdown dropdown flex-row camera-dropdown post-rel flex items-center z-1 justify-between gap-2"
         onClick={() => setIsOpen(!isOpen)}
       >
         {/* Left icon */}
@@ -80,7 +80,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
       {/* Dropdown list */}
       {isOpen && (
-        <ul className="flex-col gap-1 pos-rel camera-dropdown-list-container top-0 left-0 br-16">
+        <ul className="flex-col gap-1 pos-rel reveal slide-down camera-dropdown-list-container top-0 left-0 br-16">
           {options.map((option) => (
             <li key={option.value} className="camera-dropdown-list-item">
               <button
