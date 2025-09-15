@@ -1,8 +1,13 @@
 // FaceTracking.tsx
 import { useEffect, useRef } from "react";
-import { FaceLandmarker, FaceLandmarkerOptions, FilesetResolver } from "@mediapipe/tasks-vision";
+import {
+  FaceLandmarker,
+  FaceLandmarkerOptions,
+  FilesetResolver,
+} from "@mediapipe/tasks-vision";
 import { Euler, Matrix4 } from "three";
 
+// ✅ Global exports (could also be handled via context/state if needed)
 export let blendshapes: any[] = [];
 export let rotation: Euler;
 export let headMesh: any[] = [];
@@ -10,9 +15,12 @@ export let headMesh: any[] = [];
 let faceLandmarker: FaceLandmarker;
 let lastVideoTime = -1;
 
+// ✅ Updated options, same structure
 const options: FaceLandmarkerOptions = {
   baseOptions: {
-    modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
+    // Model still hosted by MediaPipe team
+    modelAssetPath:
+      "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
     delegate: "GPU",
   },
   numFaces: 1,
@@ -23,7 +31,7 @@ const options: FaceLandmarkerOptions = {
 
 function FaceTracking({
   videoStream,
-  onMediapipeReady, // ✅ callback prop to signal initialization
+  onMediapipeReady,
 }: {
   videoStream: MediaStream;
   onMediapipeReady?: () => void;
@@ -31,12 +39,17 @@ function FaceTracking({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const setupFaceLandmarker = async () => {
+    // ✅ Updated to latest RC version
     const filesetResolver = await FilesetResolver.forVisionTasks(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22-rc.20250304/wasm"
     );
-    faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
 
-    // ✅ Notify App that mediapipe is ready
+    faceLandmarker = await FaceLandmarker.createFromOptions(
+      filesetResolver,
+      options
+    );
+
+    // Signal ready
     if (onMediapipeReady) onMediapipeReady();
   };
 
@@ -45,6 +58,7 @@ function FaceTracking({
     if (!vid || !faceLandmarker) return;
 
     const nowInMs = Date.now();
+
     if (lastVideoTime !== vid.currentTime) {
       lastVideoTime = vid.currentTime;
       const result = faceLandmarker.detectForVideo(vid, nowInMs);
@@ -52,7 +66,9 @@ function FaceTracking({
       if (result.faceBlendshapes?.length && result.faceBlendshapes[0].categories) {
         blendshapes = result.faceBlendshapes[0].categories;
 
-        const matrix = new Matrix4().fromArray(result.facialTransformationMatrixes![0].data);
+        const matrix = new Matrix4().fromArray(
+          result.facialTransformationMatrixes![0].data
+        );
         rotation = new Euler().setFromRotationMatrix(matrix);
       }
     }
@@ -79,8 +95,8 @@ function FaceTracking({
       playsInline
       muted
       id="video"
-      className="camera-feed w-1 tb:w-400 br-12 tb:br-24 m-4" // keep your Tailwind/CSS classes
-      style={{}} // no display: none, fully visible
+      className="camera-feed w-1 tb:w-400 br-12 tb:br-24 m-4"
+      style={{}}
     />
   );
 }
