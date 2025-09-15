@@ -1,4 +1,4 @@
-import './css/foundation.css';
+// import './css/foundation.css';
 import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
