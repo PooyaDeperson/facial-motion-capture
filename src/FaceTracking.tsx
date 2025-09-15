@@ -21,7 +21,13 @@ const options: FaceLandmarkerOptions = {
   outputFacialTransformationMatrixes: true,
 };
 
-function FaceTracking({ videoStream }: { videoStream: MediaStream }) {
+function FaceTracking({
+  videoStream,
+  onMediapipeReady, // ✅ callback prop to signal initialization
+}: {
+  videoStream: MediaStream;
+  onMediapipeReady?: () => void;
+}) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const setupFaceLandmarker = async () => {
@@ -29,6 +35,9 @@ function FaceTracking({ videoStream }: { videoStream: MediaStream }) {
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
     );
     faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, options);
+
+    // ✅ Notify App that mediapipe is ready
+    if (onMediapipeReady) onMediapipeReady();
   };
 
   const predict = () => {
@@ -63,17 +72,17 @@ function FaceTracking({ videoStream }: { videoStream: MediaStream }) {
     };
   }, [videoStream]);
 
-return (
-  <video
-    ref={videoRef}
-    autoPlay
-    playsInline
-    muted
-    id="video"
-    className="camera-feed w-1 tb:w-400 br-12 tb:br-24 m-4" // keep your Tailwind/CSS classes
-    style={{}} // no display: none, fully visible
-  />
-);
+  return (
+    <video
+      ref={videoRef}
+      autoPlay
+      playsInline
+      muted
+      id="video"
+      className="camera-feed w-1 tb:w-400 br-12 tb:br-24 m-4" // keep your Tailwind/CSS classes
+      style={{}} // no display: none, fully visible
+    />
+  );
 }
 
 export default FaceTracking;
