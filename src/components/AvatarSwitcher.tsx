@@ -10,6 +10,9 @@ const AvatarSwitcher: React.FC<AvatarSwitcherProps> = ({ onAvatarChange, activeU
   const avatars = [
     { name: "Avatar 1", url: "avatar/avatar1.glb" },
     { name: "Avatar 2", url: "avatar/avatar2.glb" },
+    { name: "Avatar 2", url: "avatar/avatar3.glb" },
+    { name: "Avatar 2", url: "avatar/avatar4.glb" },
+    { name: "Avatar 2", url: "avatar/avatar5.glb" },
   ];
 
   useEffect(() => {
