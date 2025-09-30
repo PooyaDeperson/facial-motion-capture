@@ -1,16 +1,16 @@
 import "./App.css";
 import { useState, Suspense } from "react";
-import { Color } from "three";
 import { Canvas } from "@react-three/fiber";
 import CameraPermissions from "./camera-permission";
 import ColorSwitcher from "./components/ColorSwitcher";
+import AvatarSwitcher from "./components/AvatarSwitcher";
 import FaceTracking from "./FaceTracking";
 import Avatar from "./Avatar";
 import Loader from "./Loader";
 
 function App() {
   const [url, setUrl] = useState<string>(
-    "https://models.readyplayer.me/68c19bef8ac0d37a66aa2930.glb?morphTargets=ARKit&textureAtlas=1024"
+    "avatar/avatar1.glb"
   );
 
   const [avatarReady, setAvatarReady] = useState(false);
@@ -61,12 +61,13 @@ function App() {
 
         {/* Suspense shows loader until avatar is fully loaded */}
         <Suspense fallback={<Loader />}>
-          <Avatar url={url} onLoaded={() => setAvatarReady(true)} />
+          <Avatar key={url} url={url} onLoaded={() => setAvatarReady(true)} />
         </Suspense>
       </Canvas>
 
       {/* UI components */}
       <ColorSwitcher />
+      <AvatarSwitcher onAvatarChange={setUrl} />
     </div>
   );
 }
