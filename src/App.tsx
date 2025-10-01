@@ -50,7 +50,7 @@ function App() {
 
       {/* Loader while waiting for mediapipe */}
       {avatarReady && videoStream && !mediapipeReady && (
-        <div className="mediapipe-loader fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-70 z-50">
+        <div className="reveal fade mediapipe-loader pos-fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-70 z-50">
           <p className="text-white text-2xl animate-pulse">Keep smiling...</p>
         </div>
       )}
