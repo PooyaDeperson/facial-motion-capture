@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import "./AvatarSwitcher.css";
 
 interface AvatarSwitcherProps {
   onAvatarChange: (newUrl: string) => void;
@@ -8,11 +7,11 @@ interface AvatarSwitcherProps {
 
 const AvatarSwitcher: React.FC<AvatarSwitcherProps> = ({ onAvatarChange, activeUrl }) => {
   const avatars = [
-    { name: "Avatar 1", url: "avatar/avatar1.glb" },
-    { name: "Avatar 2", url: "avatar/avatar2.glb" },
-    { name: "Avatar 2", url: "avatar/avatar3.glb" },
-    { name: "Avatar 2", url: "avatar/avatar4.glb" },
-    { name: "Avatar 2", url: "avatar/avatar5.glb" },
+    { name: "Avatar 1", url: "https://models.readyplayer.me/68c19bef8ac0d37a66aa2930.glb?morphTargets=ARKit&textureAtlas=1024" },
+    { name: "Avatar 2", url: "https://models.readyplayer.me/68c1b98163cdbdf2d3403aab.glb?morphTargets=ARKit&textureAtlas=1024" },
+    { name: "Avatar 3", url: "https://models.readyplayer.me/68dcef4322326403eca002f5.glb?morphTargets=ARKit&textureAtlas=1024" },
+    { name: "Avatar 4", url: "https://models.readyplayer.me/68dcf93c9603200be52d3e3d.glb?morphTargets=ARKit&textureAtlas=1024" },
+    { name: "Avatar 5", url: "https://models.readyplayer.me/68dcf9d16c40ed329a4e4681.glb?morphTargets=ARKit&textureAtlas=1024" },
   ];
 
   useEffect(() => {
@@ -22,16 +21,20 @@ const AvatarSwitcher: React.FC<AvatarSwitcherProps> = ({ onAvatarChange, activeU
   }, []);
 
   return (
-    <div className="avatar-switcher">
-      {avatars.map((avatar) => (
-        <button
-          key={avatar.name}
-          onClick={() => onAvatarChange(avatar.url)}
-          className={`avatar-btn ${activeUrl === avatar.url ? "active" : ""}`}
-        >
-          {avatar.name}
-        </button>
-      ))}
+    <div className="avatar-switcher z-6">
+      {avatars.map((avatar, index) => {
+        const isActive = activeUrl === avatar.url;
+        return (
+          <button
+            key={avatar.name}
+            onClick={() => !isActive && onAvatarChange(avatar.url)}
+            className={`avatar-btn avatar-selection avatar${index + 1} ${isActive ? "active" : ""}`}
+            disabled={isActive} // prevent re-selecting
+          >
+            {/* {avatar.name} */}
+          </button>
+        );
+      })}
     </div>
   );
 };
