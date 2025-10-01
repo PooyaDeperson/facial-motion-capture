@@ -13,6 +13,7 @@ function Avatar({ url, onLoaded }: AvatarProps) {
   const { nodes } = useGraph(scene);
 
   useEffect(() => {
+    headMesh.length = 0;
     if (nodes.Wolf3D_Head) headMesh.push(nodes.Wolf3D_Head);
     if (nodes.Wolf3D_Teeth) headMesh.push(nodes.Wolf3D_Teeth);
     if (nodes.Wolf3D_Beard) headMesh.push(nodes.Wolf3D_Beard);
@@ -20,7 +21,7 @@ function Avatar({ url, onLoaded }: AvatarProps) {
     if (nodes.Wolf3D_Head_Custom) headMesh.push(nodes.Wolf3D_Head_Custom);
 
     if (onLoaded) onLoaded(); // ✅ fire callback
-  }, [nodes, url]);
+  }, [nodes, url, onLoaded]);
 
   useFrame(() => {
     if (blendshapes.length > 0) {
