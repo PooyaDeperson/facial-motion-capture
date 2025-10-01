@@ -68,32 +68,32 @@ const ColorPatternSwitcher: React.FC = () => {
 
   return (
     <div
-      className="popup-container selector-container reveal slide-up cc-pattern-selector-container pos-abs bottom-0 p-1 left-0 z-7 m-6 br-24"
+      className="popup-container tb:size selector-container reveal slide-up cc-pattern-selector-container pos-abs bottom-0 p-1 left-0 z-7 m-6 br-24"
       ref={containerRef}
     >
-      <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-3 gap-2 br-16 p-1">
+      <div className="bg-blur flex-row cc-pattern-selector pos-abs bottom-0 left-0 z-7 m-2 tb:m-3 gap-2 br-16 p-1">
         {/* Color Button */}
         <button
-          className={`icon-holder br-12 tab-button ${
+          className={`icon-holder br-12 tab-button size-48 tb:size-60 ${
             expandedTab === "color" ? "active" : ""
           }`}
           onClick={() =>
             setExpandedTab(expandedTab === "color" ? null : "color")
           }
         >
-          <span className="has-icon icon-size-32 color-icon"></span>
+          <span className="has-icon icon-size-18 tb:icon-size-32 color-icon"></span>
         </button>
 
         {/* Pattern Button */}
         <button
-          className={`icon-holder br-12 tab-button ${
+          className={`icon-holder br-12 tab-button size-48 tb:size-60 ${
             expandedTab === "pattern" ? "active" : ""
           }`}
           onClick={() =>
             setExpandedTab(expandedTab === "pattern" ? null : "pattern")
           }
         >
-          <span className="has-icon icon-size-32 pattern-icon"></span>
+          <span className="has-icon icon-size-18 tb:icon-size-32 pattern-icon"></span>
         </button>
       </div>
 
