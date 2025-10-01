@@ -65,7 +65,7 @@ function App() {
 
       {/* 3D Avatar canvas */}
       <Canvas
-        className="avatar-container bottom-0 pos-abs z-1"
+        className="avatar-container mb:pos tb:avatar-pos bottom-0 pos-abs z-1"
         camera={{ fov: 27, position: [0, 0, 4.2] }}
         dpr={[1, window.devicePixelRatio]}
         shadows
