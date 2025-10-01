@@ -14,14 +14,27 @@ const AvatarSwitcher: React.FC<AvatarSwitcherProps> = ({ onAvatarChange, activeU
     { name: "Avatar 5", url: "https://models.readyplayer.me/68dcf9d16c40ed329a4e4681.glb?morphTargets=ARKit&textureAtlas=1024" },
   ];
 
+  // Load avatar from localStorage on mount
   useEffect(() => {
-    if (!activeUrl) {
+    const savedAvatar = localStorage.getItem("activeAvatar");
+    if (savedAvatar) {
+      onAvatarChange(savedAvatar);
+    } else if (!activeUrl) {
+      // Default to the first avatar if nothing is saved
       onAvatarChange(avatars[0].url);
+      localStorage.setItem("activeAvatar", avatars[0].url);
     }
   }, []);
 
+  // Save avatar to localStorage whenever it changes
+  useEffect(() => {
+    if (activeUrl) {
+      localStorage.setItem("activeAvatar", activeUrl);
+    }
+  }, [activeUrl]);
+
   return (
-    <div className="avatar-switcher z-6">
+    <div className="avatar-switcher reveal slide-left bottom-0 m-6 tb:center-horizontal flex-col pos-fixed z-6">
       {avatars.map((avatar, index) => {
         const isActive = activeUrl === avatar.url;
         return (
