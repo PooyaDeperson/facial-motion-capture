@@ -32,12 +32,13 @@ const isDark = (hex: string) => {
 };
 
 const ColorPatternSwitcher: React.FC = () => {
-  const [activeColor, setActiveColor] = useState<string>(
-    () => localStorage.getItem("activeColor") || colors[0].hex
-  );
-  const [activePattern, setActivePattern] = useState<string>(
-    () => localStorage.getItem("activePattern") || ""
-  );
+const [activeColor, setActiveColor] = useState<string>(
+  () => localStorage.getItem("activeColor") || "#8bd9fbff"
+);
+
+const [activePattern, setActivePattern] = useState<string>(
+  () => localStorage.getItem("activePattern") || "var(--pattern-waves2)"
+);
   const [expandedTab, setExpandedTab] = useState<"color" | "pattern" | null>(
     null
   );
