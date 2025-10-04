@@ -203,7 +203,27 @@ table {
   --purple-900: #4A13C0;
   --purple-800: #7F5DCA;
   --white-color: #ffffff;
+  --red-900: #C0137B;
+  --red-800: #EF52B0;
 
+}
+
+
+h1.title.denied-title {
+    color: var(--red-900);
+}
+
+p.subtitle.denied-subtitle {
+    color: var(--red-800);
+}
+
+
+h1.title.prompt-title, h1.title.refresh-title {
+    color: var(--purple-900);
+}
+
+p.subtitle.prompt-subtitle, p.subtitle.refresh-subtitle{
+    color: var(--purple-800);
 }
 
 /* avatar images */
@@ -921,8 +941,9 @@ button.primary {
 
 button,
 button:hover,
-button:active {
-  transition: transform 100ms ease-in-out, filter 100ms ease-in-out;
+button:active,
+div.pattern-card, div.color-card, button.tab-button {
+  transition: scale 100ms ease-in-out, filter 100ms ease-in-out, transform 100ms ease-in-out;
 }
 
 button:not(.avatar-btn):hover {
@@ -930,8 +951,10 @@ button:not(.avatar-btn):hover {
 }
 
 button.primary:active,
-button.secondary:active {
-  transform: scale(0.95);
+button.secondary:active, button.avatar-btn:active,
+div.pattern-card:active, div.color-card:active,
+button.tab-button:active {
+  scale: 0.93;
 }
 
 video.camera-feed {

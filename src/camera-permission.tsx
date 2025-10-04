@@ -14,16 +14,25 @@ const VideoIcon = (
   </svg>
 );
 
-function PermissionPopup({ title, subtitle, buttonText, onClick, showButton }: any) {
+interface PermissionPopupProps {
+  title: string;
+  subtitle: string;
+  buttonText?: string;
+  onClick?: () => void;
+  showButton?: boolean;
+  variant: "prompt" | "denied" | "refresh";
+}
+
+function PermissionPopup({ title, subtitle, buttonText, onClick, showButton, variant }: PermissionPopupProps) {
   return (
-    <div className="popup-container reveal fade scaleIn w-100 tb:w-392 pos-abs z-7 m-5 p-1 br-20 top-0">
+    <div className={`popup-container ${variant}-popup reveal fade scaleIn w-100 tb:w-392 pos-abs z-7 m-5 p-1 br-20 top-0`}>
       <div className="inner-container p-5 flex-col br-16">
         <div className="text-container flex-col gap-2">
-          <h1 className="title">{title}</h1>
-          <p className="subtitle">{subtitle}</p>
+          <h1 className={`title ${variant}-title`}>{title}</h1>
+          <p className={`subtitle ${variant}-subtitle`}>{subtitle}</p>
         </div>
         {showButton && (
-          <button onClick={onClick} className="button primary">
+          <button onClick={onClick} className={`button primary ${variant}-button`}>
             {buttonText}
           </button>
         )}
@@ -40,27 +49,26 @@ export default function CameraPermissions({ onStreamReady }: CameraPermissionsPr
   const [permissionState, setPermissionState] = useState<"prompt" | "denied" | "granted">("prompt");
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
-  const [showRefreshPopup, setShowRefreshPopup] = useState(false); // <-- NEW STATE
+  const [showRefreshPopup, setShowRefreshPopup] = useState(false);
 
-const requestCamera = async (deviceId?: string) => {
-  try {
-    const constraints: MediaStreamConstraints = {
-      video: deviceId ? { deviceId: { exact: deviceId } } : { width: 1280, height: 720 },
-      audio: false,
-    };
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    setPermissionState("granted");
+  const requestCamera = async (deviceId?: string) => {
+    try {
+      const constraints: MediaStreamConstraints = {
+        video: deviceId ? { deviceId: { exact: deviceId } } : { width: 1280, height: 720 },
+        audio: false,
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      setPermissionState("granted");
 
-    const video = document.getElementById("video") as HTMLVideoElement;
-    if (video) video.srcObject = stream;
+      const video = document.getElementById("video") as HTMLVideoElement;
+      if (video) video.srcObject = stream;
 
-    onStreamReady(stream); // <-- pass MediaStream instead of HTMLVideoElement
-  } catch (err) {
-    console.error("Camera error:", err);
-    setPermissionState("denied");
-  }
-};
-
+      onStreamReady(stream);
+    } catch (err) {
+      console.error("Camera error:", err);
+      setPermissionState("denied");
+    }
+  };
 
   const loadCameras = async () => {
     const devices = await navigator.mediaDevices.enumerateDevices();
@@ -81,8 +89,6 @@ const requestCamera = async (deviceId?: string) => {
   const handleCameraChange = (deviceId: string) => {
     setSelectedCamera(deviceId);
     localStorage.setItem("selectedCamera", deviceId);
-
-    // Show refresh popup instead of requesting camera immediately
     setShowRefreshPopup(true);
   };
 
@@ -113,6 +119,7 @@ const requestCamera = async (deviceId?: string) => {
     <>
       {permissionState === "prompt" && (
         <PermissionPopup
+          variant="prompt"
           title="pssst… give camera access to animate!"
           subtitle="let us use your camera to bring your character’s face to life in real time"
           buttonText="allow camera access"
@@ -123,8 +130,10 @@ const requestCamera = async (deviceId?: string) => {
 
       {permissionState === "denied" && (
         <PermissionPopup
-          title="oh... you haven’t given camera access yet."
-          subtitle="you’re missing out on the fun!"
+          variant="denied"
+          title="oh... you haven’t given camera access yet.
+"
+          subtitle="At the top ⬆️, tap the ℹ️ Site Info icon and turn on camera toggle."
           showButton={false}
         />
       )}
@@ -140,9 +149,9 @@ const requestCamera = async (deviceId?: string) => {
         </div>
       )}
 
-      {/* NEW REFRESH POPUP */}
       {showRefreshPopup && (
         <PermissionPopup
+          variant="refresh"
           title="Refresh to animate your character!"
           subtitle="You changed the camera. Please refresh the page to see the animation in action."
           buttonText="Refresh page"
