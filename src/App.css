@@ -1182,7 +1182,12 @@ button.icon-holder.tab-button:not(.active) {
 
   }
 }
-
+canvas {
+  cursor: grab;
+}
+canvas:active {
+  cursor: grabbing;
+}
 /* ------------------------ ------------------------ end of tablet and greater styles */
 
 /* ====== Mediapipe Loader Overlay ====== */
