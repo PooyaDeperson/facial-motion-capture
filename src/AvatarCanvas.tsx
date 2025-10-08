@@ -1,9 +1,9 @@
 // AvatarCanvas.tsx
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import Avatar from "./Avatar";
-import Loader from "./Loader";
 import AvatarOrbitControls from "./AvatarOrbitControls";
+import Loader from "./Loader"; // <-- make sure this points to your 2D loader component
 
 interface AvatarCanvasProps {
   url: string | null;
@@ -12,38 +12,53 @@ interface AvatarCanvasProps {
 }
 
 const AvatarCanvas: React.FC<AvatarCanvasProps> = ({ url, avatarKey, setAvatarReady }) => {
+  const [loading, setLoading] = useState(true);
+
   const cameraPosition = [-0.0, 1.62, 1.09] as [number, number, number];
-  const avatarCenter = [0, 1.68, 0] as [number, number, number]; // center for horizontal orbit
+  const avatarCenter = [0, 1.68, 0] as [number, number, number];
+
+  useEffect(() => {
+    if (url) {
+      setLoading(true);
+      setAvatarReady(false);
+    }
+  }, [url, setAvatarReady]);
 
   return (
-    <Canvas
-      className="avatar-container mb:pos tb:avatar-pos bottom-0 pos-abs z-1"
-      camera={{
-        fov: 27,
-        position: cameraPosition,
-        rotation: [0.05, -0.0, 0.0],
-      }}
-      dpr={[1, window.devicePixelRatio]}
-      shadows
-    >
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={0.5} castShadow />
-      <pointLight position={[-10, 0, 10]} intensity={0.5} castShadow />
-      <pointLight position={[0, 0, 10]} intensity={0.5} castShadow />
+    <>
+      <Loader visible={loading} />
 
-      {/* Import orbit controls */}
-      <AvatarOrbitControls target={avatarCenter} enableZoom={true} />
+      <Canvas
+        className="avatar-container mb:pos tb:avatar-pos bottom-0 pos-abs z-1"
+        camera={{
+          fov: 27,
+          position: cameraPosition,
+          rotation: [0.05, -0.0, 0.0],
+        }}
+        dpr={[1, window.devicePixelRatio]}
+        shadows
+      >
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} intensity={0.5} castShadow />
+        <pointLight position={[-10, 0, 10]} intensity={0.5} castShadow />
+        <pointLight position={[0, 0, 10]} intensity={0.5} castShadow />
 
-      {url && (
-        <Suspense fallback={<Loader />}>
-          <Avatar
-            key={`${url}-${avatarKey}`}
-            url={url}
-            onLoaded={() => setAvatarReady(true)}
-          />
-        </Suspense>
-      )}
-    </Canvas>
+        <AvatarOrbitControls target={avatarCenter} enableZoom={true} />
+
+        {url && (
+          <Suspense fallback={null}>
+            <Avatar
+              key={`${url}-${avatarKey}`}
+              url={url}
+              onLoaded={() => {
+                setAvatarReady(true);
+                setLoading(false);
+              }}
+            />
+          </Suspense>
+        )}
+      </Canvas>
+    </>
   );
 };
 

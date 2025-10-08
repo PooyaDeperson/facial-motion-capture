@@ -1,17 +1,19 @@
-import { Html, useProgress } from "@react-three/drei";
+// Loader.tsx
+import React from "react";
 
-function Loader() {
-  const { progress } = useProgress();
-  return (
-    <Html center>
-      <div className="loader">
-        <div className="spinner" />
-        <p className="avatar-loader-text">
-          {/* {Math.round(progress)} */}
-          avatar coming...</p>
-      </div>
-    </Html>
-  );
+interface LoaderProps {
+  visible: boolean;
 }
+
+const Loader: React.FC<LoaderProps> = ({ visible }) => {
+  if (!visible) return null;
+
+  return (
+    <div className="loader">
+      <div className="spinner" />
+      <p className="avatar-loader-text">Avatar coming...</p>
+    </div>
+  );
+};
 
 export default Loader;
