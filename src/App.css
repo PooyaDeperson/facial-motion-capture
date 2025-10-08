@@ -299,6 +299,10 @@ button.avatar-btn.avatar-selection.active {
   align-items: center;
   color: white;
   font-weight: bold;
+  top: 50%;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .avatar-loader-text {
