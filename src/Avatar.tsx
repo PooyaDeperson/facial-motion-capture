@@ -39,7 +39,7 @@ function Avatar({ url, onLoaded }: AvatarProps) {
     }
   });
 
-  return <primitive object={scene} position={[0, -1.75, 3]} />;
+  return <primitive object={scene} position={[0, 0, 0]} />;
 }
 
 export default Avatar;
