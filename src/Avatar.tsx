@@ -60,16 +60,21 @@ const applyPoseRotations = (nodes: any, poseData: any) => {
   const leftWrist = new THREE.Vector3(-worldLandmarks[15].x, worldLandmarks[15].y, worldLandmarks[15].z);
   const rightWrist = new THREE.Vector3(-worldLandmarks[16].x, worldLandmarks[16].y, worldLandmarks[16].z);
 
+  // Calculate rest pose vectors from Blender data
+  const leftArmRest = new THREE.Vector3(0.309639 - 0.165933, 0.059751 - 0.038461, 1.2576 - 1.50295).normalize();
+  const leftForeArmRest = new THREE.Vector3(0.449575 - 0.309639, -0.031077 - 0.059751, 1.06877 - 1.2576).normalize();
+
   if (nodes.LeftArm) {
-    const shoulderRotation = getRotation(new THREE.Vector3(-1, 0, 0), leftElbow.clone().sub(leftShoulder).normalize());
+    const shoulderRotation = getRotation(leftArmRest, leftElbow.clone().sub(leftShoulder).normalize());
     nodes.LeftArm.rotation.set(shoulderRotation.x, shoulderRotation.y, shoulderRotation.z);
   }
   if (nodes.RightArm) {
+    // Keeping old logic for right arm until data is provided
     const shoulderRotation = getRotation(new THREE.Vector3(1, 0, 0), rightElbow.clone().sub(rightShoulder).normalize());
     nodes.RightArm.rotation.set(shoulderRotation.x, shoulderRotation.y, shoulderRotation.z);
   }
   if (nodes.LeftForeArm) {
-    const elbowRotation = getRotation(new THREE.Vector3(-1, 0, 0), leftWrist.clone().sub(leftElbow).normalize());
+    const elbowRotation = getRotation(leftForeArmRest, leftWrist.clone().sub(leftElbow).normalize());
     nodes.LeftForeArm.rotation.set(elbowRotation.x, elbowRotation.y, elbowRotation.z);
   }
   if (nodes.RightForeArm) {
