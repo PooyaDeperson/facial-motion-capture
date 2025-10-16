@@ -39,7 +39,8 @@ Visit `http://localhost:3000` to see the face tracking in action!
 
 ## 💫 Project Vision
 
-This project aims to provide a simple and effective way to perform real-time face tracking in the browser using Ready Player Me avatars. It leverages the power of MediaPipe and Three.js to create an immersive experience where a 3D avatar mimics your facial movements.
+This project aims to provide a simple and effective way to perform real-time face tracking in the browser using Ready Player Me avatars.
+It leverages the power of MediaPipe and Three.js to create an immersive experience where a 3D avatar mimics your facial movements.
 
 ---
 
@@ -67,6 +68,12 @@ This project aims to provide a simple and effective way to perform real-time fac
 - **Build Tool**: Create React App
 
 ---
+
+
+## Known Bugs:
+
+⚠️ Currently does not work on Samsung Galaxy S25 Ultra and some other Galaxy devices due to MediaPipe compatibility issues
+
 
 ## 🛠️ Development Guide
 
