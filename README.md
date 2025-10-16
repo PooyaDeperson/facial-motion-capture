@@ -116,6 +116,6 @@ rpm-face-tracking/
     ├── 📄 FaceTracking.tsx # The core logic for tracking the user's face
     ├── 📄 index.css       # Global styles for the application
     ├── 📄 index.tsx       # The entry point for the React application
-    ├── 📄 Loader.tsx      # A loading indicator component
+    ├── 📄 Loader.tsx      # A loading avatar indicator component
     └── 📄 react-app-env.d.ts # TypeScript type declarations for the React environment
 ```
