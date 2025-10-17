@@ -13,7 +13,7 @@
 
 ---
 
-  ## ready Roadmap
+  ## Read Roadmap
   https://github.com/users/PooyaDeperson/projects/3
 
 ---
