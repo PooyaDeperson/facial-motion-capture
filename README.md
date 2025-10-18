@@ -100,7 +100,7 @@ It leverages the power of MediaPipe and Three.js to create an immersive experien
 ## 📁 Project Structure
 
 ```
-rpm-face-tracking/
+facial-motion-capture/
 ├── 📄 .gitignore          # Specifies intentionally untracked files to ignore
 ├── 📄 package.json        # Lists the project's dependencies and scripts
 ├── 📄 package-lock.json  # Records the exact version of each installed package
