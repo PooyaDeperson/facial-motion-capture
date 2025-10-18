@@ -75,7 +75,7 @@ It leverages the power of MediaPipe and Three.js to create an immersive experien
 ---
 
 
-## Known Bugs:
+## Known issues:
 
 ⚠️ Currently does not work on Samsung Galaxy S25 Ultra and some other Galaxy devices due to MediaPipe compatibility issues
 
@@ -119,14 +119,14 @@ rpm-face-tracking/
     ├── 📁 hooks/          # Custom React hooks for managing state and logic
     ├── 📁 icons/          # SVG icons used in the user interface
     ├── 📁 images/         # Image assets specific to components
-    ├── 📄 App.css         # Styles for the main application component
+    ├── 📄 App.css         # Styles for the main application component / all styles are found here
     ├── 📄 App.tsx         # The root component of the application
     ├── 📄 Avatar.tsx      # Renders the 3D avatar model
     ├── 📄 AvatarCanvas.tsx # The Three.js canvas where the avatar is displayed
     ├── 📄 AvatarOrbitControls.tsx # Implements camera controls for the avatar
     ├── 📄 camera-permission.tsx # Handles requesting and managing camera permissions
     ├── 📄 FaceTracking.tsx # The core logic for tracking the user's face
-    ├── 📄 index.css       # Global styles for the application
+    ├── 📄 index.css       # Not used / Empty
     ├── 📄 index.tsx       # The entry point for the React application
     ├── 📄 Loader.tsx      # A loading avatar indicator component
     └── 📄 react-app-env.d.ts # TypeScript type declarations for the React environment
