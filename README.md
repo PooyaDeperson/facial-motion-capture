@@ -1,10 +1,12 @@
 <div align="left">
   
   ![gh face mocap demo](https://github.com/user-attachments/assets/20fced07-943c-4f5a-bd92-1a027d9f2bee)
-
+  
   # Facial Motion Capture
   
   **Real-time face tracking with 3D avatars in your browser** ✨
+
+  Try it at : https://facemocap.vercel.app/?utm_source=github
   
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
