@@ -1,6 +1,7 @@
 <div align="left">
   
-  
+  ![gh face mocap demo](https://github.com/user-attachments/assets/20fced07-943c-4f5a-bd92-1a027d9f2bee)
+
   # Facial Motion Capture
   
   **Real-time face tracking with 3D avatars in your browser** ✨
