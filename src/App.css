@@ -310,6 +310,19 @@ button.avatar-btn.avatar-selection.active {
   text-align: center;
   color: var(--purple-900);
 }
+.avatar-loader-container {
+    min-width: 100%;
+    min-height: 100%;
+    bottom: 0;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: 50%;
+    transform: translatex(-50%);
+    gap: 12px;
+    
+}
 
 .spinner {
   width: 23px;
@@ -499,12 +512,29 @@ html {
   overflow: hidden;
 }
 
+
+
+#root {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+}
+.App {
+      width: inherit;
+    height: inherit;
+}
 /* Positioning */
 .pos-rel {
   position: relative;
 }
 
 .pos-abs {
+  position: absolute;
+}
+.pos-abs-important {
   position: absolute !important;
 }
 

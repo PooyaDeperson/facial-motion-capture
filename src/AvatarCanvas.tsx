@@ -3,7 +3,7 @@ import { Suspense, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import Avatar from "./Avatar";
 import AvatarOrbitControls from "./AvatarOrbitControls";
-import Loader from "./Loader"; // <-- make sure this points to your 2D loader component
+import AvatarLoader from "./AvatarLoader"; // <-- your 2D dynamic loader
 
 interface AvatarCanvasProps {
   url: string | null;
@@ -26,10 +26,19 @@ const AvatarCanvas: React.FC<AvatarCanvasProps> = ({ url, avatarKey, setAvatarRe
 
   return (
     <>
-      <Loader visible={loading} />
+      {/* 2D Loader Overlay */}
+<AvatarLoader
+  visible={loading}
+  initialMessage="Just a little patience..."
+  secondMessage="Someone’s on the way!"
+  thirdMessage="I promise, someone is coming..."
+  secondDelay={10000}
+  thirdDelay={20000}
+/>
+
 
       <Canvas
-        className="avatar-container mb:pos tb:avatar-pos bottom-0 pos-abs z-1"
+        className="avatar-container mb:pos tb:avatar-pos bottom-0 pos-abs-important z-1"
         camera={{
           fov: 27,
           position: cameraPosition,
