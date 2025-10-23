@@ -210,20 +210,22 @@ table {
 
 
 h1.title.denied-title {
-    color: var(--red-900);
+  color: var(--red-900);
 }
 
 p.subtitle.denied-subtitle {
-    color: var(--red-800);
+  color: var(--red-800);
 }
 
 
-h1.title.prompt-title, h1.title.refresh-title {
-    color: var(--purple-900);
+h1.title.prompt-title,
+h1.title.refresh-title {
+  color: var(--purple-900);
 }
 
-p.subtitle.prompt-subtitle, p.subtitle.refresh-subtitle{
-    color: var(--purple-800);
+p.subtitle.prompt-subtitle,
+p.subtitle.refresh-subtitle {
+  color: var(--purple-800);
 }
 
 /* avatar images */
@@ -310,18 +312,22 @@ button.avatar-btn.avatar-selection.active {
   text-align: center;
   color: var(--purple-900);
 }
+
 .avatar-loader-container {
-    min-width: 100%;
-    min-height: 100%;
-    bottom: 0;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    left: 50%;
-    transform: translatex(-50%);
-    gap: 12px;
-    
+  min-width: 100%;
+  min-height: 85%;
+  bottom: 0;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 50%;
+  transform: translatex(-50%);
+  gap: 12px;
+  background-Repeat: no-repeat;
+  background-position: center bottom;
+  background-size: cover;
+
 }
 
 .spinner {
@@ -515,17 +521,19 @@ html {
 
 
 #root {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
 }
+
 .App {
-      width: inherit;
-    height: inherit;
+  width: inherit;
+  height: inherit;
 }
+
 /* Positioning */
 .pos-rel {
   position: relative;
@@ -534,6 +542,7 @@ html {
 .pos-abs {
   position: absolute;
 }
+
 .pos-abs-important {
   position: absolute !important;
 }
@@ -724,9 +733,10 @@ html {
   align-items: center;
 
 }
+
 .tab-button.size-48 {
-    width: 48px;
-    height: 48px;
+  width: 48px;
+  height: 48px;
 }
 
 
@@ -976,7 +986,9 @@ button.primary {
 button,
 button:hover,
 button:active,
-div.pattern-card, div.color-card, button.tab-button {
+div.pattern-card,
+div.color-card,
+button.tab-button {
   transition: scale 100ms ease-in-out, filter 100ms ease-in-out, transform 100ms ease-in-out;
 }
 
@@ -985,8 +997,10 @@ button:not(.avatar-btn):hover {
 }
 
 button.primary:active,
-button.secondary:active, button.avatar-btn:active,
-div.pattern-card:active, div.color-card:active,
+button.secondary:active,
+button.avatar-btn:active,
+div.pattern-card:active,
+div.color-card:active,
 button.tab-button:active {
   scale: 0.93;
 }
@@ -1016,6 +1030,7 @@ button.camera-dropdown {
   width: 16px;
   height: 16px;
 }
+
 .icon-size-18 {
   width: 18px;
   height: 18px;
@@ -1145,13 +1160,14 @@ button.icon-holder.tab-button:not(.active) {
   flex-direction: row;
   flex-wrap: nowrap;
 }
-  .popup-container {
-    min-height: 72px;
-    overflow: hidden;
-    min-width: 128px;
-    max-width: 360px;
-    max-height: 330px;
- 
+
+.popup-container {
+  min-height: 72px;
+  overflow: hidden;
+  min-width: 128px;
+  max-width: 360px;
+  max-height: 330px;
+
 }
 
 
@@ -1160,24 +1176,27 @@ button.icon-holder.tab-button:not(.active) {
 @media (min-width: 769px) {
 
 
+
+
+
   .tb\:icon-size-32 {
-   width: 32px;
+    width: 32px;
     height: 32px;
-}
+  }
 
 
   .popup-container.tb\:size {
-  min-height: 90px;
-  
-  min-width: 160px;
-      /* max-width: 360px; 
+    min-height: 90px;
+
+    min-width: 160px;
+    /* max-width: 360px; 
     max-height: 330px; */
 
-}
+  }
 
-.tb\:m-3 {
-  margin: 12px;
-}
+  .tb\:m-3 {
+    margin: 12px;
+  }
 
   .tab-button.tb\:size-60 {
     width: 60px;
@@ -1216,12 +1235,21 @@ button.icon-holder.tab-button:not(.active) {
 
   }
 }
+
+@media (min-width:1025px) and (orientation: landscape) , (max-height:400px), (orientation: landscape) {
+  .avatar-loader-container {
+      background-size: contain;
+  }
+}
+
 canvas {
   cursor: grab;
 }
+
 canvas:active {
   cursor: grabbing;
 }
+
 /* ------------------------ ------------------------ end of tablet and greater styles */
 
 /* ====== Mediapipe Loader Overlay ====== */
