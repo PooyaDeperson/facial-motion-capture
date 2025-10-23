@@ -51,9 +51,6 @@ return (
     className="avatar-loader-container flex flex-col items-center justify-center space-y-3 fixed inset-0 bg-white/80 backdrop-blur-sm z-50"
     style={{
       backgroundImage: "url('/images/app/image_avatar_skeleton.svg')",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center bottom",
-      backgroundSize: "cover",
     }}
   >
     {/* <div className="spinner w-8 h-8 border-4 border-gray-300 border-t-transparent rounded-full animate-spin" /> */}
