@@ -310,7 +310,7 @@ button.avatar-btn.avatar-selection.active {
 .avatar-loader-text {
   text-wrap: nowrap;
   text-align: center;
-  color: var(--purple-900);
+  color: var(--gray-900);
 }
 
 .avatar-loader-container {

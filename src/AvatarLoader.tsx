@@ -48,7 +48,7 @@ const AvatarLoader: React.FC<AvatarLoaderProps> = ({
 
 return (
   <div
-    className="avatar-loader-container flex flex-col items-center justify-center space-y-3 fixed inset-0 bg-white/80 backdrop-blur-sm z-50"
+    className="reveal fade avatar-loader-container flex flex-col items-center justify-center space-y-3 fixed inset-0 bg-white/80 backdrop-blur-sm z-50"
     style={{
       backgroundImage: "url('/images/app/image_avatar_skeleton.svg')",
     }}
