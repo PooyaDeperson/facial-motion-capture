@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="632" height="503" viewBox="0 0 632 503" fill="none" style=""><defs xmlns="http://www.w3.org/2000/svg">
+    <!-- Diagonal gradient for skeleton shimmer -->
+    <linearGradient id="skeletonGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e0e0e0" stop-opacity="1">
+        <animate attributeName="offset" values="-1;1" dur="2s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="30%" stop-color="#2f2f2f" stop-opacity="0.8" style="">
+        <animate attributeName="offset" values="-0.7;1.3" dur="2s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="50%" stop-color="#e0e0e0" stop-opacity="0.7">
+        <animate attributeName="offset" values="-0.5;1.5" dur="2s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="70%" stop-color="#2f2f2f" stop-opacity="0.8">
+        <animate attributeName="offset" values="-0.3;1.7" dur="2s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#e0e0e0" stop-opacity="1">
+        <animate attributeName="offset" values="0;2" dur="2s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+  </defs>
+
+<path d="M63.021 423.962L10.908 503L624.092 502.731L610.409 476.879L566.627 420.375L421.805 350.178L405.782 337.959L386.033 313.284L379.201 310.181L375.164 298.079C375.725 285.046 376.848 258.407 376.848 256.11C382.023 250.672 385.844 239.358 387.108 234.381L388.334 217.333L394.245 209.088L404.839 207.973L419.559 191.482L423.078 180.117V156.212L417.605 142.043L408.151 137.817L398.947 133.094V105.253L394.966 91.0843L390.488 69.7065L386.01 63.2435L383.522 51.0631L370.835 35.6512L331.527 9.82567L291.706 4.08783L259.278 9.82567L240.024 19.2762L225.836 31.7644L216.378 39.5274L205.231 68.5541V78.6796C203.767 83.4049 200.299 95.9606 198.138 108.381C195.976 120.802 197.237 142.133 198.138 151.246C195.886 152.821 191.382 159.009 191.382 171.16C190.571 194.381 200.277 210.762 205.231 216.05C205.231 218.188 206.582 225.703 211.987 238.664C218.743 263.505 239.573 287.942 249.144 297.055L245.428 313.931L218.405 344.645L63.021 423.962Z" fill="url(#skeletonGradient)" fill-opacity="0.5"/>
+</svg>
