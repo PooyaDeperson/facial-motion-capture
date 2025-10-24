@@ -131,6 +131,6 @@ facial-motion-capture/
     ├── 📄 FaceTracking.tsx # The core logic for tracking the user's face
     ├── 📄 index.css       # Not used / Empty
     ├── 📄 index.tsx       # The entry point for the React application
-    ├── 📄 Loader.tsx      # A loading avatar indicator component
+    ├── 📄 AvatarLoader.tsx      # A loading avatar indicator component
     └── 📄 react-app-env.d.ts # TypeScript type declarations for the React environment
 ```
