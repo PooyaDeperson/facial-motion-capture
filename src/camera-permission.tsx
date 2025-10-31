@@ -1,3 +1,15 @@
+
+/*
+ * Copyright (c) 2025 Pooya Deperson pooyadeperson@gmail.com https://github.com/PooyaDeperson
+ * Licensed under the MIT License with Attribution.
+ * 
+ * Permission is hereby granted, free of charge, to use, copy, modify, merge,
+ * publish, and distribute this software, provided that the following credit
+ * is included in any derivative or distributed version:
+ * "Created by Pooya Deperson pooyadeperson@gmail.com https://github.com/PooyaDeperson"
+ */
+
+
 import { useEffect, useState } from "react";
 import CustomDropdown, { Option } from "./components/CustomDropdown";
 
