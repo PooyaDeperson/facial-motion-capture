@@ -8,9 +8,12 @@
 
   Try it at : https://facemocap.vercel.app/?utm_source=github
   
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
-  [![Status](https://img.shields.io/badge/Status-Active-brightgreen.svg)]()
+ [![License: MIT-Attribution](https://img.shields.io/badge/License-MIT--Attribution-yellow.svg)](LICENSE.md)
+ [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
+ [![Status](https://img.shields.io/badge/Status-Active-brightgreen.svg)]()
+ [![Creator](https://img.shields.io/badge/Created%20by-Pooya%20Deperson-orange.svg)](https://github.com/pooyadeperson)
+  [![Creator](https://img.shields.io/badge/Created%20by-Sercan%20Altundas-orange.svg)](https://github.com/srcnalt)
+
   
 </div>
 
