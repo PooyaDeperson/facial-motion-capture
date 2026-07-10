@@ -13,7 +13,7 @@
           "value": "facemocap.vercel.app"
         }
       ],
-      "destination": "https://www.miniface.org/$1",
+      "destination": "https://www.vtuber.miniface.org/$1",
       "permanent": true
     },
     {
@@ -24,7 +24,7 @@
           "value": "facemocap.radframes.app"
         }
       ],
-      "destination": "https://www.miniface.org/$1",
+      "destination": "https://www.vtuber.miniface.org/$1",
       "permanent": true
     },
     {
@@ -35,7 +35,7 @@
           "value": "facemocap.radframes.com"
         }
       ],
-      "destination": "https://www.miniface.org/$1",
+      "destination": "https://www.vtuber.miniface.org/$1",
       "permanent": true
     },
     {
@@ -43,10 +43,10 @@
       "has": [
         {
           "type": "host",
-          "value": "miniface.org"
+          "value": "vtuber.miniface.org"
         }
       ],
-      "destination": "https://www.miniface.org/$1",
+      "destination": "https://www.vtuber.miniface.org/$1",
       "permanent": true
     }
   ]
