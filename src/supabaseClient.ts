@@ -7,7 +7,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { storeDriveTokens, clearDriveTokens, notifyNoDriveScope } from "./useDriveSync";
 
 // ── Environment detection ────────────────────────────────────────────────────
-// On vtuber.miniface.org / www.vtuber.miniface.org → use REACT_APP_SUPABASE_URL / ANON_KEY (prod vars).
+// On vtuber.miniface.org / new www.vtuber.miniface.org → use REACT_APP_SUPABASE_URL / ANON_KEY (prod vars).
 // On every other host                → use REACT_APP_SUPABASE_STAGE_URL / STAGE_ANON_KEY.
 // Set the matching pair in Vercel's Environment Variables for each deployment.
 
