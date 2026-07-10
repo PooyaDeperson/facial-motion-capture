@@ -504,7 +504,7 @@ function App() {
     // Recordings may have been made with:
     //   (a) old local paths    – "/avatar/avatar3.glb"
     //   (b) Cloudinary URLs    – "https://res.cloudinary.com/da1zca4wj/.../avatar-braids.glb"
-    //   (c) preview-domain URLs – "https://preview.miniface.org/avatar/avatar3.glb"  (401s)
+    //   (c) preview-domain URLs – "https://preview.vtuber.miniface.org/avatar/avatar3.glb"  (401s)
     //
     // Strategy: extract the filename from whatever was stored and look it up in
     // the current AVATAR_METADATA registry. If a match is found, use that
