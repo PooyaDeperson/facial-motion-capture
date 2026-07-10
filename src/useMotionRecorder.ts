@@ -320,7 +320,7 @@ export function stopRecording(): void {
       .slice(0, 19)
       .replace("T", "_")
       .replace(/:/g, "-");
-    const fileName = `miniface.org_${timestamp}.glb`;
+    const fileName = `vtuber.miniface.org_${timestamp}.glb`;
     const snapshotAvatarUrl = _avatarUrl ?? undefined;
     buildGLBBlob()
       .then(({ blob, durationSeconds }) => {
