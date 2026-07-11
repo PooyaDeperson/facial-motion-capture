@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2025 Pooya Moradi M. arkitface@gmail.com
- * miniface.org
+ * vtuber.miniface.org
  */
 
 import "../App.css";
 import "./legal.css";
 
 const EFFECTIVE_DATE = "June 13, 2026";
-const DOMAIN = "miniface.org";
+const DOMAIN = "vtuber.miniface.org";
 const OWNER_NAME = "Pooya Moradi M.";
 const OWNER_CITY = "Rome, Italy";
 const CONTACT_EMAIL = "arkitface@gmail.com";
