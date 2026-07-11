@@ -21,7 +21,7 @@
  * ─────────────
  * We use sessionStorage (not localStorage) so tokens disappear when the
  * tab closes. Keys: "gd_access_token", "gd_refresh_token".
- * Supabase's SIGNED_IN event hands us provider_token / provider_refresh_token
+ * Supabase's SIGNEDso_IN event hands us provider_token / provider_refresh_token
  * only on the initial OAuth redirect; supabaseClient.ts captures them and
  * calls storeDriveTokens() right there so we never miss them.
  */

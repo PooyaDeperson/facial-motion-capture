@@ -7,35 +7,34 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { storeDriveTokens, clearDriveTokens, notifyNoDriveScope } from "./useDriveSync";
 
 // ── Environment detection ────────────────────────────────────────────────────
-// On miniface.org / www.miniface.org → use REACT_APP_SUPABASE_URL / ANON_KEY (prod vars).
-// On every other host                → use REACT_APP_SUPABASE_STAGE_URL / STAGE_ANON_KEY.
-// Set the matching pair in Vercel's Environment Variables for each deployment.
+// Vercel injects the correct variable set per environment automatically:
+//   Production deployment  → REACT_APP_SUPABASE_URL + REACT_APP_SUPABASE_ANON_KEY
+//   Preview deployment     → REACT_APP_SUPABASE_STAGE_URL + REACT_APP_SUPABASE_STAGE_ANON_KEY
+//
+// We no longer do runtime hostname detection — Vercel's environment scoping
+// (Production vs Preview) handles this at build time, so the right values are
+// always baked in regardless of which custom domain is pointed at the deployment.
+//
+// For local dev, create a .env.local file with either pair:
+//   REACT_APP_SUPABASE_URL=...
+//   REACT_APP_SUPABASE_ANON_KEY=...
 
-const isProductionHost =
-  typeof window !== "undefined" &&
-  (window.location.hostname === "miniface.org" ||
-    window.location.hostname === "www.miniface.org");
+const supabaseUrl =
+  process.env.REACT_APP_SUPABASE_URL ||
+  process.env.REACT_APP_SUPABASE_STAGE_URL;
 
-const supabaseUrl = isProductionHost
-  ? process.env.REACT_APP_SUPABASE_URL
-  : process.env.REACT_APP_SUPABASE_STAGE_URL;
-
-const supabaseAnonKey = isProductionHost
-  ? process.env.REACT_APP_SUPABASE_ANON_KEY
-  : process.env.REACT_APP_SUPABASE_STAGE_ANON_KEY;
+const supabaseAnonKey =
+  process.env.REACT_APP_SUPABASE_ANON_KEY ||
+  process.env.REACT_APP_SUPABASE_STAGE_ANON_KEY;
 
 // ── Availability flag ────────────────────────────────────────────────────────
 // When env vars are absent (local dev, CI, preview without secrets) we export
 // null instead of throwing so the rest of the app keeps running.  Auth-dependent
 // features should guard with `if (!supabase)` or `isSupabaseAvailable()`.
 
-const missingVar = isProductionHost
-  ? "REACT_APP_SUPABASE_URL + REACT_APP_SUPABASE_ANON_KEY"
-  : "REACT_APP_SUPABASE_STAGE_URL + REACT_APP_SUPABASE_STAGE_ANON_KEY";
-
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn(
-    `[supabase] env vars not set (${missingVar}). ` +
+    `[supabase] env vars not set (REACT_APP_SUPABASE_URL / REACT_APP_SUPABASE_ANON_KEY). ` +
     `Auth features will be disabled. Add them to .env.local to enable.`
   );
 }
