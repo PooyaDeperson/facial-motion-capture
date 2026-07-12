@@ -639,7 +639,10 @@ self.onmessage = async function (e) {
     isMobile = !!e.data.isMobile;
 
     try {
+      self.postMessage({ type: "INIT_PROGRESS", stage: "wasm", percentage: 5, label: "Getting things ready…" });
       const filesetResolver = await FilesetResolver.forVisionTasks("/wasm");
+
+      self.postMessage({ type: "INIT_PROGRESS", stage: "face", percentage: 25, label: "Show your face fully in the frame…" });
 
       // Initialise face and hand detectors in parallel for faster startup
       [faceLandmarker, handLandmarker] = await Promise.all([
@@ -663,6 +666,8 @@ self.onmessage = async function (e) {
         }),
       ]);
 
+      self.postMessage({ type: "INIT_PROGRESS", stage: "hand", percentage: 65, label: "You can use your fingers to animate too…" });
+
       // Initialise PoseLandmarker separately — non-fatal if it fails so the
       // rest of tracking continues without live elbow data (falls back to the
       // hardcoded elbow hint in Avatar.tsx).
@@ -679,6 +684,9 @@ self.onmessage = async function (e) {
       } catch (poseErr) {
         poseLandmarker = null;
       }
+
+      self.postMessage({ type: "INIT_PROGRESS", stage: "pose", percentage: 90, label: "Adding the final tracking assets…" });
+      self.postMessage({ type: "INIT_PROGRESS", stage: "done", percentage: 100, label: "All set!" });
 
       self.postMessage({ type: "READY" });
     } catch (err) {
