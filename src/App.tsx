@@ -19,6 +19,7 @@ import PlaybackControls from "./components/PlaybackControls";
 import MotionLibrary from "./components/MotionLibrary";
 import MotionLibraryButton from "./components/MotionLibraryButton";
 import FaceTracking from "./FaceTracking";
+import type { InitProgress } from "./FaceTracking";
 import TrackingLoader from "./components/TrackingLoader";
 import AvatarCanvas from "./AvatarCanvas";
 import { discardRecording, subscribePlaybackReady } from "./useMotionRecorder";
@@ -41,6 +42,8 @@ function App() {
   const [motionLoading, setMotionLoading] = useState(false);
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
   const [mediapipeReady, setMediapipeReady] = useState(false);
+  const [initProgress, setInitProgress] = useState<InitProgress | null>(null);
+  const [initError, setInitError] = useState<string | null>(null);
   const [recordingPhase, setRecordingPhase] = useState<"idle" | "recording" | "review" | "done">("idle");
   const [isFlipped, setIsFlipped] = useState(true);
 
@@ -216,6 +219,8 @@ function App() {
 
   const handleStreamReady = (stream: MediaStream) => {
     setMediapipeReady(false);
+    setInitProgress(null);
+    setInitError(null);
     setVideoStream(stream);
   };
 
@@ -265,7 +270,6 @@ function App() {
     }
 
     setAvatarReady(false);
-    setMediapipeReady(false);
   };
 
   // ── Subscribe to playback-ready events from useMotionRecorder ────────────
@@ -341,7 +345,7 @@ function App() {
     });
   }, []);
 
-  // ── Subscribe to Drive upload completions ─────────────────────────────────
+  // ── Subscribe to Drive upload completions ──────────────────────────────��──
   // When uploadToDrive() succeeds (from any call site — stopRecording, the
   // hasDrive-transition effect, etc.) we get the DriveMotionFile back and:
   //  1. Replace pendingMotion with the confirmed Drive file (real driveFileId)
@@ -594,12 +598,18 @@ function App() {
         setIsFlipped={setIsFlipped}
       />
 
-      <TrackingLoader visible={avatarReady && videoStream != null && !mediapipeReady && !isInPlayback} />
+      <TrackingLoader
+        visible={avatarReady && videoStream != null && !mediapipeReady && !isInPlayback}
+        progress={initProgress}
+        error={initError}
+      />
 
-      {avatarReady && videoStream && !isInPlayback && (
+      {videoStream && !isInPlayback && (
         <FaceTracking
           videoStream={videoStream}
           onMediapipeReady={handleMediapipeReady}
+          onInitProgress={setInitProgress}
+          onInitError={setInitError}
           disabled={faceTrackingDisabled}
           isFlipped={isFlipped}
         />
