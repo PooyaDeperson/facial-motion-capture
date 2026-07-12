@@ -115,14 +115,24 @@ function isMobileDevice(): boolean {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
+export interface InitProgress {
+  stage: "wasm" | "face" | "hand" | "pose" | "done";
+  percentage: number;
+  label: string;
+}
+
 function FaceTracking({
   videoStream,
   onMediapipeReady,
+  onInitProgress,
+  onInitError,
   disabled,
   isFlipped,
 }: {
   videoStream: MediaStream;
   onMediapipeReady?: () => void;
+  onInitProgress?: (progress: InitProgress) => void;
+  onInitError?: (message: string) => void;
   disabled?: boolean;
   isFlipped?: boolean;
 }) {
@@ -189,6 +199,17 @@ function FaceTracking({
     // ── Worker message handler ────────────────────────────────────────────────
     worker.onmessage = (e: MessageEvent) => {
       const { type } = e.data;
+
+      if (type === "INIT_PROGRESS") {
+        if (onInitProgress) {
+          onInitProgress({
+            stage: e.data.stage,
+            percentage: e.data.percentage,
+            label: e.data.label,
+          });
+        }
+        return;
+      }
 
       if (type === "READY") {
         // Worker has finished initialising MediaPipe — start the rAF loop.
@@ -261,6 +282,7 @@ function FaceTracking({
         // Fatal worker init error — log and leave isMediaPipeActive = false so
         // App.tsx's 30 s timeout triggers the fallback UI.
         console.error("[FaceTracking] Worker init error:", e.data.message);
+        if (onInitError) onInitError(e.data.message ?? "Failed to load tracker");
         return;
       }
     };
