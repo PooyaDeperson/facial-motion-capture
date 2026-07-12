@@ -102,11 +102,11 @@ function useAnimatedPercentage(target: number, visible: boolean): number {
 // ─── Stage label map ──────────────────────────────────────────────────────────
 
 const STAGE_LABELS: Record<string, string> = {
-  wasm: "loading engine...",
-  face: "loading face model...",
-  hand: "loading hand model...",
-  pose: "loading pose model...",
-  done: "ready",
+  wasm: "Getting things ready\u2026",
+  face: "Show your face fully in the frame\u2026",
+  hand: "You can use your fingers to animate too\u2026",
+  pose: "Adding the final tracking assets\u2026",
+  done: "All set!",
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -115,10 +115,10 @@ const TrackingLoader: React.FC<TrackingLoaderProps> = ({ visible, progress, erro
   const targetPercentage = error ? 0 : (progress?.percentage ?? 30);
 
   const stageLabel = progress?.stage
-    ? (STAGE_LABELS[progress.stage] ?? "loading...")
-    : "loading...";
+    ? (STAGE_LABELS[progress.stage] ?? "Getting things ready\u2026")
+    : "Getting things ready\u2026";
 
-  const label = error ? "failed to load tracker" : stageLabel;
+  const label = error ? "Something went wrong loading the tracker." : stageLabel;
 
   const slowPct = useSlowProgress(targetPercentage, visible);
   const displayPct = useAnimatedPercentage(slowPct, visible);
