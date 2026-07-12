@@ -604,7 +604,7 @@ function App() {
         error={initError}
       />
 
-      {avatarReady && videoStream && !isInPlayback && (
+      {videoStream && !isInPlayback && (
         <FaceTracking
           videoStream={videoStream}
           onMediapipeReady={handleMediapipeReady}
