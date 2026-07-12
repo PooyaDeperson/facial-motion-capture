@@ -154,9 +154,9 @@ const TrackingLoader: React.FC<TrackingLoaderProps> = ({ visible, progress, erro
 
         {/* Stage label */}
         <p
-          className="text-white text-2xl"
+          className="text-gray-700 text-sm"
           style={{
-            fontSize: 13,
+            fontSize: 16,
             fontWeight: 600,
             textAlign: "center",
             color: error ? "#fca5a5" : "rgba(255,255,255,0.88)",
@@ -170,7 +170,7 @@ const TrackingLoader: React.FC<TrackingLoaderProps> = ({ visible, progress, erro
         {!error && (
           <span
             style={{
-              fontSize: 13,
+              fontSize: 20,
               fontWeight: 600,
               fontVariantNumeric: "tabular-nums",
               color: "rgba(255,255,255,0.45)",
