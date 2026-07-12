@@ -156,11 +156,10 @@ const TrackingLoader: React.FC<TrackingLoaderProps> = ({ visible, progress, erro
         <p
           className="text-gray-700 text-sm"
           style={{
-            fontSize: 16,
-            fontWeight: 600,
+
             textAlign: "center",
-            color: error ? "#fca5a5" : "rgba(255,255,255,0.88)",
-            margin: 0,
+            color: error ? "#fca5a5" : "",
+
           }}
         >
           {label}
