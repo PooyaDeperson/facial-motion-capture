@@ -57,19 +57,19 @@ export interface AvatarMetadata {
 
 const AVATAR_URLS = {
   ponytail:
-    "https://res.cloudinary.com/da1zca4wj/image/upload/v1782023142/miniface/avatar/avatar-ponytail.glb",
+    "https://pooyadeperson.github.io/miniface-dns/assets/vtuber/avatar-ponytail.glb",
 
   short:
-    "https://res.cloudinary.com/da1zca4wj/image/upload/v1782023143/miniface/avatar/avatar-short.glb",
+    "https://pooyadeperson.github.io/miniface-dns/assets/vtuber/avatar-short.glb",
 
   curly:
-    "https://res.cloudinary.com/da1zca4wj/image/upload/v1782022983/miniface/avatar/avatar-curly.glb",
+    "https://pooyadeperson.github.io/miniface-dns/assets/vtuber/avatar-curly.glb",
 
   wavy:
-    "https://res.cloudinary.com/da1zca4wj/image/upload/v1782023132/miniface/avatar/avatar-wavy.glb",
+    "https://pooyadeperson.github.io/miniface-dns/assets/vtuber/avatar-wavy.glb",
 
   braids:
-    "https://res.cloudinary.com/da1zca4wj/image/upload/v1782023136/miniface/avatar/avatar-braids.glb",
+    "https://pooyadeperson.github.io/miniface-dns/assets/vtuber/avatar-braids.glb",
 };
 
 // ─── Registry ────────────────────────────────────────────────────────────────
