@@ -270,9 +270,6 @@ function App() {
     }
 
     setAvatarReady(false);
-    setMediapipeReady(false);
-    setInitProgress(null);
-    setInitError(null);
   };
 
   // ── Subscribe to playback-ready events from useMotionRecorder ────────────
@@ -348,7 +345,7 @@ function App() {
     });
   }, []);
 
-  // ── Subscribe to Drive upload completions ─────────────────────────────────
+  // ── Subscribe to Drive upload completions ──────────────────────────────��──
   // When uploadToDrive() succeeds (from any call site — stopRecording, the
   // hasDrive-transition effect, etc.) we get the DriveMotionFile back and:
   //  1. Replace pendingMotion with the confirmed Drive file (real driveFileId)
