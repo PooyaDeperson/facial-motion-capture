@@ -5,7 +5,7 @@
   #  miniface - Facial and Finger Motion Capture
   
   **Real-time face tracking with 3D avatars in your browser** ✨
-
+  Try it at : https://www.vtuber.miniface.org/
   MiniFace's facial and finger tracking motion capture uses the same technology and code as the miniFace.org ARKit blendshapes and real-time facial motion capture system.
 
   The core code is open source and available here. You can try it at https://www.vtuber.miniface.org/, where it has been tuned and designed specifically for streamers and VTubers.

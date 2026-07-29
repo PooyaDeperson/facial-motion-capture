@@ -12,6 +12,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useGraph } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import { Euler, Mesh, Object3D, Quaternion, Vector3 } from "three";
+import { createHeadChainQuats, resolveHeadChain } from "./headChainTuning";
 import { blendshapes, rotation, headMesh, headMatrix, isMobileTracking, isMediaPipeActive, leftFingerBones, rightFingerBones, leftWristPos, rightWristPos, leftElbowOffset, rightElbowOffset, type FingerQuats } from "./FaceTracking";
 import { captureFrame, setSceneForExport, subscribeRecordingStart } from "./useMotionRecorder";
 import { useAnimationPlayer } from "./useAnimationPlayer";
@@ -33,6 +34,12 @@ interface AvatarProps {
   onLoaded?: () => void;
   /** When set, replays this GLB blob instead of running live face tracking. */
   playbackBlob?: Blob | null;
+  /**
+   * True when the active character is a user-uploaded custom character.
+   * Uploaded characters skip the idle animation and stay in their rest pose;
+   * only the built-in default characters play idle.
+   */
+  isCustomCharacter?: boolean;
 }
 
 // ─── module-level smoother singletons ────────────────────────────────────────
@@ -87,6 +94,22 @@ const rightRestPoseSmoother = new RestPoseSmoother(IN_FRAME_TAU, REST_POSE_TAU);
 // to avoid per-frame garbage collection pressure.
 const _targetQuat = new Quaternion();
 const _smoothedEuler = new Euler();
+
+// Resolved Spine2 / Neck / Head rotations for the current frame. Allocated once
+// and rewritten in place by resolveHeadChain() so the hot path stays GC-free.
+const _headChain = createHeadChainQuats();
+
+/**
+ * Resets the face/head rotation smoothers so stale EMA state from the previous
+ * tracking session doesn't pull blendshapes or head rotation back from neutral
+ * after the calibration wizard closes and MediaPipe re-initialises.
+ *
+ * Call this alongside resetFaceDataToRestPose() when calibration opens.
+ */
+export function resetAvatarSmoothers(): void {
+  blendshapeSmoother.reset();
+  quaternionSmoother.reset();
+}
 
 // ─── Finger bone name map ─────────────────────────────────────────────────────
 // Worker sends 3 joints per digit (no tip bone — it has no child landmark).
@@ -866,18 +889,14 @@ function Avatar({ url, onLoaded, playbackBlob }: AvatarProps) {
     // fractional neck/spine scaling that the rig requires.
     _smoothedEuler.setFromQuaternion(smoothedQuat, "XYZ");
 
+    // Resolve Spine2 / Neck / Head rotations via the shared headChainTuning
+    // module so the live preview and the exported GLB always match exactly.
+    resolveHeadChain(_smoothedEuler, _headChain, smoothedQuat);
+
     // Apply to bones
-    if (nodes.Head) nodes.Head.quaternion.copy(smoothedQuat);
-    if (nodes.Neck) nodes.Neck.rotation.set(
-      _smoothedEuler.x / 5 + 0.3,
-      _smoothedEuler.y / 5,
-      _smoothedEuler.z / 5
-    );
-    if (nodes.Spine2) nodes.Spine2.rotation.set(
-      _smoothedEuler.x / 10,
-      _smoothedEuler.y / 10,
-      _smoothedEuler.z / 10
-    );
+    if (nodes.Head) nodes.Head.quaternion.copy(_headChain.head);
+    if (nodes.Neck) nodes.Neck.quaternion.copy(_headChain.neck);
+    if (nodes.Spine2) nodes.Spine2.quaternion.copy(_headChain.spine2);
 
     // ── arm IK (position wrist to match webcam hand position) ─────────────
     // Skip until the rest-pose capture in useEffect has completed; running IK
