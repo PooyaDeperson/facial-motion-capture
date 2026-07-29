@@ -2,11 +2,16 @@
   
   ![gh face mocap demo](https://github.com/user-attachments/assets/741b1fdd-0dab-4e97-a24b-22a7d34b9a15)
   
-  # Facial Motion Capture
+  #  miniface - Facial and Finger Motion Capture
   
   **Real-time face tracking with 3D avatars in your browser** ✨
 
-  Try it at : https://www.vtuber.miniface.org/
+  MiniFace's facial and finger tracking motion capture uses the same technology and code as the miniFace.org ARKit blendshapes and real-time facial motion capture system.
+
+  The core code is open source and available here. You can try it at https://www.vtuber.miniface.org/, where it has been tuned and designed specifically for streamers and VTubers.
+
+  The professional version, which allows you to validate ARKit blendshapes and import your own character model into the motion capture system, is available at   https://miniface.org/faces/mocap.
+
   
  [![License: MIT-Attribution](https://img.shields.io/badge/License-MIT--Attribution-yellow.svg)](LICENSE.md)
  [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)

@@ -38,6 +38,7 @@ import {
   Mesh,
 } from "three";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter";
+import { createHeadChainQuats, resolveHeadChain } from "./headChainTuning";
 import type { SecondaryMotionSystem } from "./SecondaryMotionSystem";
 import { clearHandTracking } from "./FaceTracking";
 import type { FingerQuats } from "./FaceTracking";
@@ -184,7 +185,7 @@ function _notifyStart() {
   _startListeners.forEach((fn) => fn());
 }
 
-// ─── scene reference (called from Avatar.tsx) ─────────────────────────────────
+// ─── scene reference (called from Avatar.tsx) ─────────────��───────────────────
 
 /**
  * Avatar.tsx calls this in useEffect whenever the GLTF scene loads / reloads.
@@ -320,23 +321,13 @@ export function stopRecording(): void {
       .slice(0, 19)
       .replace("T", "_")
       .replace(/:/g, "-");
-    const fileName = `vtuber.miniface.org_${timestamp}.glb`;
+    const fileName = `miniface.org_${timestamp}.glb`;
     const snapshotAvatarUrl = _avatarUrl ?? undefined;
     buildGLBBlob()
       .then(({ blob, durationSeconds }) => {
         const motionId = _makeMotionId();
         _cachedBlob = { blob, name: fileName };
         _notifyPlaybackReady({ blob, motionId, name: fileName, durationSeconds, avatarUrl: snapshotAvatarUrl });
-
-        // Attempt Drive upload immediately if tokens are already present.
-        // Import lazily to avoid circular deps at module load time.
-        import("./useDriveSync").then(({ hasDriveAccess, uploadToDrive }) => {
-          if (hasDriveAccess()) {
-            uploadToDrive(blob, fileName, durationSeconds, snapshotAvatarUrl).catch((err) => {
-              console.warn("[recorder] Auto Drive upload failed:", err?.message);
-            });
-          }
-        }).catch(() => { /* useDriveSync unavailable */ });
       })
       .catch((err) => {
         console.warn("[recorder] Playback blob build failed:", err?.message);
@@ -465,44 +456,32 @@ export async function buildGLBBlob(): Promise<{ blob: Blob; durationSeconds: num
   });
 
   // ── bone rotation tracks ────────────────────────────────────────────────────
-  // Replicate exactly the same Euler-to-bone mapping used in Avatar.tsx
-  // so the exported animation plays back identically to the live preview.
+  // Uses the same shared head-chain resolver as Avatar.tsx so the exported
+  // animation plays back identically to the live preview.
+  // The divisors, the constant neck offset and the measured per-bone rotation
+  // correction all come from headChainTuning.ts — the same module the live
+  // preview in Avatar.tsx uses — so the exported GLB always matches what the
+  // user saw while recording.
   const boneConfigs = [
-    {
-      key: "Head",
-      toEuler: (f: MotionFrame) =>
-        new Euler(f.headEuler[0], f.headEuler[1], f.headEuler[2]),
-    },
-    {
-      key: "Neck",
-      toEuler: (f: MotionFrame) =>
-        new Euler(
-          f.headEuler[0] / 5 + 0.3,
-          f.headEuler[1] / 5,
-          f.headEuler[2] / 5
-        ),
-    },
-    {
-      key: "Spine2",
-      toEuler: (f: MotionFrame) =>
-        new Euler(
-          f.headEuler[0] / 10,
-          f.headEuler[1] / 10,
-          f.headEuler[2] / 10
-        ),
-    },
+    { key: "Head", pick: (c: ReturnType<typeof createHeadChainQuats>) => c.head },
+    { key: "Neck", pick: (c: ReturnType<typeof createHeadChainQuats>) => c.neck },
+    { key: "Spine2", pick: (c: ReturnType<typeof createHeadChainQuats>) => c.spine2 },
   ];
 
-  const _q = new Quaternion();
+  const _headEuler = new Euler();
+  const _chain = createHeadChainQuats();
 
-  boneConfigs.forEach(({ key, toEuler }) => {
+  boneConfigs.forEach(({ key, pick }) => {
     const bone = nodes[key];
     if (!bone) return; // non-standard rig — skip gracefully
 
     const quatValues = new Float32Array(frames.length * 4);
 
     for (let i = 0; i < frames.length; i++) {
-      _q.setFromEuler(toEuler(frames[i]));
+      const f = frames[i];
+      _headEuler.set(f.headEuler[0], f.headEuler[1], f.headEuler[2], "XYZ");
+      resolveHeadChain(_headEuler, _chain);
+      const _q = pick(_chain);
       quatValues[i * 4 + 0] = _q.x;
       quatValues[i * 4 + 1] = _q.y;
       quatValues[i * 4 + 2] = _q.z;
